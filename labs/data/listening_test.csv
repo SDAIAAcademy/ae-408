@@ -1,0 +1,193 @@
+listener,item,category,content,condition,correct
+L1,I01,name,Wedad Al-Omari,raw,1
+L1,I01,name,Wedad Al-Omari,readback,1
+L1,I02,name,Ghusoun Al-Mutlaq,raw,1
+L1,I02,name,Ghusoun Al-Mutlaq,readback,1
+L1,I03,name,Fayyad Al-Ghamdi,raw,0
+L1,I03,name,Fayyad Al-Ghamdi,readback,1
+L1,I04,name,Salem Al-Balawi,raw,1
+L1,I04,name,Salem Al-Balawi,readback,1
+L1,I05,number,party of 7,raw,0
+L1,I05,number,party of 7,readback,1
+L1,I06,number,booking HTB-4821,raw,0
+L1,I06,number,booking HTB-4821,readback,1
+L1,I07,number,booking HTB-1590,raw,0
+L1,I07,number,booking HTB-1590,readback,1
+L1,I08,number,party of 12,raw,0
+L1,I08,number,party of 12,readback,1
+L1,I09,date,2026-12-03,raw,0
+L1,I09,date,2026-12-03,readback,1
+L1,I10,date,2026-12-11,raw,0
+L1,I10,date,2026-12-11,readback,1
+L1,I11,date,2027-01-02,raw,1
+L1,I11,date,2027-01-02,readback,1
+L1,I12,date,2026-12-20,raw,0
+L1,I12,date,2026-12-20,readback,1
+L2,I01,name,Wedad Al-Omari,raw,1
+L2,I01,name,Wedad Al-Omari,readback,1
+L2,I02,name,Ghusoun Al-Mutlaq,raw,1
+L2,I02,name,Ghusoun Al-Mutlaq,readback,1
+L2,I03,name,Fayyad Al-Ghamdi,raw,1
+L2,I03,name,Fayyad Al-Ghamdi,readback,1
+L2,I04,name,Salem Al-Balawi,raw,1
+L2,I04,name,Salem Al-Balawi,readback,1
+L2,I05,number,party of 7,raw,1
+L2,I05,number,party of 7,readback,1
+L2,I06,number,booking HTB-4821,raw,0
+L2,I06,number,booking HTB-4821,readback,1
+L2,I07,number,booking HTB-1590,raw,0
+L2,I07,number,booking HTB-1590,readback,1
+L2,I08,number,party of 12,raw,1
+L2,I08,number,party of 12,readback,1
+L2,I09,date,2026-12-03,raw,0
+L2,I09,date,2026-12-03,readback,1
+L2,I10,date,2026-12-11,raw,1
+L2,I10,date,2026-12-11,readback,1
+L2,I11,date,2027-01-02,raw,1
+L2,I11,date,2027-01-02,readback,1
+L2,I12,date,2026-12-20,raw,0
+L2,I12,date,2026-12-20,readback,1
+L3,I01,name,Wedad Al-Omari,raw,1
+L3,I01,name,Wedad Al-Omari,readback,1
+L3,I02,name,Ghusoun Al-Mutlaq,raw,1
+L3,I02,name,Ghusoun Al-Mutlaq,readback,1
+L3,I03,name,Fayyad Al-Ghamdi,raw,1
+L3,I03,name,Fayyad Al-Ghamdi,readback,1
+L3,I04,name,Salem Al-Balawi,raw,1
+L3,I04,name,Salem Al-Balawi,readback,0
+L3,I05,number,party of 7,raw,1
+L3,I05,number,party of 7,readback,1
+L3,I06,number,booking HTB-4821,raw,0
+L3,I06,number,booking HTB-4821,readback,1
+L3,I07,number,booking HTB-1590,raw,1
+L3,I07,number,booking HTB-1590,readback,1
+L3,I08,number,party of 12,raw,1
+L3,I08,number,party of 12,readback,1
+L3,I09,date,2026-12-03,raw,0
+L3,I09,date,2026-12-03,readback,0
+L3,I10,date,2026-12-11,raw,0
+L3,I10,date,2026-12-11,readback,1
+L3,I11,date,2027-01-02,raw,0
+L3,I11,date,2027-01-02,readback,1
+L3,I12,date,2026-12-20,raw,1
+L3,I12,date,2026-12-20,readback,1
+L4,I01,name,Wedad Al-Omari,raw,1
+L4,I01,name,Wedad Al-Omari,readback,1
+L4,I02,name,Ghusoun Al-Mutlaq,raw,1
+L4,I02,name,Ghusoun Al-Mutlaq,readback,1
+L4,I03,name,Fayyad Al-Ghamdi,raw,1
+L4,I03,name,Fayyad Al-Ghamdi,readback,1
+L4,I04,name,Salem Al-Balawi,raw,1
+L4,I04,name,Salem Al-Balawi,readback,1
+L4,I05,number,party of 7,raw,0
+L4,I05,number,party of 7,readback,1
+L4,I06,number,booking HTB-4821,raw,1
+L4,I06,number,booking HTB-4821,readback,1
+L4,I07,number,booking HTB-1590,raw,0
+L4,I07,number,booking HTB-1590,readback,1
+L4,I08,number,party of 12,raw,1
+L4,I08,number,party of 12,readback,1
+L4,I09,date,2026-12-03,raw,1
+L4,I09,date,2026-12-03,readback,1
+L4,I10,date,2026-12-11,raw,1
+L4,I10,date,2026-12-11,readback,1
+L4,I11,date,2027-01-02,raw,0
+L4,I11,date,2027-01-02,readback,1
+L4,I12,date,2026-12-20,raw,0
+L4,I12,date,2026-12-20,readback,1
+L5,I01,name,Wedad Al-Omari,raw,1
+L5,I01,name,Wedad Al-Omari,readback,1
+L5,I02,name,Ghusoun Al-Mutlaq,raw,1
+L5,I02,name,Ghusoun Al-Mutlaq,readback,1
+L5,I03,name,Fayyad Al-Ghamdi,raw,1
+L5,I03,name,Fayyad Al-Ghamdi,readback,1
+L5,I04,name,Salem Al-Balawi,raw,1
+L5,I04,name,Salem Al-Balawi,readback,1
+L5,I05,number,party of 7,raw,1
+L5,I05,number,party of 7,readback,1
+L5,I06,number,booking HTB-4821,raw,0
+L5,I06,number,booking HTB-4821,readback,1
+L5,I07,number,booking HTB-1590,raw,1
+L5,I07,number,booking HTB-1590,readback,1
+L5,I08,number,party of 12,raw,1
+L5,I08,number,party of 12,readback,1
+L5,I09,date,2026-12-03,raw,1
+L5,I09,date,2026-12-03,readback,1
+L5,I10,date,2026-12-11,raw,1
+L5,I10,date,2026-12-11,readback,1
+L5,I11,date,2027-01-02,raw,1
+L5,I11,date,2027-01-02,readback,1
+L5,I12,date,2026-12-20,raw,1
+L5,I12,date,2026-12-20,readback,1
+L6,I01,name,Wedad Al-Omari,raw,1
+L6,I01,name,Wedad Al-Omari,readback,1
+L6,I02,name,Ghusoun Al-Mutlaq,raw,1
+L6,I02,name,Ghusoun Al-Mutlaq,readback,1
+L6,I03,name,Fayyad Al-Ghamdi,raw,1
+L6,I03,name,Fayyad Al-Ghamdi,readback,1
+L6,I04,name,Salem Al-Balawi,raw,1
+L6,I04,name,Salem Al-Balawi,readback,1
+L6,I05,number,party of 7,raw,1
+L6,I05,number,party of 7,readback,1
+L6,I06,number,booking HTB-4821,raw,0
+L6,I06,number,booking HTB-4821,readback,1
+L6,I07,number,booking HTB-1590,raw,0
+L6,I07,number,booking HTB-1590,readback,1
+L6,I08,number,party of 12,raw,1
+L6,I08,number,party of 12,readback,1
+L6,I09,date,2026-12-03,raw,1
+L6,I09,date,2026-12-03,readback,1
+L6,I10,date,2026-12-11,raw,1
+L6,I10,date,2026-12-11,readback,1
+L6,I11,date,2027-01-02,raw,1
+L6,I11,date,2027-01-02,readback,1
+L6,I12,date,2026-12-20,raw,1
+L6,I12,date,2026-12-20,readback,1
+L7,I01,name,Wedad Al-Omari,raw,0
+L7,I01,name,Wedad Al-Omari,readback,1
+L7,I02,name,Ghusoun Al-Mutlaq,raw,1
+L7,I02,name,Ghusoun Al-Mutlaq,readback,1
+L7,I03,name,Fayyad Al-Ghamdi,raw,1
+L7,I03,name,Fayyad Al-Ghamdi,readback,1
+L7,I04,name,Salem Al-Balawi,raw,0
+L7,I04,name,Salem Al-Balawi,readback,1
+L7,I05,number,party of 7,raw,1
+L7,I05,number,party of 7,readback,1
+L7,I06,number,booking HTB-4821,raw,0
+L7,I06,number,booking HTB-4821,readback,1
+L7,I07,number,booking HTB-1590,raw,0
+L7,I07,number,booking HTB-1590,readback,1
+L7,I08,number,party of 12,raw,0
+L7,I08,number,party of 12,readback,1
+L7,I09,date,2026-12-03,raw,0
+L7,I09,date,2026-12-03,readback,1
+L7,I10,date,2026-12-11,raw,0
+L7,I10,date,2026-12-11,readback,1
+L7,I11,date,2027-01-02,raw,1
+L7,I11,date,2027-01-02,readback,1
+L7,I12,date,2026-12-20,raw,0
+L7,I12,date,2026-12-20,readback,1
+L8,I01,name,Wedad Al-Omari,raw,1
+L8,I01,name,Wedad Al-Omari,readback,1
+L8,I02,name,Ghusoun Al-Mutlaq,raw,1
+L8,I02,name,Ghusoun Al-Mutlaq,readback,1
+L8,I03,name,Fayyad Al-Ghamdi,raw,1
+L8,I03,name,Fayyad Al-Ghamdi,readback,1
+L8,I04,name,Salem Al-Balawi,raw,1
+L8,I04,name,Salem Al-Balawi,readback,1
+L8,I05,number,party of 7,raw,1
+L8,I05,number,party of 7,readback,1
+L8,I06,number,booking HTB-4821,raw,0
+L8,I06,number,booking HTB-4821,readback,1
+L8,I07,number,booking HTB-1590,raw,1
+L8,I07,number,booking HTB-1590,readback,1
+L8,I08,number,party of 12,raw,1
+L8,I08,number,party of 12,readback,1
+L8,I09,date,2026-12-03,raw,1
+L8,I09,date,2026-12-03,readback,1
+L8,I10,date,2026-12-11,raw,0
+L8,I10,date,2026-12-11,readback,1
+L8,I11,date,2027-01-02,raw,0
+L8,I11,date,2027-01-02,readback,1
+L8,I12,date,2026-12-20,raw,0
+L8,I12,date,2026-12-20,readback,1

@@ -34,7 +34,10 @@ def strip_solutions(lines: list[str], student: bool) -> list[str]:
             if student:
                 indent = line[: len(line) - len(line.lstrip())]
                 out.append(f"{indent}# ✏️ YOUR CODE HERE")
-                out.append(f'{indent}raise NotImplementedError("✏️ Exercise: write your solution here")')
+                if indent:
+                    out.append(f'{indent}raise NotImplementedError("✏️ Exercise: write your solution here")')
+                else:  # a top-level region (a stretch cell): the notebook still runs to its end
+                    out.append('print("✏️ not done yet")')
             continue
         if tag == "# END SOLUTION":
             inside = False

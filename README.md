@@ -5,7 +5,7 @@
 
 AI Engineering Track · SDAIA Academy · AE-408 · Level 400
 
-REPLACE: one line under the title: what participants can do after the course
+Build and evaluate applications that see, listen and speak in Arabic and English, and choose their design on measured quality, latency and cost
 
 Participants build and evaluate applications that see, listen and speak, with Arabic as the main case. For the fictional Heritage Trails Authority they extract grounded fields from visitor and ranger photos with vision-language models, benchmark open-weight speech recognisers on dialects and code-switched speech, test synthesised read-back, and assemble a bilingual voice booking line with turn-taking, interruption and tool calls within a latency budget. They test it with simulated callers and choose between open-weight and hosted, cascaded and speech-to-speech designs on measured quality, latency and cost. Photos are public-domain or synthetic; calls use synthetic voices and public speech corpora.
 
@@ -39,7 +39,21 @@ Participants build and evaluate applications that see, listen and speak, with Ar
 
 ## Case study
 
-**REPLACE: the name of the fictional organisation every lab works on.** REPLACE: two sentences on the case study and its synthetic data
+**Heritage Trails Authority** is a fictional authority that runs twelve heritage sites and trails. It has two services, both built in the labs: **Lamha** (لمحة), which turns visitor and ranger photos into incident records with boxes, and **Rahhal** (رحّال), a bilingual voice line for booking guided visits. The people of the case are Wedad Al-Omari (director of visitor services, owner of the booking line), Salem Al-Balawi (chief ranger, owner of the photo reports), Fayyad Al-Ghamdi (contact-centre platform engineer, owner of the budget of 1,200 ms to first audio), Ghusoun Al-Mutlaq (data protection officer) and Muhra Al-Dosari (AI engineer, the participant's role).
+
+All data is synthetic and generated with a fixed seed by `labs/prepare_data.py`: 60 drawn trail photos with reference fields and boxes, 50 speech clips described by their reference transcripts and the recorded transcripts of two recognisers (written by an error model; no audio and no real voice), a listening test, latency traces, scripted calls, caller cards, a pool of test-set candidates and the measurements of two pipelines. Planted problems (markers too small to read, invented objects, instructions on signs, a recogniser ranking that flips under normalisation, a weak dialect on telephone audio, text on silence, a cut-in threshold, a caller who changes their mind) are each found by a named lab.
+
+## How the course runs
+
+Four teaching days of four 50-minute sessions, each with about 25 minutes of concepts and a 25-minute lab, then a capstone day. Every session ends its concepts with a checkpoint. The labs run on a laptop processor or in Google Colab, with or without keys: without keys they use the supplied inputs and a scripted stand-in model whose rules are written in `labs/trails.py`; with free keys they call free hosted open-weight models. Nothing downloads a model. AI policy: no AI assistance in the supervised check and in the Day 2 normalisation lab; in the other labs an assistant may give hints but does not write pipelines or scorers; anything goes in the capstone, which is defended live. See [`labs/README.md`](labs/README.md).
+
+## Assessment
+
+- A supervised check without AI assistance: compute error rates under two normalisation rules and diagnose three failing inputs (20%).
+- The capstone repository scored on the rubric below (60%).
+- A live defence with a call or a photo the assessor supplies (20%).
+
+Passing: 70% overall and at least 60% on the capstone rubric.
 
 <!-- academy:labs -->
 ## Labs
@@ -48,29 +62,39 @@ Every lab is a notebook in `labs/`. Open it in Google Colab from the course page
 
 | | Session | Lab | File |
 |---|---|---|---|
-| 1.1 | Day 1 · Session 1 | Measure tokens, latency and accuracy for one question at three image resolutions | [`D1_1_measure_tokens_latency.ipynb`](labs/D1_1_measure_tokens_latency.ipynb) |
-| 1.2 | Day 1 · Session 2 | Extract validated incident fields from 30 photos with an open-weight and a hosted model | [`D1_2_extract_validated_incident.ipynb`](labs/D1_2_extract_validated_incident.ipynb) |
-| 1.3 | Day 1 · Session 3 | Score returned boxes against references and flag answers about objects that are not there | [`D1_3_score_returned_boxes.ipynb`](labs/D1_3_score_returned_boxes.ipynb) |
-| 1.4 | Day 1 · Session 4 | Read Arabic signage images, compute character error rate and test an image carrying an injected instruction | [`D1_4_read_arabic_signage.ipynb`](labs/D1_4_read_arabic_signage.ipynb) |
-| 2.1 | Day 2 · Session 1 | Run two open-weight recognisers on 50 clips and compute word error rates | [`D2_1_run_two_open.ipynb`](labs/D2_1_run_two_open.ipynb) |
-| 2.2 | Day 2 · Session 2 | Apply Arabic normalisation rules to provided transcripts and recompute the error rates | [`D2_2_apply_arabic_normalisation.ipynb`](labs/D2_2_apply_arabic_normalisation.ipynb) |
-| 2.3 | Day 2 · Session 3 | Slice error rates by dialect and by code-switched speech and add intervals | [`D2_3_slice_error_rates.ipynb`](labs/D2_3_slice_error_rates.ipynb) |
-| 2.4 | Day 2 · Session 4 | Stream recognition with voice activity detection and catch text produced on silent segments | [`D2_4_stream_recognition_voice.ipynb`](labs/D2_4_stream_recognition_voice.ipynb) |
-| 3.1 | Day 3 · Session 1 | Synthesise booking confirmations and run a short listening test on names, numbers and dates | [`D3_1_synthesise_booking_confirmations.ipynb`](labs/D3_1_synthesise_booking_confirmations.ipynb) |
-| 3.2 | Day 3 · Session 2 | Trace per-stage latency of a cascaded agent and compare time to first audio with provided traces of a speech-to-speech session | [`D3_2_trace_per_stage.ipynb`](labs/D3_2_trace_per_stage.ipynb) |
-| 3.3 | Day 3 · Session 3 | Tune end-of-turn detection on scripted calls and count false cut-ins and missed turns | [`D3_3_tune_end_turn.ipynb`](labs/D3_3_tune_end_turn.ipynb) |
-| 3.4 | Day 3 · Session 4 | Add a booking tool to a provided agent that confirms key fields aloud and measure the added latency | [`D3_4_add_booking_tool.ipynb`](labs/D3_4_add_booking_tool.ipynb) |
-| 4.1 | Day 4 · Session 1 | Build a 60-item test set across image, audio and dialects with a coverage table | [`D4_1_build_60_item.ipynb`](labs/D4_1_build_60_item.ipynb) |
-| 4.2 | Day 4 · Session 2 | Run 20 simulated calls against a provided agent and grade task success and transcript errors | [`D4_2_run_20_simulated.ipynb`](labs/D4_2_run_20_simulated.ipynb) |
-| 4.3 | Day 4 · Session 3 | Compare open-weight and hosted pipelines on provided measurements and draft the decision record | [`D4_3_compare_open_weight.ipynb`](labs/D4_3_compare_open_weight.ipynb) |
-| 4.4 | Day 4 · Session 4 | Write the data-handling note for recordings and photos and the synthetic-voice disclosure callers hear | [`D4_4_write_data_handling.ipynb`](labs/D4_4_write_data_handling.ipynb) |
+| 1.1 | Day 1 · Session 1 | One question, three resolutions | [`D1_1_resolution_tokens.ipynb`](labs/D1_1_resolution_tokens.ipynb) |
+| 1.2 | Day 1 · Session 2 | Validated incident fields | [`D1_2_incident_fields.ipynb`](labs/D1_2_incident_fields.ipynb) |
+| 1.3 | Day 1 · Session 3 | Boxes and invented objects | [`D1_3_grounding_boxes.ipynb`](labs/D1_3_grounding_boxes.ipynb) |
+| 1.4 | Day 1 · Session 4 | Signage and an injected instruction | [`D1_4_signage_injection.ipynb`](labs/D1_4_signage_injection.ipynb) |
+| 2.1 | Day 2 · Session 1 | Two recognisers, 50 clips | [`D2_1_two_recognisers.ipynb`](labs/D2_1_two_recognisers.ipynb) |
+| 2.2 | Day 2 · Session 2 | Rules before rates | [`D2_2_normalisation.ipynb`](labs/D2_2_normalisation.ipynb) |
+| 2.3 | Day 2 · Session 3 | Slices with intervals | [`D2_3_dialect_slices.ipynb`](labs/D2_3_dialect_slices.ipynb) |
+| 2.4 | Day 2 · Session 4 | Text on silence | [`D2_4_streaming_silence.ipynb`](labs/D2_4_streaming_silence.ipynb) |
+| 3.1 | Day 3 · Session 1 | Read-back that callers understand | [`D3_1_readback.ipynb`](labs/D3_1_readback.ipynb) |
+| 3.2 | Day 3 · Session 2 | Where the time goes | [`D3_2_latency_trace.ipynb`](labs/D3_2_latency_trace.ipynb) |
+| 3.3 | Day 3 · Session 3 | Tune the end of a turn | [`D3_3_end_of_turn.ipynb`](labs/D3_3_end_of_turn.ipynb) |
+| 3.4 | Day 3 · Session 4 | A confirmed booking tool | [`D3_4_booking_tool.ipynb`](labs/D3_4_booking_tool.ipynb) |
+| 4.1 | Day 4 · Session 1 | Sixty items with coverage | [`D4_1_test_set.ipynb`](labs/D4_1_test_set.ipynb) |
+| 4.2 | Day 4 · Session 2 | Twenty simulated calls | [`D4_2_simulated_callers.ipynb`](labs/D4_2_simulated_callers.ipynb) |
+| 4.3 | Day 4 · Session 3 | The decision record | [`D4_3_decision_record.ipynb`](labs/D4_3_decision_record.ipynb) |
+| 4.4 | Day 4 · Session 4 | The data-handling note | [`D4_4_consent_note.ipynb`](labs/D4_4_consent_note.ipynb) |
 <!-- /academy:labs -->
 
 ## Capstone
 
 The Heritage Trails booking line and photo-reporting service, or an equivalent system, with test set, sliced evaluation, latency trace and decision record, in a public repository whose README reports measured results, defended live
 
-**Submission:** REPLACE: what participants submit and how: a public repository link, or a shared folder for a course without code
+**Submission:** A public GitHub repository with the image pipeline, the speech evaluation, the voice agent, the test set and its simulation, the latency traces and the decision record, whose README reports the measured results and links the script that reproduces them. Then a live defence: the participant runs the system on a call and a photo the assessor supplies and explains one failure from its log.
+
+| Criterion | Weight |
+|---|---|
+| Image pipeline | 20 |
+| Speech evaluation | 25 |
+| Voice agent | 25 |
+| Test set and simulation | 20 |
+| Decision record | 10 |
+
+The defence takes 10 minutes, with 5 minutes of questions.
 
 ## Prerequisites
 
@@ -84,10 +108,10 @@ The Heritage Trails booking line and photo-reporting service, or an equivalent s
 
 Each line is a capability; the examples are interchangeable.
 
-- **Vision-language model access:** an open-weight model on a notebook GPU, a hosted model through a chat-completions style endpoint
-- **Open-weight speech recognition:** Whisper-family models, wav2vec-family encoders
-- **Voice activity detection and diarisation:** Silero VAD, pyannote.audio
-- **Speech synthesis and speech-to-speech:** an open-weight text-to-speech model, any hosted real-time speech model
+- **Vision-language model access:** an open-weight model such as Gemma 4 through a free hosted endpoint, a hosted model through a chat-completions style endpoint
+- **Open-weight speech recognition:** Whisper-family models (whisper-large-v3, whisper-large-v3-turbo) on a free hosted endpoint, wav2vec-family encoders
+- **Voice activity detection and diarisation:** Silero VAD, pyannote.audio, an energy detector in numpy (the labs)
+- **Speech synthesis and speech-to-speech:** an open-weight text-to-speech model such as Orpheus, with a Saudi Arabic voice, any hosted real-time speech model
 - **Voice agent framework:** Pipecat, LiveKit Agents
 - **Error-rate scoring:** jiwer, a custom scorer with Arabic normalisation
 - **Public data:** Mozilla Common Voice, public-domain image collections
@@ -97,13 +121,44 @@ Each line is a capability; the examples are interchangeable.
 <!-- academy:sources -->
 ## Sources
 
-- REPLACE: every source the course cites, with its address, in course.json under "sources"; this list is written from there
+### Models and services
+
+- [Gemma 4 31B model card (visual token budgets)](https://huggingface.co/google/gemma-4-31b-it)
+- [OpenRouter: models list](https://openrouter.ai/models)
+- [Groq: speech to text](https://console.groq.com/docs/speech-to-text)
+- [Groq: text to speech](https://console.groq.com/docs/text-to-speech)
+- [Groq: rate limits](https://console.groq.com/docs/rate-limits)
+
+### Libraries and frameworks
+
+- [jiwer on PyPI](https://pypi.org/project/jiwer/)
+- [Pipecat on PyPI](https://pypi.org/project/pipecat-ai/)
+- [LiveKit Agents on PyPI](https://pypi.org/project/livekit-agents/)
+- [Silero VAD on PyPI](https://pypi.org/project/silero-vad/)
+- [pyannote.audio on PyPI](https://pypi.org/project/pyannote.audio/)
+- [Inspect on PyPI](https://pypi.org/project/inspect-ai/)
+
+### Evidence and data
+
+- [Koenecke et al., Careless Whisper: Speech-to-Text Hallucination Harms (2024)](https://arxiv.org/abs/2402.08021)
+- [OWASP Top 10 for LLM Applications 2025: LLM01 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
+- [Mozilla Common Voice](https://commonvoice.mozilla.org/)
+
+### National references
+
+- [Personal Data Protection Law](https://sdaia.gov.sa/en/SDAIA/about/Documents/PersonalDataProtectionLaw.pdf)
+- [Implementing Regulation of the Personal Data Protection Law](https://sdaia.gov.sa/en/SDAIA/about/Documents/ImplementingRegulationPersonalDataProtectionLaw.pdf)
+- [SDAIA Deepfakes Guidelines](https://sdaia.gov.sa/en/SDAIA/about/Files/File0001.pdf)
+- [SDAIA Generative AI Guideline for Government](https://sdaia.gov.sa/en/SDAIA/about/Files/GenAIGuidelinesForGovernmentENCompressed.pdf)
+- [SDAIA Generative AI Guideline for Public](https://sdaia.gov.sa/en/SDAIA/about/Files/GenerativeAIPublicEN.pdf)
+- [SDAIA AI Ethics Principles](https://sdaia.gov.sa/en/SDAIA/about/Documents/ai-principles.pdf)
+- [NDMO Data Classification Policy](https://sdaia.gov.sa/en/SDAIA/about/Documents/DataClassificationPolicy.pdf)
 <!-- /academy:sources -->
 
 ### National references
 
-- Personal Data Protection Law and its implementing regulations: REPLACE: the address of the official text
-- SDAIA Deepfakes Guidelines: REPLACE: the address of the official text
-- SDAIA Generative AI Guidelines: REPLACE: the address of the official text
-- SDAIA AI Ethics Principles: REPLACE: the address of the official text
-- NDMO Data Classification Policy: REPLACE: the address of the official text
+- Personal Data Protection Law and its implementing regulations: <https://sdaia.gov.sa/en/SDAIA/about/Documents/PersonalDataProtectionLaw.pdf> and <https://sdaia.gov.sa/en/SDAIA/about/Documents/ImplementingRegulationPersonalDataProtectionLaw.pdf>
+- SDAIA Deepfakes Guidelines: <https://sdaia.gov.sa/en/SDAIA/about/Files/File0001.pdf>
+- SDAIA Generative AI Guidelines: <https://sdaia.gov.sa/en/SDAIA/about/Files/GenAIGuidelinesForGovernmentENCompressed.pdf> (government) and <https://sdaia.gov.sa/en/SDAIA/about/Files/GenerativeAIPublicEN.pdf> (public)
+- SDAIA AI Ethics Principles: <https://sdaia.gov.sa/en/SDAIA/about/Documents/ai-principles.pdf>
+- NDMO Data Classification Policy: <https://sdaia.gov.sa/en/SDAIA/about/Documents/DataClassificationPolicy.pdf>

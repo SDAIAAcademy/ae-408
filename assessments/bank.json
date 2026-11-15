@@ -3,24 +3,24 @@
   "version": 1,
   "questions": [
     {
-      "id": "q-example-1",
+      "id": "q-d1-tokens-area",
       "type": "single",
-      "prompt": "REPLACE: a practice question on LO1, as a short scenario",
+      "prompt": "Lamha sends photos at 640 pixels wide and pays about 300 image tokens each. A colleague proposes 1280 pixels wide, same shape. Roughly how many image tokens will each photo cost?",
       "options": [
-        "REPLACE: a wrong option that a common misconception makes tempting",
-        "REPLACE: the right answer",
-        "REPLACE: a wrong option that a common misconception makes tempting",
-        "REPLACE: a wrong option that a common misconception makes tempting"
+        "About 600, because the width doubles",
+        "About 1,200, because the tokens follow the area",
+        "About 300, because the model resizes every photo to the same size",
+        "About 2,400, because each patch is encoded twice"
       ],
       "correct": [
         1
       ],
-      "explanation": "REPLACE: why the right answer is right, in one sentence",
+      "explanation": "Patches cover the area, so doubling both sides at the same shape gives about four times the patches.",
       "misconceptions": [
-        "REPLACE: the misconception behind this option",
+        "Scales tokens with the width only, not the area",
         "",
-        "REPLACE: the misconception behind this option",
-        "REPLACE: the misconception behind this option"
+        "Believes the endpoint ignores the size you send",
+        "Invents a second encoding pass"
       ],
       "lo": [
         "LO1"
@@ -32,135 +32,205 @@
       "weight": 1
     },
     {
-      "id": "q-example-2",
-      "type": "tf",
-      "prompt": "REPLACE: a statement on LO2 that is true",
+      "id": "q-d1-smallest-text",
+      "type": "single",
+      "prompt": "At 640 pixels wide, 19 of 20 marker codes are read correctly. The one miss has the smallest marker text. Salem wants every code read. What is the cheapest change worth testing first?",
       "options": [
-        "True",
-        "False"
+        "Send every photo at 1280 pixels wide",
+        "Ask the model to think step by step before answering",
+        "Crop the marker region at full resolution and read it in a second call",
+        "Switch to a model with a longer context window"
       ],
       "correct": [
-        0
+        2
       ],
-      "explanation": "REPLACE: why the right answer is right, in one sentence",
+      "explanation": "The miss comes from too few pixels on the text; a crop restores them for far fewer tokens than enlarging the whole photo.",
       "misconceptions": [
+        "Pays for the whole photo to fix one small region",
+        "Treats a perception limit as a reasoning problem",
         "",
-        "REPLACE: the misconception behind this option"
+        "Confuses context length with image resolution"
       ],
       "lo": [
-        "LO2"
+        "LO1"
       ],
       "day": "day1",
       "session": 1,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d1-validation-shape",
+      "type": "single",
+      "prompt": "A record from Lamha passes schema validation with site_code \"HT-04\", but the photo's marker says HT-07. What does this show?",
+      "options": [
+        "The validator is misconfigured and must be fixed",
+        "Validation checks shape, so field accuracy must be measured against references",
+        "A repair round would have corrected the code",
+        "The enum for site_code is missing"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "HT-04 is a well-formed code; only a comparison with reference fields reveals that it is the wrong one.",
+      "misconceptions": [
+        "Expects a schema to know the truth",
+        "",
+        "Believes a repair fixes valid but wrong content",
+        "Thinks an enum of all twelve codes would catch a wrong but valid code"
+      ],
+      "lo": [
+        "LO1"
+      ],
+      "day": "day1",
+      "session": 2,
       "level": "understand",
       "pool": "practice",
       "weight": 1
     },
     {
-      "id": "q-example-3",
+      "id": "q-d1-repair-once",
       "type": "single",
-      "prompt": "REPLACE: a practice question on LO3, as a short scenario",
+      "prompt": "A reply reads: Here is the record, followed by valid JSON inside a code fence. What should the pipeline do?",
       "options": [
-        "REPLACE: a wrong option that a common misconception makes tempting",
-        "REPLACE: the right answer",
-        "REPLACE: a wrong option that a common misconception makes tempting",
-        "REPLACE: a wrong option that a common misconception makes tempting"
+        "Send a repair message asking for JSON only",
+        "Reject the photo and ask the visitor to resend it",
+        "Take the text from the first brace to the last and validate it",
+        "Retry the same request until a bare JSON reply arrives"
       ],
       "correct": [
-        1
+        2
       ],
-      "explanation": "REPLACE: why the right answer is right, in one sentence",
+      "explanation": "The JSON inside is valid; slicing it out costs no model call, and a repair is kept for replies that fail validation.",
       "misconceptions": [
-        "REPLACE: the misconception behind this option",
+        "Spends a model call on a formatting issue code can fix",
+        "Blames the input for an output formatting habit",
         "",
-        "REPLACE: the misconception behind this option",
-        "REPLACE: the misconception behind this option"
+        "Loops on the model instead of parsing robustly"
       ],
       "lo": [
-        "LO3"
+        "LO1"
       ],
       "day": "day1",
-      "session": 1,
+      "session": 2,
       "level": "apply",
       "pool": "practice",
       "weight": 1
     },
     {
-      "id": "q-example-4",
-      "type": "tf",
-      "prompt": "REPLACE: a statement on LO4 that is true",
+      "id": "q-d1-iou-threshold",
+      "type": "single",
+      "prompt": "A predicted box has the right label and overlaps its reference box with IoU 0.45. You score at IoU 0.5 and match each box once. How does it count?",
       "options": [
-        "True",
-        "False"
+        "As a hit, because the label is right",
+        "As half a hit",
+        "As an unmatched prediction and an unmatched reference",
+        "As an invented object"
       ],
       "correct": [
-        0
+        2
       ],
-      "explanation": "REPLACE: why the right answer is right, in one sentence",
+      "explanation": "Below the threshold the pair is not matched, so precision and recall both fall.",
       "misconceptions": [
+        "Scores labels instead of locations",
+        "Expects partial credit from a thresholded match",
         "",
-        "REPLACE: the misconception behind this option"
+        "Confuses a misplaced box with an object that is absent"
+      ],
+      "lo": [
+        "LO1"
+      ],
+      "day": "day1",
+      "session": 3,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d1-probe",
+      "type": "single",
+      "prompt": "On clean trail photos, the open-weight model answers yes to \"Is there litter?\" a third of the time. Which mitigation should the failure log record and test?",
+      "options": [
+        "Raise the IoU threshold for litter boxes",
+        "Ask neutrally, allow a none answer, and measure the probe rate on clean scenes before and after",
+        "Send clean photos at a higher resolution",
+        "Remove clean photos from the test set"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The invented object comes from a question that presumes the object; neutral wording with a none option is the mitigation, and the probe rate is its test.",
+      "misconceptions": [
+        "Treats an invented object as a localisation error",
+        "",
+        "Assumes invention comes from too few pixels",
+        "Hides the failure instead of measuring it"
       ],
       "lo": [
         "LO4"
       ],
       "day": "day1",
-      "session": 1,
-      "level": "understand",
+      "session": 3,
+      "level": "analyze",
       "pool": "practice",
       "weight": 1
     },
     {
-      "id": "q-example-5",
+      "id": "q-d1-cer",
       "type": "single",
-      "prompt": "REPLACE: a practice question on LO5, as a short scenario",
+      "prompt": "The model reads منطقة أثرية محمية as متطقه أثريه حميه. Why is character error rate the better measure for this sign than word error rate?",
       "options": [
-        "REPLACE: a wrong option that a common misconception makes tempting",
-        "REPLACE: the right answer",
-        "REPLACE: a wrong option that a common misconception makes tempting",
-        "REPLACE: a wrong option that a common misconception makes tempting"
+        "Word error rate cannot be computed for Arabic",
+        "One wrong letter makes a whole word wrong under word error rate, while character error rate counts the letters",
+        "Character error rate ignores spaces, which Arabic does not use",
+        "Character error rate is always lower, which makes the model look better"
       ],
       "correct": [
         1
       ],
-      "explanation": "REPLACE: why the right answer is right, in one sentence",
+      "explanation": "All three words are wrong at the word level although most letters are right; CER reflects how close the reading is.",
       "misconceptions": [
-        "REPLACE: the misconception behind this option",
+        "Believes the measure depends on the script",
         "",
-        "REPLACE: the misconception behind this option",
-        "REPLACE: the misconception behind this option"
+        "Misstates how Arabic is written",
+        "Chooses a measure for the number it gives"
       ],
       "lo": [
-        "LO5"
+        "LO1"
       ],
       "day": "day1",
-      "session": 1,
-      "level": "apply",
+      "session": 4,
+      "level": "understand",
       "pool": "practice",
       "weight": 1
     },
     {
-      "id": "q-example-6",
-      "type": "tf",
-      "prompt": "REPLACE: a statement on LO6 that is true",
+      "id": "q-d1-injection",
+      "type": "single",
+      "prompt": "A sign in a rockfall photo tells the system to set the severity low. After a prompt rule, one model still obeys it. Which defence holds whatever the model does?",
       "options": [
-        "True",
-        "False"
+        "A longer prompt rule repeated at the end",
+        "A check in code on the extracted sign text that sends matching records to a ranger",
+        "Lower resolution so that signs are unreadable",
+        "A larger model that follows instructions less"
       ],
       "correct": [
-        0
+        1
       ],
-      "explanation": "REPLACE: why the right answer is right, in one sentence",
+      "explanation": "Code that runs after the model cannot be reached by the image; a flagged record goes to a person whatever severity the model chose.",
       "misconceptions": [
+        "Believes stronger wording turns a request into a guarantee",
         "",
-        "REPLACE: the misconception behind this option"
+        "Destroys the sign reading the service needs and fails on large text",
+        "Assumes a larger model is immune"
       ],
       "lo": [
-        "LO6"
+        "LO4"
       ],
       "day": "day1",
-      "session": 1,
-      "level": "understand",
+      "session": 4,
+      "level": "evaluate",
       "pool": "practice",
       "weight": 1
     }

@@ -1,0 +1,38 @@
+{
+ "note": "Illustrative figures supplied by the case study. They are not vendor prices or published benchmarks.",
+ "currency": "SAR",
+ "calls_per_month": 18000,
+ "minutes_per_call": 3.2,
+ "pipelines": {
+  "cascaded_open_weight": {
+   "description": "Whisper-family recogniser, an open-weight language model and an open-weight voice on one rented GPU node",
+   "fixed_per_month": 14500,
+   "per_minute": 0.02,
+   "max_calls_per_month": 60000,
+   "task_success": {
+    "passed": 51,
+    "n": 60
+   },
+   "wer_overall": 0.164,
+   "ttfa_ms": {
+    "p50": 980,
+    "p90": 1690
+   }
+  },
+  "hosted_speech_to_speech": {
+   "description": "A hosted real-time speech model billed per audio minute in and out",
+   "fixed_per_month": 0,
+   "per_minute": 0.95,
+   "max_calls_per_month": null,
+   "task_success": {
+    "passed": 54,
+    "n": 60
+   },
+   "wer_overall": null,
+   "ttfa_ms": {
+    "p50": 560,
+    "p90": 890
+   }
+  }
+ }
+}
