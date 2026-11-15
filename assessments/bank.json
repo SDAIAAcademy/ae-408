@@ -233,6 +233,238 @@
       "level": "evaluate",
       "pool": "practice",
       "weight": 1
+    },
+    {
+      "id": "q-d2-wer-denominator",
+      "type": "single",
+      "prompt": "Reference: \"book the fort tour for six\" (6 words). Transcript: \"book fort tour for six people\". What is the word error rate?",
+      "options": [
+        "1/6, one word missing",
+        "2/6, one deletion and one insertion",
+        "2/7, two edits over the transcript length",
+        "0, every word of the transcript is a real word"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The cheapest alignment deletes \"the\" and inserts \"people\": two edits over the six reference words.",
+      "misconceptions": [
+        "Forgets the insertion",
+        "",
+        "Divides by the transcript instead of the reference",
+        "Confuses valid words with correct words"
+      ],
+      "lo": [
+        "LO2"
+      ],
+      "day": "day2",
+      "session": 1,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-corpus",
+      "type": "single",
+      "prompt": "Clip X has 4 words and 2 errors; clip Y has 20 words and 2 errors. What are the corpus WER and the mean of clip WERs?",
+      "options": [
+        "Corpus 4/24, mean 0.30",
+        "Corpus 0.30, mean 4/24",
+        "Both 4/24",
+        "Both 0.30"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The corpus figure pools edits and words (4 over 24); the mean averages 0.5 and 0.1.",
+      "misconceptions": [
+        "",
+        "Swaps the two definitions",
+        "Believes the two methods always agree",
+        "Believes the two methods always agree"
+      ],
+      "lo": [
+        "LO2"
+      ],
+      "day": "day2",
+      "session": 1,
+      "level": "understand",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-rules-first",
+      "type": "single",
+      "prompt": "Recogniser A scores 0.21 and B 0.52 on raw Arabic text. Under rules that remove diacritics, unify alef forms and map Arabic-Indic digits, A scores 0.16 and B 0.09. Which statement belongs in the report?",
+      "options": [
+        "A is better, because raw text is the true output",
+        "B is better under the stated rules, and the rules are listed with the figures",
+        "The two recognisers are equal, because the rankings disagree",
+        "Normalisation is cheating and should not be used"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "A ranking is only meaningful with its rules; under rules that remove spelling variation B makes fewer real errors.",
+      "misconceptions": [
+        "Treats spelling variants as errors a caller would hear",
+        "",
+        "Confuses a ranking that depends on rules with a tie",
+        "Rejects normalisation instead of stating it"
+      ],
+      "lo": [
+        "LO2"
+      ],
+      "day": "day2",
+      "session": 2,
+      "level": "evaluate",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-hidden-error",
+      "type": "single",
+      "prompt": "Which normalisation rule can hide a recognition error that changes who a booking is for?",
+      "options": [
+        "Removing diacritics",
+        "Mapping Arabic-Indic digits to Western digits",
+        "Mapping final ى to ي, which merges على and علي",
+        "Removing tatweel"
+      ],
+      "correct": [
+        2
+      ],
+      "explanation": "على (on) and علي (the name Ali) are different words that the maqsura rule makes identical.",
+      "misconceptions": [
+        "Diacritics are rarely written in transcripts and do not separate these words",
+        "Digit forms have the same value",
+        "",
+        "Tatweel is a stretching mark with no meaning"
+      ],
+      "lo": [
+        "LO2"
+      ],
+      "day": "day2",
+      "session": 2,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-bootstrap-unit",
+      "type": "single",
+      "prompt": "Why does Lab 2.3 resample clips rather than words to build an interval for a dialect slice?",
+      "options": [
+        "Clips are easier to count than words",
+        "Words in one clip share a speaker and a line, so their errors are not independent",
+        "Resampling words would make the interval too wide",
+        "jiwer cannot score single words"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Errors cluster within a clip; treating words as independent understates the uncertainty.",
+      "misconceptions": [
+        "Chooses the unit by convenience",
+        "",
+        "Gets the direction of the bias wrong",
+        "Confuses a tool limit with a statistical reason"
+      ],
+      "lo": [
+        "LO2"
+      ],
+      "day": "day2",
+      "session": 3,
+      "level": "understand",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-not-shown-worse",
+      "type": "single",
+      "prompt": "Egyptian visitors: 6 clips, WER 0.054, 95% interval 0 to 0.135; overall 0.089. What does the report say?",
+      "options": [
+        "Egyptian visitors get better service than others",
+        "Egyptian visitors get the same service as others",
+        "Not shown worse, with an interval too wide to conclude; more clips are needed",
+        "Remove the slice because it has fewer than ten clips"
+      ],
+      "correct": [
+        2
+      ],
+      "explanation": "The interval covers both better and worse service, so the honest statement is the estimate, its interval and a request for data.",
+      "misconceptions": [
+        "Reads the point estimate as a finding",
+        "Mistakes absence of evidence for evidence of equal service",
+        "",
+        "Hides the slice instead of reporting its uncertainty"
+      ],
+      "lo": [
+        "LO2"
+      ],
+      "day": "day2",
+      "session": 3,
+      "level": "evaluate",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-silence",
+      "type": "single",
+      "prompt": "A recogniser returns \"Thank you.\" on a stretch of line hum, with a no-speech probability of 0.42. Your gate drops text above 0.6. What stops this text from reaching the agent?",
+      "options": [
+        "Lowering the threshold to 0.4",
+        "A voice activity detector that never sends the hum",
+        "Deleting the phrase \"Thank you.\" wherever it appears",
+        "Asking the caller to repeat every turn"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The hum is not silence to the recogniser, so its own probability fails; a detector removes the input that causes the text.",
+      "misconceptions": [
+        "Tunes one threshold to one case and drops real speech on noisy lines",
+        "",
+        "Removes one symptom and hides the next invented phrase",
+        "Moves the cost to every caller"
+      ],
+      "lo": [
+        "LO4"
+      ],
+      "day": "day2",
+      "session": 4,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d2-hangover",
+      "type": "single",
+      "prompt": "With no hangover, an energy detector splits each utterance into many segments. What does that do?",
+      "options": [
+        "Nothing: segments are joined again by the recogniser",
+        "It cuts words at dips between syllables and sends fragments that invite invented text",
+        "It makes text arrive later",
+        "It increases the noise floor"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Syllables have short dips below the threshold; without a hangover each dip closes a segment.",
+      "misconceptions": [
+        "Assumes the recogniser restores context it never received",
+        "",
+        "Gets the latency direction wrong: a shorter hangover makes text arrive sooner",
+        "Confuses the estimate of the floor with the segmentation"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day2",
+      "session": 4,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
     }
   ]
 }

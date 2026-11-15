@@ -37,3 +37,4 @@ Thumbs.db
 
 # Lab run outputs (each lab writes them again)
 labs/artifacts/
+labs/data/audio/
