@@ -98,8 +98,8 @@ uv run jupyter lab</code></pre>
     <figure class="figure"><img src="../assets/marker-640.png" width="280" alt="The same marker from the photo sent at 640 pixels wide: the code is readable"><figcaption>640 px wide</figcaption></figure>
     <figure class="figure"><img src="../assets/marker-1280.png" width="280" alt="The same marker from the photo sent at 1280 pixels wide: the code is sharp"><figcaption>1280 px wide</figcaption></figure>
   </div>
-  <p class="small mt-s">Photo P016. The marker's text is 12 pixels high in the full photo, so 6 pixels at 320.</p>
-  <aside class="notes"><p>Each crop is the marker region of the same photo after it was resized to the width shown, then enlarged for the slide. Ask the room which width they would deploy before showing the next slide. Most pick 320 because the scene still looks fine; the scene is not what Salem needs, the code is.</p></aside>
+  <p class="small mt-s">Photo P016, stored 1280 wide. The marker's text is 24 pixels high at 1280, 12 at 640 and 6 at 320.</p>
+  <aside class="notes"><p>Each crop is the marker region of the same photo after it was resized to the width shown, then enlarged for the slide. The photos are stored at 1280, so the 1280 crop holds real detail, not an enlargement. Ask the room which width they would deploy before showing the next slide. Most pick 320 because the scene still looks fine; the scene is not what Salem needs, the code is.</p></aside>
 </section>
 
 <section class="slide" data-label="Measured" id="resolution-table" data-lo="LO1">
@@ -136,11 +136,11 @@ uv run jupyter lab</code></pre>
   <h2>Crop the region you need before you shrink the photo</h2>
   <div class="cols cols-3 gap-s">
     <div class="card c-teal"><h4>Whole photo at 640</h4><p class="small mb0">300 image tokens; the marker is a small part of them.</p></div>
-    <div class="card c-cyan"><h4>Right third, full resolution</h4><p class="small mb0">70 image tokens; the marker keeps all its pixels.</p></div>
+    <div class="card c-cyan"><h4>Marker region only</h4><p class="small mb0">70 image tokens, fewer than the whole photo at 320; the marker keeps its pixels at 640.</p></div>
     <div class="card c-coral"><h4>Two passes</h4><p class="small mb0">A cheap pass finds the region; a second reads it. Two calls, fewer tokens, more code.</p></div>
   </div>
   <div class="callout warn mt"><b>What goes wrong.</b> A fixed crop fails when visitors frame photos differently. A second pass that locates the marker first is safer.</div>
-  <aside class="notes"><p>These token counts come from the stretch of Lab 1.1: the right third of the photo is 200 by 320 pixels, 70 patches, against 300 for the whole photo at 640. A model that returns boxes (Session 3) can find the region for the second pass. Mention that the crop also removes faces and bystanders from what is sent, which matters on Day 4.</p></aside>
+  <aside class="notes"><p>These token counts come from the stretch of Lab 1.1: the marker region cut from the photo at 640 is 200 by 320 pixels, 70 patches, against 80 for the whole photo at 320 and 300 at 640. A model that returns boxes (Session 3) can find the region for the second pass. Mention that the crop also removes faces and bystanders from what is sent, which matters on Day 4.</p></aside>
 </section>
 
 <section class="slide" id="checkpoint-1" data-lo="LO1">

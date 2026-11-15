@@ -7,7 +7,8 @@
     uv run python prepare_data.py           # writes everything (same bytes on every run)
     uv run python prepare_data.py --check   # writes, then checks every planted problem
 
-Everything is synthetic and generated from one seed: 60 drawn trail photos with reference fields
+Everything is synthetic and generated from one seed: 60 drawn trail photos (stored at 1280 x 960;
+reference fields, boxes, faces and text heights are given in the 640 x 480 frame) with reference fields
 and boxes, 50 speech clips (reference transcripts and the recorded transcripts of two recognisers,
 written by an error model: no audio, no real voice), a listening test, latency traces of a
 cascaded and a speech-to-speech agent, scripted calls for turn-taking, caller cards, a pool of
@@ -118,15 +119,48 @@ def photo_plan(rng: random.Random) -> list[dict]:
     return plan
 
 
+SCALE = 2  # photos are stored at 1280 x 960; every coordinate, box and text height below is in the 640 x 480 frame
+
+
+class _Scaled:
+    """Draws in the 640 x 480 frame onto a canvas SCALE times larger, so a photo sent at 1280 holds real detail."""
+
+    def __init__(self, d, s):
+        self.d, self.s = d, s
+
+    def _xy(self, xy):
+        if xy and isinstance(xy[0], (tuple, list)):
+            return [(x * self.s, y * self.s) for x, y in xy]
+        return [v * self.s for v in xy]
+
+    def line(self, xy, fill=None, width=1):
+        self.d.line(self._xy(xy), fill=fill, width=width * self.s)
+
+    def rectangle(self, xy, fill=None, outline=None, width=1):
+        self.d.rectangle(self._xy(xy), fill=fill, outline=outline, width=width * self.s)
+
+    def ellipse(self, xy, fill=None):
+        self.d.ellipse(self._xy(xy), fill=fill)
+
+    def polygon(self, xy, fill=None, outline=None):
+        self.d.polygon(self._xy(xy), fill=fill, outline=outline)
+
+    def text(self, xy, text, fill=None, font=None):
+        self.d.text(tuple(self._xy(xy)), text, fill=fill, font=font)
+
+    def textlength(self, text, font=None):
+        return self.d.textlength(text, font=font) / self.s
+
+
 def draw_photo(p: dict, rng: random.Random):
     from PIL import Image, ImageDraw
     W, H = 640, 480
-    img = Image.new("RGB", (W, H))
-    d = ImageDraw.Draw(img)
+    img = Image.new("RGB", (W * SCALE, H * SCALE))
+    d = _Scaled(ImageDraw.Draw(img), SCALE)
     sky = (rng.randrange(120, 170), rng.randrange(170, 205), rng.randrange(215, 245))
     for y in range(0, 200):
         f = y / 200
-        d.line([(0, y), (W, y)], fill=tuple(int(c * (1 - 0.25 * f) + 40 * f) for c in sky))
+        d.rectangle([0, y, W, y + 1], fill=tuple(int(c * (1 - 0.25 * f) + 40 * f) for c in sky))
     ground = (rng.randrange(180, 205), rng.randrange(145, 170), rng.randrange(100, 125))
     d.rectangle([0, 200, W, H], fill=ground)
     d.polygon([(250, 200), (390, 200), (560, H), (80, H)], fill=(222, 200, 160))  # the path
@@ -190,7 +224,7 @@ def draw_photo(p: dict, rng: random.Random):
 
     sign = p["sign"]
     if sign:
-        f = font(sign["px"])
+        f = font(sign["px"] * SCALE)
         text = sign["text"] if sign.get("inject") == "en" else shape_ar(sign["text"])
         tw = int(d.textlength(text, font=f))
         x0, y0 = 40, 215
@@ -202,7 +236,7 @@ def draw_photo(p: dict, rng: random.Random):
         add("sign_board", (board[0], board[1], board[2], board[3] + 60))
 
     if p["marker_px"]:
-        f = font(p["marker_px"])
+        f = font(p["marker_px"] * SCALE)
         mx, my = 560, 300
         tw = int(d.textlength(p["site_code"], font=f))
         d.rectangle([mx + tw // 2 - 4, my + p["marker_px"] + 8, mx + tw // 2 + 4, my + 120], fill=(110, 80, 50))

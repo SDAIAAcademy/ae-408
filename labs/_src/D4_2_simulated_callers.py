@@ -222,6 +222,33 @@ print("after the fix:", int(after.passed.sum()), "/", len(after))
 U.check(after.passed.all(), "with the fix, every simulated caller gets the booking they confirmed")
 
 # %% [markdown]
+# 🔍 **Look at** the latency of the same twenty calls. Every agent keeps a per-stage trace of its turns
+# (`agent.trace`, on Rahhal's modelled clock). The table below gives each stage and the time to first audio at the
+# median and the 90th percentile, against the budget of 1,200 ms. With the gradings above, this trace is the voice
+# agent's evidence in the capstone.
+
+# %%
+agents = []
+
+
+def traced_candidate(store):
+    agent = fixed_candidate(store)
+    agents.append(agent)
+    return agent
+
+
+run_all(traced_candidate)
+STAGE_COLS = ["endpoint", "asr", "llm_first_token", "tts_first_audio", "network", "tool_ms", "ttfa_ms"]
+trace = pd.DataFrame([{"caller_id": a.name, "turn": ev["turn"], "tool": ev["tool"], **{c: ev[c] for c in STAGE_COLS}}
+                      for a in agents for ev in a.trace])
+per_stage = trace[STAGE_COLS].quantile([0.5, 0.9]).T.round(0).astype(int).rename(columns={0.5: "p50_ms", 0.9: "p90_ms"})
+print(per_stage.to_string())
+within = int((trace.ttfa_ms <= U.BUDGET_TTFA_MS).sum())
+print(f"{trace.caller_id.nunique()} calls, {len(trace)} turns; {within} turns within {U.BUDGET_TTFA_MS} ms")
+trace.to_csv(U.artifacts("D4_2") / "latency_trace.csv", index=False)
+U.check(trace.caller_id.nunique() == len(CARDS), "a per-stage trace for every simulated call")
+
+# %% [markdown]
 # ## ✱ Stretch · A hosted model as the caller
 #
 # The scripted callers say exactly what their card says. A language model playing the caller varies its wording and
@@ -261,4 +288,5 @@ else:
 # 3. That real callers behave like twenty scripts; the interval on 20 of 20 still reaches down to about 0.84.
 # </details>
 #
-# **Carry forward.** `artifacts/D4_2/graded_calls.csv` is the capstone's end-to-end result.
+# **Carry forward.** `artifacts/D4_2/graded_calls.csv` is the capstone's end-to-end result, and
+# `artifacts/D4_2/latency_trace.csv` its per-stage trace of twenty calls.

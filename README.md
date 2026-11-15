@@ -41,11 +41,22 @@ Participants build and evaluate applications that see, listen and speak, with Ar
 
 **Heritage Trails Authority** is a fictional authority that runs twelve heritage sites and trails. It has two services, both built in the labs: **Lamha** (لمحة), which turns visitor and ranger photos into incident records with boxes, and **Rahhal** (رحّال), a bilingual voice line for booking guided visits. The people of the case are Wedad Al-Omari (director of visitor services, owner of the booking line), Salem Al-Balawi (chief ranger, owner of the photo reports), Fayyad Al-Ghamdi (contact-centre platform engineer, owner of the budget of 1,200 ms to first audio), Ghusoun Al-Mutlaq (data protection officer) and Muhra Al-Dosari (AI engineer, the participant's role).
 
-All data is synthetic and generated with a fixed seed by `labs/prepare_data.py`: 60 drawn trail photos with reference fields and boxes, 50 speech clips described by their reference transcripts and the recorded transcripts of two recognisers (written by an error model; no audio and no real voice), a listening test, latency traces, scripted calls, caller cards, a pool of test-set candidates and the measurements of two pipelines. Planted problems (markers too small to read, invented objects, instructions on signs, a recogniser ranking that flips under normalisation, a weak dialect on telephone audio, text on silence, a cut-in threshold, a caller who changes their mind) are each found by a named lab.
+All data is synthetic and generated with a fixed seed by `labs/prepare_data.py`: 60 drawn trail photos (1280 by 960) with reference fields and boxes, 50 speech clips described by their reference transcripts and the recorded transcripts of two recognisers (written by an error model; no audio and no real voice), a listening test, latency traces, scripted calls, caller cards, a pool of test-set candidates and the measurements of two pipelines. Planted problems (markers too small to read, invented objects, instructions on signs, a recogniser ranking that flips under normalisation, a weak dialect on telephone audio, text on silence, a cut-in threshold, a caller who changes their mind) are each found by a named lab.
 
 ## How the course runs
 
 Four teaching days of four 50-minute sessions, each with about 25 minutes of concepts and a 25-minute lab, then a capstone day. Every session ends its concepts with a checkpoint. The labs run on a laptop processor or in Google Colab, with or without keys: without keys they use the supplied inputs and a scripted stand-in model whose rules are written in `labs/trails.py`; with free keys they call free hosted open-weight models. Nothing downloads a model. AI policy: no AI assistance in the supervised check and in the Day 2 normalisation lab; in the other labs an assistant may give hints but does not write pipelines or scorers; anything goes in the capstone, which is defended live. See [`labs/README.md`](labs/README.md).
+
+## Before Day 1 and after the course
+
+Guided pre-work, about two hours:
+
+- Set up the labs (Colab, or `uv sync` in `labs/`), run `uv run python prepare_data.py --check`, and open Lab 1.1 so that it runs to the end on the stand-in.
+- Revisit the prerequisites the course builds on: structured outputs with a schema, a tool call, precision and recall, and a Wilson or bootstrap interval.
+- Optional: create free OpenRouter and Groq keys to run the model-calling labs on hosted open-weight models.
+- Before Day 4: read the consent and labelling sections of the SDAIA Deepfakes Guidelines.
+
+Tracked follow-up task, within 30 days: meet one condition of your decision record (for example the 90th percentile of time to first audio under the budget) and send the new trace with its fingerprint.
 
 ## Assessment
 

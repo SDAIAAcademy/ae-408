@@ -110,7 +110,7 @@ REFS = {r["photo_id"]: r for r in photo_refs()}
 
 
 def photo(photo_id: str, width: int = 640):
-    """The photo as a Pillow image, resized to `width` pixels wide (aspect kept)."""
+    """The photo (stored at 1280 x 960) as a Pillow image, resized to `width` pixels wide (aspect kept)."""
     from PIL import Image
     img = Image.open(DATA / "photos" / f"{photo_id}.png").convert("RGB")
     if width != img.width:

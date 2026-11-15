@@ -36,9 +36,9 @@ method and the shape of the result are what to check. In quick mode (`HT_QUICK=1
 | Lab | Key result |
 |---|---|
 | 4.1 Test set | A random 60 misses 5 of 19 targets (4 southern, 2 Egyptian, 3 seeded failures). The greedy selection meets all 19. Gaps in the pool: southern booking and cancelling (1 each), Egyptian booking, changing and enquiries (2 each), Egyptian cancelling (1). |
-| 4.2 Simulated callers | Release candidate 14 of 20 [0.48, 0.85]; all six failures are wrong dates after a correction or a change of mind (SC04, SC06, SC07, SC10, SC15, SC16). Transcript WER 0.022 (southern 0.053). After the fix: 20 of 20. |
+| 4.2 Simulated callers | Release candidate 14 of 20 [0.48, 0.85]; all six failures are wrong dates after a correction or a change of mind (SC04, SC06, SC07, SC10, SC15, SC16). Transcript WER 0.022 (southern 0.053). After the fix: 20 of 20. Per-stage trace of the twenty fixed calls (62 turns): time to first audio p50 1,214 ms, p90 2,086 ms, 25 turns within 1,200 ms. |
 | 4.3 Decision record | Cost per call 0.87 SAR (cascaded) and 3.04 SAR (hosted) at 18,000 calls; break-even 4,872 calls a month. Task success 51/60 [0.74, 0.92] against 54/60 [0.80, 0.95]: not shown to differ. Fingerprint `a0c892e8bf47525f`. |
-| 4.4 Consent note | 24 of 60 photos show faces (29 faces), all blurred with no change outside the boxes. Ten transcript lines redacted, HTB-4821 kept. Disclosure 4.5 s (Arabic) and 4.9 s (English), estimated. |
+| 4.4 Consent note | 24 of 60 photos show faces (29 faces), all blurred (Gaussian radius 16) with no change outside the boxes; photo as uploaded and caller audio flagged sensitive. Ten transcript lines redacted, HTB-4821 kept. Disclosure 4.5 s (Arabic) and 4.9 s (English), estimated. |
 
 ## Checkpoint answers in the decks
 

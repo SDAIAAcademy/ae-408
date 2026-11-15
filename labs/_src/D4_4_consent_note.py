@@ -78,12 +78,16 @@ INVENTORY += [
 
 # %%
 inv = pd.DataFrame(INVENTORY)
+# Voice and faces: the course treats voiceprints and face images as sensitive personal data (biometric data when they
+# can identify someone), on top of the class. Items that hold a voice or a face are flagged and kept shortest.
+inv["sensitive"] = inv["item"].isin(["trail photo as uploaded", "caller audio"])
 print(inv.to_string(index=False))
 if {"caller audio", "redacted transcript"} <= set(inv["item"]):
     U.check(True, "the inventory covers the caller's audio and the redacted transcript")
 else:
     print("✏️ not done yet: add the caller's audio and the redacted transcript to the inventory")
 U.check((inv[inv.personal]["class"] == "confidential").all(), "every personal item has the highest class in the scheme")
+U.check((inv[inv.sensitive].keep_days <= 7).all(), "items holding a voice or a face are kept seven days or less")
 
 # %% [markdown]
 # 🔍 **Look at** `keep_days = 0` for caller audio: the case study keeps no audio once the call is transcribed. It also
@@ -92,12 +96,12 @@ U.check((inv[inv.personal]["class"] == "confidential").all(), "every personal it
 # %% [markdown]
 # ## 2 · Blur the faces (7')
 #
-# ✏️ **Exercise** · `blur_faces(photo_id)` returns the photo (at its full width of 640) with every box in `faces`
-# replaced by a strong Gaussian blur. Check it: the pixel standard deviation inside each face box must fall by more
-# than half, and the pixels outside the boxes must not change.
+# ✏️ **Exercise** · `blur_faces(photo_id)` returns the photo at width 640 (the frame of the face boxes) with every
+# box in `faces` replaced by a strong Gaussian blur. Check it: the pixel standard deviation inside each face box must
+# fall by more than half, and the pixels outside the boxes must not change.
 
 # %%
-def blur_faces(photo_id, radius=8):
+def blur_faces(photo_id, radius=16):
     img = U.photo(photo_id, 640)
     # BEGIN SOLUTION
     for box in U.REFS[photo_id]["faces"]:
@@ -122,7 +126,7 @@ def outside_unchanged(a, b, boxes, pad=4):
     return bool((x[mask] == y[mask]).all())
 
 
-def _blur_ref(photo_id, radius=8):
+def _blur_ref(photo_id, radius=16):
     img = U.photo(photo_id, 640)
     for x0, y0, x1, y1 in U.REFS[photo_id]["faces"]:
         region = (max(0, x0 - 4), max(0, y0 - 4), min(img.width, x1 + 4), min(img.height, y1 + 4))

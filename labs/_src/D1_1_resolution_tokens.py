@@ -46,11 +46,12 @@ print("vision path:", "hosted " + U.VLM_MODELS["open"] if U.hosted("vision") els
 # ## 1 · The photos, the question and the reference codes (4')
 #
 # ✏️ **Exercise** · Build `items`: one dict per photo that shows a trail marker (`fields.site_code` is not `None`),
-# with `photo_id`, `code` (the reference) and `marker_px` (the height of the marker's text in the full photo).
+# with `photo_id`, `code` (the reference) and `marker_px` (the height of the marker's text in pixels when the photo is
+# sent 640 wide; the photos are stored 1280 wide, so the text is twice as high at 1280 and half as high at 320).
 # Keep the first 20 (`U.pick(20, 8)` in quick mode).
 
 # %%
-QUESTION = ("What is the code on the trail-marker post in this photo? It looks like HT-07. "
+QUESTION = ("What is the code on the trail-marker post in this photo? Its format is HT-NN. "
             "Answer with the code only, or 'no marker'.")
 WIDTHS = [320, 640, 1280]
 
@@ -175,14 +176,16 @@ print("marker text height (px) of all photos:", sorted(small.marker_px.tolist())
 # %% [markdown]
 # ## ✱ Stretch · Crop before you shrink
 #
-# The marker always sits in the right third of the photo. Crop that region at full resolution, then send the crop at
-# width 320. Compare tokens and accuracy with the whole photo at your chosen width. (The stand-in does not see the
-# crop: with it, reason about the token count; with a hosted model, measure both.)
+# The marker always sits near the right edge. Cut the marker region out of the photo at width 640 (x from 440 to 640,
+# y from 160 to 480) and send the crop at its own size: the marker keeps the pixels it had at 640, for fewer tokens
+# than the whole photo at 320. Compare tokens and accuracy with the whole photo at your chosen width. (The stand-in
+# does not see the crop: with it, reason about the token count; with a hosted model, measure both.)
 
 # %%
 # BEGIN SOLUTION
-crop = U.photo(items[0]["photo_id"]).crop((440, 160, 640, 480))
+crop = U.photo(items[0]["photo_id"], 640).crop((440, 160, 640, 480))
 print("crop size:", crop.size, "| tokens at its own size:", U.image_tokens(*crop.size),
+      "| whole photo at 320 :", U.image_tokens(320, 240),
       "| whole photo at", choice, ":", U.image_tokens(choice or 640, round(0.75 * (choice or 640))))
 # END SOLUTION
 

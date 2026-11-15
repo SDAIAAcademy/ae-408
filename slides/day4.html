@@ -207,8 +207,9 @@
     <li>Re-run the <b>same</b> cards: a change that fixes one caller can break another.</li>
     <li>20/20 has a 95% interval of 0.84 to 1.00: twenty scripts cannot show the line is ready.</li>
     <li>Keep the cards as a <b>regression suite</b>: every future change runs them.</li>
+    <li>The same run writes the <b>per-stage latency trace</b> of the twenty calls: p90 2,086 ms.</li>
   </ul>
-  <aside class="notes"><p>The Wilson interval for 20 of 20 starts at about 0.84. The point for the capstone: report the simulated result with its interval and its cards, and say what the scripts do not cover (real wording, noise, callers who give up). Frameworks such as Inspect can run such suites at scale; the labs keep it in plain Python.</p></aside>
+  <aside class="notes"><p>The Wilson interval for 20 of 20 starts at about 0.84. The latency trace of the twenty fixed calls (62 turns, Rahhal's modelled clock, no filler line): time to first audio p50 1,214 ms and p90 2,086 ms, 25 turns within 1,200 ms; the 90th percentile is the booking turns with the 900 ms tool. This trace is the voice agent's evidence for the capstone; Day 3's filler line and endpoint work are what bring it under budget. The point for the capstone: report the simulated result with its interval and its cards, and say what the scripts do not cover (real wording, noise, callers who give up). Frameworks such as Inspect can run such suites at scale; the labs keep it in plain Python.</p></aside>
 </section>
 
 <section class="slide" id="checkpoint-2" data-lo="LO5">
@@ -340,14 +341,14 @@
   <h2>List what each service keeps, whether it identifies a person, and for how long</h2>
   <table class="t small">
     <tr><th>Item</th><th>Personal?</th><th>Class</th><th class="num">Keep (days)</th></tr>
-    <tr><td>Trail photo as uploaded</td><td>yes</td><td>confidential</td><td class="num">7</td></tr>
+    <tr><td>Trail photo as uploaded</td><td>yes, faces: sensitive</td><td>confidential</td><td class="num">7</td></tr>
     <tr><td>Photo with faces blurred</td><td>no</td><td>restricted</td><td class="num">365</td></tr>
     <tr><td>Booking: name, phone, site, date, party</td><td>yes</td><td>confidential</td><td class="num">90</td></tr>
-    <tr class="hl"><td>Caller audio</td><td>yes</td><td>confidential</td><td class="num">0</td></tr>
+    <tr class="hl"><td>Caller audio</td><td>yes, a voice: sensitive</td><td>confidential</td><td class="num">0</td></tr>
     <tr><td>Full transcript</td><td>yes</td><td>confidential</td><td class="num">30</td></tr>
     <tr><td>Redacted transcript</td><td>no</td><td>restricted</td><td class="num">365</td></tr>
   </table>
-  <aside class="notes"><p>The classes and periods are the case study's choices, to be discussed against the Personal Data Protection Law, its implementing regulation and the national data classification policy; they are not legal advice, and the lab says so. A voice recording identifies a person; so does a face. Keeping no audio means Day 2's evaluation cannot be repeated on production calls without a separate, consented collection: say that trade aloud.</p></aside>
+  <aside class="notes"><p>The classes and periods are the case study's choices, to be discussed against the Personal Data Protection Law, its implementing regulation and the national data classification policy; they are not legal advice, and the lab says so. A voice recording identifies a person; so does a face. The course treats voiceprints and faces as sensitive personal data, on top of the class: the two items that hold them are flagged sensitive and kept shortest, and the lab checks that. Keeping no audio means Day 2's evaluation cannot be repeated on production calls without a separate, consented collection: say that trade aloud.</p></aside>
 </section>
 
 <section class="slide" data-label="Faces" id="blur-faces" data-lo="LO6 LO4">
