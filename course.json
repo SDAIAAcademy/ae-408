@@ -1,0 +1,468 @@
+{
+  "$schema": "https://sdaiaacademy.github.io/engine/schemas/course.schema.json",
+  "engine": "1",
+  "id": "ae-408",
+  "code": "AE-408",
+  "version": "2027.1.0",
+  "lang": "en",
+  "title": {
+    "en": "Multimodal and Speech Systems Engineering",
+    "ar": "هندسة الأنظمة متعددة الوسائط وأنظمة الكلام"
+  },
+  "tagline": "REPLACE: one line under the title: what participants can do after the course",
+  "description": "Participants build and evaluate applications that see, listen and speak, with Arabic as the main case. For the fictional Heritage Trails Authority they extract grounded fields from visitor and ranger photos with vision-language models, benchmark open-weight speech recognisers on dialects and code-switched speech, test synthesised read-back, and assemble a bilingual voice booking line with turn-taking, interruption and tool calls within a latency budget. They test it with simulated callers and choose between open-weight and hosted, cascaded and speech-to-speech designs on measured quality, latency and cost. Photos are public-domain or synthetic; calls use synthetic voices and public speech corpora.",
+  "track": "ai-engineering",
+  "level": 400,
+  "badge": {
+    "name": "AI Engineering",
+    "level": "Expert"
+  },
+  "audience": "Specialists. Engineers who have completed the level 300 core and the practicum, or can show equivalent work: an AI system they built, operated and defended in review.",
+  "prerequisites": [
+    "AE-301 Applied Natural Language Processing Engineering",
+    "AE-303 Evaluation-Driven Development for Language Model Applications",
+    "Has built a language model application with structured outputs and tool calls",
+    "Computes precision, recall and an error rate with an interval"
+  ],
+  "site": {
+    "url": "https://sdaiaacademy.github.io/ae-408/",
+    "repo": "SDAIAAcademy/ae-408"
+  },
+  "outcomes": [
+    {
+      "id": "LO1",
+      "text": "Implement image applications with vision-language models that return validated structured fields grounded in the image, given 60 visitor and ranger photos with reference fields and boxes",
+      "level": "Applied",
+      "evidence": "an extraction pipeline with field accuracy and grounding scores on the test set"
+    },
+    {
+      "id": "LO2",
+      "text": "Evaluate speech recognisers on Arabic dialects and code-switched speech with explicit normalisation rules, given two open-weight recognisers and a sliced set of public and synthetic clips",
+      "level": "Performance",
+      "evidence": "an error-rate report by dialect and channel with intervals and the normalisation rules used"
+    },
+    {
+      "id": "LO3",
+      "text": "Build a bilingual voice agent that handles turn-taking, interruption and confirmed tool calls within a latency budget, given a booking tool and a budget for time to first audio",
+      "level": "Performance",
+      "evidence": "a running agent with per-stage latency traces from twenty scripted calls"
+    },
+    {
+      "id": "LO4",
+      "text": "Diagnose failure modes specific to image and audio inputs, including invented objects, text produced on silence and instructions hidden in images, given seeded failing inputs for each modality",
+      "level": "Performance",
+      "evidence": "a failure log with causes and a mitigation tested for each mode"
+    },
+    {
+      "id": "LO5",
+      "text": "Design a multimodal test set and an end-to-end evaluation with simulated callers, given the full booking and reporting system",
+      "level": "Performance",
+      "evidence": "a test set with a coverage table across modality, dialect and task, and graded results"
+    },
+    {
+      "id": "LO6",
+      "text": "Decide between open-weight and hosted, cascaded and speech-to-speech designs on quality, latency and cost per call, given measured results for two pipelines",
+      "level": "Performance",
+      "evidence": "a one-page decision record with the measurements and a script that a reviewer re-runs to the same figures"
+    }
+  ],
+  "case_study": {
+    "name": "REPLACE: the name of the fictional organisation every lab works on",
+    "summary": "REPLACE: two sentences on the case study and its synthetic data"
+  },
+  "format": "intensive",
+  "format_note": "Intensive: 4 teaching days of four sessions and a capstone day, with guided pre-work and a tracked follow-up task",
+  "hours": {
+    "instruction": 6,
+    "lab": 7,
+    "guided_self_study": 6,
+    "assessment": 1,
+    "capstone": 6
+  },
+  "unit": "day",
+  "days": [
+    {
+      "id": "day1",
+      "kind": "day",
+      "title": "Seeing",
+      "deck": "slides/day1.html",
+      "sessions": [
+        {
+          "title": "How a vision-language model sees",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO1"
+          ],
+          "lab": {
+            "id": "1.1",
+            "title": "Measure tokens, latency and accuracy for one question at three image resolutions",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D1_1_measure_tokens_latency.ipynb"
+          }
+        },
+        {
+          "title": "Structured extraction from photos",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO1"
+          ],
+          "lab": {
+            "id": "1.2",
+            "title": "Extract validated incident fields from 30 photos with an open-weight and a hosted model",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D1_2_extract_validated_incident.ipynb"
+          }
+        },
+        {
+          "title": "Grounding answers in pixels",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO1"
+          ],
+          "lab": {
+            "id": "1.3",
+            "title": "Score returned boxes against references and flag answers about objects that are not there",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D1_3_score_returned_boxes.ipynb"
+          }
+        },
+        {
+          "title": "Arabic text and hidden instructions",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO4"
+          ],
+          "lab": {
+            "id": "1.4",
+            "title": "Read Arabic signage images, compute character error rate and test an image carrying an injected instruction",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D1_4_read_arabic_signage.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "day2",
+      "kind": "day",
+      "title": "Listening",
+      "deck": "slides/day2.html",
+      "sessions": [
+        {
+          "title": "From waveform to text",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO2"
+          ],
+          "lab": {
+            "id": "2.1",
+            "title": "Run two open-weight recognisers on 50 clips and compute word error rates",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D2_1_run_two_open.ipynb"
+          }
+        },
+        {
+          "title": "Normalisation decides the error rate",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO2"
+          ],
+          "lab": {
+            "id": "2.2",
+            "title": "Apply Arabic normalisation rules to provided transcripts and recompute the error rates",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D2_2_apply_arabic_normalisation.ipynb"
+          }
+        },
+        {
+          "title": "Dialects and code-switching",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO2"
+          ],
+          "lab": {
+            "id": "2.3",
+            "title": "Slice error rates by dialect and by code-switched speech and add intervals",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D2_3_slice_error_rates.ipynb"
+          }
+        },
+        {
+          "title": "Streaming and silence",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO4"
+          ],
+          "lab": {
+            "id": "2.4",
+            "title": "Stream recognition with voice activity detection and catch text produced on silent segments",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D2_4_stream_recognition_voice.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "day3",
+      "kind": "day",
+      "title": "Speaking",
+      "deck": "slides/day3.html",
+      "sessions": [
+        {
+          "title": "Synthesis and read-back",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO3"
+          ],
+          "lab": {
+            "id": "3.1",
+            "title": "Synthesise booking confirmations and run a short listening test on names, numbers and dates",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D3_1_synthesise_booking_confirmations.ipynb"
+          }
+        },
+        {
+          "title": "Cascaded versus speech-to-speech",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO6"
+          ],
+          "lab": {
+            "id": "3.2",
+            "title": "Trace per-stage latency of a cascaded agent and compare time to first audio with provided traces of a speech-to-speech session",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D3_2_trace_per_stage.ipynb"
+          }
+        },
+        {
+          "title": "Turn-taking and interruption",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO3"
+          ],
+          "lab": {
+            "id": "3.3",
+            "title": "Tune end-of-turn detection on scripted calls and count false cut-ins and missed turns",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D3_3_tune_end_turn.ipynb"
+          }
+        },
+        {
+          "title": "Tool calls during speech",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO3"
+          ],
+          "lab": {
+            "id": "3.4",
+            "title": "Add a booking tool to a provided agent that confirms key fields aloud and measure the added latency",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D3_4_add_booking_tool.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "day4",
+      "kind": "day",
+      "title": "Evaluating and choosing",
+      "deck": "slides/day4.html",
+      "sessions": [
+        {
+          "title": "Multimodal test sets",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO5"
+          ],
+          "lab": {
+            "id": "4.1",
+            "title": "Build a 60-item test set across image, audio and dialects with a coverage table",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D4_1_build_60_item.ipynb"
+          }
+        },
+        {
+          "title": "Simulated callers",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO5"
+          ],
+          "lab": {
+            "id": "4.2",
+            "title": "Run 20 simulated calls against a provided agent and grade task success and transcript errors",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D4_2_run_20_simulated.ipynb"
+          }
+        },
+        {
+          "title": "Choosing by quality, latency and cost",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO6"
+          ],
+          "lab": {
+            "id": "4.3",
+            "title": "Compare open-weight and hosted pipelines on provided measurements and draft the decision record",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D4_3_compare_open_weight.ipynb"
+          }
+        },
+        {
+          "title": "Voice, faces and consent",
+          "outcomes": [
+            "REPLACE: what a participant can do after this session"
+          ],
+          "lo": [
+            "LO6"
+          ],
+          "lab": {
+            "id": "4.4",
+            "title": "Write the data-handling note for recordings and photos and the synthetic-voice disclosure callers hear",
+            "summary": "REPLACE: one line on what participants build and take away; then list the steps of the lab in course.json, their minutes adding up to 25",
+            "minutes": 25,
+            "href": "D4_4_write_data_handling.ipynb"
+          }
+        }
+      ]
+    },
+    {
+      "id": "capstone",
+      "kind": "capstone",
+      "title": "Capstone project presentations",
+      "deck": "slides/capstone.html",
+      "subtitle": "REPLACE: the catalog gives no length for the presentations; set capstone.talk_minutes and capstone.qa_minutes in course.json, write them on the format slide, add a timer for each to the now-presenting slide, and remove this line"
+    }
+  ],
+  "capstone": {
+    "summary": "The Heritage Trails booking line and photo-reporting service, or an equivalent system, with test set, sliced evaluation, latency trace and decision record, in a public repository whose README reports measured results, defended live",
+    "submission": "REPLACE: what participants submit and how: a public repository link, or a shared folder for a course without code",
+    "rubric": [
+      {
+        "criterion": "Image pipeline",
+        "weight": 20
+      },
+      {
+        "criterion": "Speech evaluation",
+        "weight": 25
+      },
+      {
+        "criterion": "Voice agent",
+        "weight": 25
+      },
+      {
+        "criterion": "Test set and simulation",
+        "weight": 20
+      },
+      {
+        "criterion": "Decision record",
+        "weight": 10
+      }
+    ]
+  },
+  "labs": {
+    "kind": "notebooks",
+    "base": "labs/"
+  },
+  "tools": [
+    {
+      "slot": "Vision-language model access",
+      "examples": [
+        "an open-weight model on a notebook GPU",
+        "a hosted model through a chat-completions style endpoint"
+      ]
+    },
+    {
+      "slot": "Open-weight speech recognition",
+      "examples": [
+        "Whisper-family models",
+        "wav2vec-family encoders"
+      ]
+    },
+    {
+      "slot": "Voice activity detection and diarisation",
+      "examples": [
+        "Silero VAD",
+        "pyannote.audio"
+      ]
+    },
+    {
+      "slot": "Speech synthesis and speech-to-speech",
+      "examples": [
+        "an open-weight text-to-speech model",
+        "any hosted real-time speech model"
+      ]
+    },
+    {
+      "slot": "Voice agent framework",
+      "examples": [
+        "Pipecat",
+        "LiveKit Agents"
+      ]
+    },
+    {
+      "slot": "Error-rate scoring",
+      "examples": [
+        "jiwer",
+        "a custom scorer with Arabic normalisation"
+      ]
+    },
+    {
+      "slot": "Public data",
+      "examples": [
+        "Mozilla Common Voice",
+        "public-domain image collections"
+      ]
+    },
+    {
+      "slot": "Evaluation harness",
+      "examples": [
+        "Inspect",
+        "pytest with custom scorers"
+      ]
+    }
+  ]
+}
