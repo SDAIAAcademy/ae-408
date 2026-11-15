@@ -412,13 +412,13 @@ def write_traces(nrng: np.random.Generator):
     for t in range(1, 21):
         tool = t in (4, 9, 13, 17)
         no_stream = t in (2, 6, 9, 11, 15, 18, 20)
-        endpoint = int(600 + nrng.integers(0, 120))
-        asr = int(max(90, nrng.normal(190, 50)))
-        ttft = int(nrng.lognormal(math.log(380), 0.35)) + (int(nrng.integers(600, 1300)) if tool else 0)
-        first_sentence = int(ttft + nrng.integers(180, 420))
+        endpoint = int(450 + nrng.integers(0, 80))
+        asr = int(max(80, nrng.normal(140, 35)))
+        ttft = int(nrng.lognormal(math.log(260), 0.35)) + (int(nrng.integers(600, 1300)) if tool else 0)
+        first_sentence = int(ttft + nrng.integers(50, 140))
         full = int(first_sentence + nrng.integers(500, 1400))
-        tts = int(max(80, nrng.normal(160, 35)))
-        net = int(nrng.integers(40, 90))
+        tts = int(max(70, nrng.normal(130, 25)))
+        net = int(nrng.integers(40, 80))
         t0 = 0
         ev = []
 

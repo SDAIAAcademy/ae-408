@@ -1,158 +1,423 @@
+<!-- ======================= OPENING ======================= -->
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Day 3 builds Rahhal, the booking line. Ask who has phoned a voice agent that talked over them or went silent: everyone has, and those two failures are today's subject. One number frames the day: 1,200 ms from the end of the caller's speech to the first audio of the reply, Fayyad Al-Ghamdi's budget in the case study.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
 
-<!-- Session 1 -->
-
-<section class="slide section" id="s1" data-auto="section" data-session="1"></section>
-
-<section class="slide" id="s1-idea" data-lo="LO3">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+<section class="slide" id="review-day2" data-lo="LO2">
+  <div class="kicker">Review of Day 2</div>
+  <h2>What do you write under the slice?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2">
+    <p class="lead">Telephone clips: WER 0.133 with a 95% interval of 0.085 to 0.186. All clips: 0.089, interval 0.060 to 0.120. What does the report say about telephone callers?</p>
+    <div class="opts">
+      <div class="opt" data-why="Reads a higher point estimate as a shown difference when the intervals overlap">Telephone callers are clearly worse served</div>
+      <div class="opt" data-why="Reads overlapping intervals as proof that the slices are equal">Telephone callers are served the same as everyone</div>
+      <div class="opt" data-ok>Not shown worse on these clips; the slice needs more clips to decide</div>
+      <div class="opt" data-why="Believes a slice result is meaningless unless the slice is half of the data">Nothing: a slice under half of the clips cannot be reported</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The intervals overlap, so the data does not show a difference, and it does not show equality either. "Not shown worse" plus the number of clips needed is the honest sentence.</div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <aside class="notes"><p>Answer: C. Numbers from Lab 2.3 under the full rules. Contrast with the southern slice, 0.219 with an interval of 0.145 to 0.309, which is shown worse. Then turn the page: yesterday was hearing the caller, today is speaking back, and a caller cannot ask Rahhal to show its transcript.</p></aside>
 </section>
 
-<section class="slide" id="s1-steps" data-lo="LO3">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
+<!-- ======================= SESSION 1 ======================= -->
+<section class="slide section" id="s1" data-auto="section" data-session="1"></section>
+
+<section class="slide" data-label="Spoken forms" id="spoken-forms" data-lo="LO3">
+  <div class="kicker">What the voice is given</div>
+  <h2>Write what the caller should hear, not what the database holds</h2>
+  <table class="t small">
+    <tr><th>Field</th><th>Stored</th><th>English, spoken</th><th>Arabic, spoken</th></tr>
+    <tr><td>Date</td><td>2026-12-03</td><td>Thursday the third of December</td><td class="ar">الخميس ثلاثة ديسمبر</td></tr>
+    <tr><td>Party</td><td>7</td><td>seven people</td><td class="ar">سبعة أشخاص</td></tr>
+    <tr><td>Party</td><td>2</td><td>two people</td><td class="ar">شخصين</td></tr>
+    <tr><td>Party</td><td>12</td><td>twelve people</td><td class="ar">اثنا عشر شخصا</td></tr>
+    <tr><td>Year</td><td>2027-01-02</td><td>Saturday the second of January 2027</td><td class="ar">السبت اثنين يناير 2027</td></tr>
+  </table>
+  <div class="callout warn mt"><b>What goes wrong.</b> A voice handed "2026-12-03" may read it as a number, a year, or digit by digit, and a different voice may choose differently.</div>
+  <aside class="notes"><p>Every row is an example the lab checks in step 1. Point out three choices: the weekday is added because callers anchor on it; the year is said only when it is not the current one; Arabic counts need the dual (شخصين) and the agreement of the counted noun, which a generic number-to-words library gets wrong. Do not claim these are the only correct forms: they are the forms the case study chose and tests.</p></aside>
+</section>
+
+<section class="slide" data-label="Codes" id="chunk-the-code" data-lo="LO3">
+  <div class="kicker">The booking code</div>
+  <h2>Chunk a code the way people repeat phone numbers</h2>
   <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+    <div class="step c-navy"><b>Stored</b>HTB-4821</div>
+    <div class="arrow">→</div>
+    <div class="step c-teal"><b>Letters</b>H, T, B</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>Digit pairs</b>four eight, two one</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>Arabic</b><span class="ar">إتش، تي، بي، أربعة ثمانية، اثنين واحد</span></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <p class="small mt">Each digit is said on its own: "forty-eight twenty-one" makes the caller translate back to digits.</p>
+  <aside class="notes"><p>The commas are for the voice: most synthesisers pause at a comma, so the chunks become audible groups. The letters stay Latin in the Arabic version because the code is printed that way on the confirmation message. The stretch of the lab spells a name letter by letter, using Ghusoun Al-Mutlaq's family name, which a recogniser and a voice both struggle with.</p></aside>
+</section>
+
+<section class="slide" data-label="Length" id="length-rule" data-lo="LO3">
+  <div class="kicker">Lab 3.1, three confirmations</div>
+  <h2>Keep a confirmation short enough to hold in memory</h2>
+  <table class="t small">
+    <tr><th>Code</th><th class="num">English (s)</th><th class="num">Arabic (s)</th></tr>
+    <tr><td>HTB-4821</td><td class="num">9.93</td><td class="num">11.04</td></tr>
+    <tr><td>HTB-1590</td><td class="num">10.71</td><td class="num">10.96</td></tr>
+    <tr><td>HTB-3007</td><td class="num">10.64</td><td class="num">10.48</td></tr>
+  </table>
+  <div class="callout note mt"><b>The course's rule:</b> at most 12 seconds, with the code last so it is freshest when the caller writes it down.</div>
+  <aside class="notes"><p>Without a Groq key these lengths are the stand-in's estimate from the text, not measured audio; with a key, Lab 3.1 synthesises the Arabic with the Orpheus Saudi Arabic voice on Groq and measures the files. The 12-second rule is a design choice of the case study, not a published standard; say so. The trade is between completeness and memory: every added field costs about a second.</p></aside>
+</section>
+
+<section class="slide" data-label="Listening test" id="listening-test" data-lo="LO3">
+  <div class="kicker">Lab 3.1, 32 answers per cell</div>
+  <h2>Read-back fixed dates and numbers; names did not clearly move</h2>
+  <table class="t small">
+    <tr><th>Category</th><th class="num">Raw</th><th class="num">Read-back</th><th>95% interval, read-back</th><th>Shown better?</th></tr>
+    <tr class="hl"><td>Dates</td><td class="num">16/32</td><td class="num">31/32</td><td>0.84 to 0.99</td><td>yes</td></tr>
+    <tr class="hl"><td>Numbers</td><td class="num">16/32</td><td class="num">32/32</td><td>0.89 to 1.00</td><td>yes</td></tr>
+    <tr><td>Names</td><td class="num">29/32</td><td class="num">31/32</td><td>0.84 to 0.99</td><td>no</td></tr>
+  </table>
+  <p class="small mt">"Raw" is the stored form handed to the voice; "read-back" is the spoken form.</p>
+  <aside class="notes"><p>The listening test in data/listening_test.csv is synthetic: the answers were generated with a seed, not collected from listeners. The method is the point: score by category, give a Wilson interval, and say "shown better" only when the intervals separate. Names start high because a name is usually read correctly; the failures are on rare names, which is why the stretch spells them.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-1" data-lo="LO3">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which read-back?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">Rahhal must confirm booking HTB-1590 for twelve people on 2026-12-11. Which line goes to the voice?</p>
+    <div class="opts">
+      <div class="opt" data-ok>"Friday the eleventh of December, for twelve people. Your code is H, T, B, one five, nine zero."</div>
+      <div class="opt" data-why="Believes a voice reads stored values the way a person would">"2026-12-11, 12 people. Your code is HTB-1590."</div>
+      <div class="opt" data-why="Groups digits into larger numbers, which the caller must turn back into digits">"Friday the eleventh of December, for twelve people. Your code is H T B fifteen ninety."</div>
+      <div class="opt" data-why="Thinks repeating every field twice is the fix, which pushes the code past what a caller can hold">"Your code is H, T, B, one five, nine zero, I repeat, H, T, B, one five, nine zero, for Friday the eleventh, the eleventh, of December, for twelve, twelve people."</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Spoken date with the weekday, a counted party, a chunked code said digit by digit, and the code last: under 12 seconds and nothing to translate back.</div>
+  </div>
+  <aside class="notes"><p>Answer: A. B leaves the reading to the voice; C turns digits into numbers; D is long enough that the caller forgets the start. Ask what the Arabic version would say for twelve: اثنا عشر شخصا.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-3-1" data-auto="lab" data-lab="3.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: the Arabic dual for two and the noun agreement for 3 to 10 against 11 and above; weekday names off by one because of the date library's Monday-first numbering; the year said for dates in the current year. With a Groq key the synthesis is real; without one the lab estimates the length from the text and says so in its first line. The listening data is supplied, so nobody waits for audio.</p></aside>
 </section>
 
-<!-- Session 2 -->
-
+<!-- ======================= SESSION 2 ======================= -->
 <section class="slide section" id="s2" data-auto="section" data-session="2"></section>
 
-<section class="slide" id="s2-idea" data-lo="LO6">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+<section class="slide" data-label="Two designs" id="two-designs" data-lo="LO3 LO6">
+  <div class="kicker">Two ways to build a voice agent</div>
+  <h2>A cascade passes text between three models; speech-to-speech is one model</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-teal"><h4>Cascaded</h4><p class="small mb0">Detector, recogniser, language model, voice. Every stage can be measured, swapped and checked, and there is a transcript of what the caller said.</p></div>
+    <div class="card c-coral"><h4>Speech-to-speech</h4><p class="small mb0">Audio in, audio out, with its own turn detection. Fewer hand-offs and usually a faster first audio; the stages are hidden inside one model.</p></div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <div class="callout note mt"><b>Rahhal today</b> is cascaded on hosted open-weight models. Lab 3.2 compares it with traces of a hosted speech-to-speech session.</div>
+  <aside class="notes"><p>Keep this vendor-neutral: hosted speech-to-speech sessions are offered by several providers and change often, and the course has no key for one, so the speech-to-speech traces are synthetic and described as such. Frameworks such as Pipecat and LiveKit Agents assemble either design; the labs use plain Python so every stage is visible.</p></aside>
 </section>
 
-<section class="slide" id="s2-steps" data-lo="LO6">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
+<section class="slide" data-label="Time to first audio" id="ttfa-stages" data-lo="LO3">
+  <div class="kicker">The number that callers feel</div>
+  <h2>Time to first audio adds every stage on the path to the first sound</h2>
   <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+    <div class="step c-navy"><b>Endpoint</b>sure the caller stopped</div>
+    <div class="arrow">→</div>
+    <div class="step c-teal"><b>Recogniser</b>final text</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>Model</b>first sentence</div>
+    <div class="arrow">→</div>
+    <div class="step c-purple"><b>Voice</b>first audio chunk</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>Network</b>to the phone</div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <div class="callout tip mt"><b>Budget: 1,200 ms</b> from the end of the caller's speech, held at the 90th percentile.</div>
+  <aside class="notes"><p>Only the stages on the path to the first sound count: the rest of the reply can be generated while the first sentence is spoken. The 1,200 ms is the case study's design target, owned by Fayyad Al-Ghamdi, not an industry standard. Ask the room why the 90th percentile: one reply in ten is often enough to make a caller think the line dropped.</p></aside>
+</section>
+
+<section class="slide" data-label="Stage table" id="stage-table" data-lo="LO3">
+  <div class="kicker">Lab 3.2, 20 turns of the cascade</div>
+  <h2>The median turn is over budget, and the tail is twice the budget</h2>
+  <table class="t small">
+    <tr><th>Stage</th><th class="num">p50 (ms)</th><th class="num">p90 (ms)</th></tr>
+    <tr><td>Endpoint</td><td class="num">474</td><td class="num">504</td></tr>
+    <tr><td>Recogniser final</td><td class="num">128</td><td class="num">186</td></tr>
+    <tr><td>Model first token</td><td class="num">301</td><td class="num">1,438</td></tr>
+    <tr><td>Voice first audio</td><td class="num">140</td><td class="num">164</td></tr>
+    <tr><td>Network</td><td class="num">54</td><td class="num">74</td></tr>
+    <tr class="hl"><td>Time to first audio</td><td class="num">1,552</td><td class="num">2,628</td></tr>
+  </table>
+  <aside class="notes"><p>Synthetic traces from data/traces/cascaded.jsonl. The stage medians do not add up to the median turn, because the voice waits for the whole reply in seven turns: that is the next slide. The model's 90th percentile is the four tool turns. The endpoint is the largest steady share of the median: Session 3 is about it.</p></aside>
+</section>
+
+<section class="slide" data-label="Over budget" id="over-budget" data-lo="LO3">
+  <div class="kicker">Lab 3.2, the turns over 1,200 ms</div>
+  <h2>Two causes stand out among the slow turns: waiting for the whole reply, and tools</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">15 / 20</div><div class="lbl">turns over the budget</div></div>
+    <div class="stat"><div class="big">7</div><div class="lbl">of them waited for the full reply before the voice started</div></div>
+    <div class="stat"><div class="big">4</div><div class="lbl">of them called a tool before speaking</div></div>
+  </div>
+  <aside class="notes"><p>The trace marks a turn as streamed when the voice starts at the end of the first sentence. The other seven started at the end of the full reply: turn 2 shows it, 2,626 ms. Tool turns are Session 4. Ask: which of the two can you fix without changing any model? Streaming.</p></aside>
+</section>
+
+<section class="slide" data-label="Streaming" id="stream-first-sentence" data-lo="LO3">
+  <div class="kicker">Lab 3.2, step 4</div>
+  <h2>Starting the voice on the first sentence takes 324 ms off the median</h2>
+  <table class="t">
+    <tr><th></th><th class="num">p50 (ms)</th><th class="num">p90 (ms)</th><th class="num">Within budget</th></tr>
+    <tr><td>As traced</td><td class="num">1,552</td><td class="num">2,628</td><td class="num">5/20</td></tr>
+    <tr class="hl"><td>Every turn streamed</td><td class="num">1,228</td><td class="num">2,362</td><td class="num">9/20</td></tr>
+  </table>
+  <div class="callout warn mt"><b>Still over at the 90th percentile.</b> The tool turns and the endpoint remain.</div>
+  <aside class="notes"><p>The recomputation assumes the voice could start as soon as the first sentence ends, which is how streaming synthesis works. The median sits at 1,228 ms, just over; the 90th percentile is set by the tool turns. A first sentence must make sense on its own for this to work: "Sure, let me check" is a good first sentence; "The" is not.</p></aside>
+</section>
+
+<section class="slide" data-label="Speech-to-speech" id="s2s-comparison" data-lo="LO6">
+  <div class="kicker">Lab 3.2, step 3</div>
+  <h2>On these traces, speech-to-speech is faster at both ends</h2>
+  <table class="t">
+    <tr><th>Design</th><th class="num">p50 (ms)</th><th class="num">p90 (ms)</th><th class="num">Within budget</th><th class="num">p50 tool turns</th></tr>
+    <tr><td>Cascaded</td><td class="num">1,552</td><td class="num">2,628</td><td class="num">25%</td><td class="num">2,508</td></tr>
+    <tr class="hl"><td>Speech-to-speech</td><td class="num">562</td><td class="num">1,248</td><td class="num">85%</td><td class="num">1,266</td></tr>
+  </table>
+  <p class="small mt">Both trace sets are synthetic. The shape is typical; the numbers are not a benchmark of any product.</p>
+  <aside class="notes"><p>Be explicit that these are generated traces with a published seed: a participant who quotes 562 ms as a vendor's figure has misread the slide. Tool turns are slow in both designs, because the tool takes the same time whoever calls it. Day 4's decision record weighs this speed against cost and against what you lose, which is the next slide.</p></aside>
+</section>
+
+<section class="slide" data-label="What you lose" id="what-you-lose" data-lo="LO6">
+  <div class="kicker">The other side of the trade</div>
+  <h2>Speech-to-speech gives up the text you evaluated yesterday</h2>
+  <ul class="bullets">
+    <li>No separate transcript to <b>slice by dialect</b> and channel, as in Lab 2.3.</li>
+    <li>No text to <b>check before a tool call</b>: the booking arguments come out of one model.</li>
+    <li>One vendor's voice, turn detection and model, <b>changed together</b>.</li>
+    <li>Usually <b>priced per minute of audio</b>, which Lab 4.3 compares.</li>
+  </ul>
+  <aside class="notes"><p>Some speech-to-speech services do return a transcript; if so, check how it is produced before slicing on it. Ask Ghusoun Al-Mutlaq's question from the case study: where is the caller's audio processed and kept? The decision record must answer it for either design.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-2" data-lo="LO3">
+  <div class="kicker">Checkpoint</div>
+  <h2>What do you fix first?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">A cascade has a median time to first audio of 1,550 ms. In seven of twenty turns the voice starts only after the model has written the whole reply. What change do you make first?</p>
+    <div class="opts">
+      <div class="opt" data-why="Assumes the recogniser is the slow stage without reading the trace">Swap the recogniser for a faster one</div>
+      <div class="opt" data-why="Treats the network, the smallest stage, as the cause">Move the servers closer to the callers</div>
+      <div class="opt" data-why="Believes a faster model is the only lever, and ignores the wait for the full reply">Switch to a smaller language model</div>
+      <div class="opt" data-ok>Start the voice on the first sentence of the reply</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The trace shows the voice waiting for a full reply in seven turns. Streaming the first sentence removes that wait without changing any model: in Lab 3.2 the median fell to 1,228 ms.</div>
+  </div>
+  <aside class="notes"><p>Answer: D. A, B and C each move a stage that the trace shows is not where the time goes. The habit to build is: read the per-stage table before changing anything.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-3-2" data-auto="lab" data-lab="3.2">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: summing durations of overlapping stages (the model and the voice overlap when streaming); using the end of the model's full reply as time to first audio; the 90th percentile of twenty values, which pandas interpolates. Early finishers do the stretch: a budget per stage. The first-token share breaks most often, because of the tool turns.</p></aside>
 </section>
 
-<!-- Session 3 -->
-
+<!-- ======================= SESSION 3 ======================= -->
 <section class="slide section" id="s3" data-auto="section" data-session="3"></section>
 
-<section class="slide" id="s3-idea" data-lo="LO3">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
+<section class="slide" data-label="End of turn" id="end-of-turn" data-lo="LO3">
+  <div class="kicker">Has the caller finished?</div>
+  <h2>Every millisecond spent waiting for silence is added to the reply</h2>
   <div class="cols cols-2">
     <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
+      <li>The pipeline after the endpoint takes <b>620 ms</b> on Rahhal's clock.</li>
+      <li>So the silence threshold can be at most <b>580 ms</b> before every reply is late.</li>
+      <li>Callers pause <b>up to 1,096 ms</b> inside a turn, longest before a number or a date.</li>
     </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+    <div class="trace s">
+      <div class="ev user"><b>caller</b>can I change · the date to</div>
+      <div class="ev error"><b>pause</b>a long silence while the caller thinks</div>
+      <div class="ev user"><b>caller</b>the eleventh</div>
+    </div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <div class="callout warn mt"><b>What goes wrong.</b> A threshold short enough for the budget is shorter than the pauses inside turns: Rahhal cuts in.</div>
+  <aside class="notes"><p>The 620 ms is the sum of the stage constants in rahhal.STAGES after the endpoint: recogniser 150, model first token 280, voice 130, network 60. The example is the first turn of the first scripted call in data/turn_calls.json. The arithmetic on this slide is the whole session: no threshold can be both short and safe.</p></aside>
 </section>
 
-<section class="slide" id="s3-steps" data-lo="LO3">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" data-label="Sweep" id="threshold-sweep" data-lo="LO3">
+  <div class="kicker">Lab 3.3, 48 caller turns</div>
+  <h2>On silence alone, the best threshold gets half the turns right</h2>
+  <div class="bars">
+    <div class="row"><span>300 ms</span><div class="bar c-coral" style="--w:23%"></div><span class="val">11 ok · 37 cut-ins</span></div>
+    <div class="row"><span>400 ms</span><div class="bar c-amber" style="--w:44%"></div><span class="val">21 ok · 27 cut-ins</span></div>
+    <div class="row"><span>500 ms</span><div class="bar c-teal" style="--w:50%"></div><span class="val">24 ok · 24 cut-ins</span></div>
+    <div class="row"><span>600 ms</span><div class="bar c-cyan" style="--w:1%"></div><span class="val">0 ok · 24 late</span></div>
+    <div class="row"><span>900 ms</span><div class="bar c-cyan" style="--w:1%"></div><span class="val">0 ok · 9 missed</span></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <aside class="notes"><p>From the sweep in Lab 3.3. At 600 ms every turn that is not cut into is late, because 600 plus 620 is 1,220. At 900 ms, nine callers lose patience and speak again: "hello?". The scripted calls are synthetic, with pauses drawn longer before numbers, which is what callers do; the shape matters, not the exact counts.</p></aside>
+</section>
+
+<section class="slide" data-label="Hold rule" id="hold-rule" data-lo="LO3">
+  <div class="kicker">Use what was said, not only the silence</div>
+  <h2>Wait longer only when the words say the caller is mid-phrase</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 3.3"><code class="language-python">HOLD_WORDS = {"for", "on", "to", "and",
+              "لعدد", "يوم", "على", "في", "و"}
+
+def hold(text_before):
+    last = text_before.split()[-1]
+    return 600 if last in HOLD_WORDS else 0</code></pre>
+    <div class="stack">
+      <div class="stat"><div class="big">24 → 32</div><div class="lbl">turns right out of 48 at 500 ms</div></div>
+      <div class="stat"><div class="big">24 → 16</div><div class="lbl">cut-ins</div></div>
+    </div>
+  </div>
+  <aside class="notes"><p>The rule on the slide is shortened; the lab also holds after a digit word that may continue ("four", "أربعة") and after a letter of a code. The extra 600 ms applies only after those words, so ordinary replies keep the 500 ms threshold. Sixteen cut-ins remain: pauses after words the list does not know. A production line replaces the word list with a small end-of-turn model; Pipecat and LiveKit Agents both ship one. Arabic connectives such as و attach to the next word in writing, which is why the lab works on the recogniser's spacing.</p></aside>
+</section>
+
+<section class="slide" data-label="Barge-in" id="barge-in" data-lo="LO3">
+  <div class="kicker">When the caller talks over Rahhal</div>
+  <h2>Stop for an interruption; keep talking through "mm"</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-teal"><h4>Backchannel</h4><p class="small mb0">"mm", "aha", <span class="ar">إيه</span>: 120 to 250 ms. The caller is listening. Stopping here makes the agent stutter.</p></div>
+    <div class="card c-coral"><h4>Interruption</h4><p class="small mb0">"No, the eleventh": 600 ms or more. Stop within 300 ms, and listen.</p></div>
+  </div>
+  <div class="callout tip mt"><b>Lab 3.3 stretch.</b> Stop after 260 ms of continuous caller speech: no false stops on the backchannels, every interruption handled within 300 ms.</div>
+  <aside class="notes"><p>The 260 ms comes from the stretch's sounds plus 40 ms to stop the audio; on real lines the right value comes from recorded calls. Echo matters in practice: the agent's own voice coming back through the phone must not count as the caller, which is why telephone stacks cancel echo before the detector. After a barge-in, the reply that was cut must be dropped from the conversation history, or the model believes the caller heard it.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-3" data-lo="LO3">
+  <div class="kicker">Checkpoint</div>
+  <h2>Why not just wait longer?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">Rahhal cuts in on callers who pause before a date. The pipeline after the endpoint takes 620 ms and the budget is 1,200 ms. A colleague proposes raising the silence threshold from 500 to 900 ms for every turn. What happens?</p>
+    <div class="opts">
+      <div class="opt" data-why="Believes a longer wait has no cost when the budget is measured after the endpoint">Fewer cut-ins and no other change</div>
+      <div class="opt" data-ok>Fewer cut-ins, but every reply is late and some callers give up and speak again</div>
+      <div class="opt" data-why="Thinks the threshold changes how fast the models run">Faster replies, because the recogniser gets more audio</div>
+      <div class="opt" data-why="Confuses the end-of-turn threshold with the barge-in rule">Rahhal stops reacting when the caller interrupts</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> 900 + 620 = 1,520 ms on every turn, over the budget; in Lab 3.3 nine of 48 turns passed the caller's patience. Hold longer only where the words say the caller is mid-phrase.</div>
+  </div>
+  <aside class="notes"><p>Answer: B. The sweep at 900 ms gave 0 ok, 13 cut-ins, 26 late and 9 missed. Ask for the alternative: the hold rule, which raised the turns right from 24 to 32.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-3-3" data-auto="lab" data-lab="3.3">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: counting the final silence of a turn as a pause inside it (that one is where Rahhal should answer); judging late before missed; comparing the threshold with a pause using greater-than in one place and greater-or-equal in another. Ask early finishers to add a word they would hold on in their own dialect and rerun the sweep.</p></aside>
 </section>
 
-<!-- Session 4 -->
-
+<!-- ======================= SESSION 4 ======================= -->
 <section class="slide section" id="s4" data-auto="section" data-session="4"></section>
 
-<section class="slide" id="s4-idea" data-lo="LO3">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+<section class="slide" data-label="Heard is not said" id="heard-not-said" data-lo="LO3">
+  <div class="kicker">Lab 3.4, call K2</div>
+  <h2>An agent that books on what it heard books what the recogniser got wrong</h2>
+  <div class="chat">
+    <div class="msg user"><span class="who">Caller, as heard</span><span class="ar">أبي أحجز جولة في شعب النقوش يوم 2026-12-14 لعدد 4 أشخاص</span></div>
+    <div class="msg ai bad"><span class="who">Rahhal, booking at once</span><span class="ar">تم الحجز، رقمه HTB-1408.</span></div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <div class="callout warn mt"><b>The caller said the 11th.</b> The booking exists before anyone could notice the 14th.</div>
+  <aside class="notes"><p>In the scripted call the caller meant the eleventh; the recogniser heard fourteen. The provided agent's policy is book_when_full: book as soon as site, date and party size are filled. Two of six scripted calls end in a wrong booking this way. A booking is a write: undoing it means a cancellation, another call, and a visitor who may arrive on the wrong day.</p></aside>
 </section>
 
-<section class="slide" id="s4-steps" data-lo="LO3">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" data-label="Tool checks" id="tool-checks" data-lo="LO3">
+  <div class="kicker">The tool defends itself</div>
+  <h2>The booking tool checks its arguments and answers in a sentence the agent can say</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 3.4"><code class="language-python">def book_visit(site_code, date, party_size, name):
+    if site_code not in SITES:
+        raise ToolError("that site is not one of ours")
+    if d &lt; TODAY:
+        raise ToolError("that date has passed")
+    if not 1 &lt;= party_size &lt;= 12:
+        raise ToolError("a group can be 1 to 12 people")
+    if booked(site_code, date) + party_size &gt; 20:
+        raise ToolError("that day is full ...")
+    return store.add(...)</code></pre>
+    <div class="card c-teal flat"><h4>Checks the model cannot skip</h4><p class="small mb0">A prompt can ask the model for valid arguments; only the tool can refuse invalid ones. The error text is written for the caller's ear.</p></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <aside class="notes"><p>The code is shortened: the lab also parses the date and refuses dates more than 60 days ahead. Capacity of 20 visitors a day per site is a case-study rule. Call K4 asks for a day that is already nearly full: the tool refuses, Rahhal says so, and the caller picks the next day. Tool design itself is AE-302's subject; here the point is that a voice agent's errors must be speakable.</p></aside>
+</section>
+
+<section class="slide" data-label="Confirm then book" id="confirm-then-book" data-lo="LO3">
+  <div class="kicker">The confirmation policy</div>
+  <h2>Read the key fields back, book only after a yes, and confirm again after any change</h2>
+  <div class="flow">
+    <div class="step c-navy"><b>1 · Slots full</b>site, date, party</div>
+    <div class="arrow frag" data-frag="b">→</div><div class="step c-teal frag" data-frag="b"><b>2 · Read back</b>in the spoken forms of Session 1</div>
+    <div class="arrow frag" data-frag="c">→</div><div class="step c-cyan frag" data-frag="c"><b>3 · Yes?</b>a no or a new value goes back to 2</div>
+    <div class="arrow frag" data-frag="d">→</div><div class="step c-coral frag" data-frag="d"><b>4 · Book</b>with the confirmed slots</div>
+  </div>
+  <div class="callout tip mt frag" data-frag="e"><b>Takeaway.</b> The tool is called with the slots the caller last said yes to, never with older ones.</div>
+  <aside class="notes"><p>Press once per step. Step 3 is where K2 is saved: "لا، يوم 2026-12-11" changes the date, and Rahhal reads the new date back before asking again. The takeaway is the bug planted for Lab 4.2 tomorrow: an agent that books with the first-heard slots after a correction. Only confirm what changes the booking; reading back every slot makes the call long, which Session 1's 12-second rule warns against.</p></aside>
+</section>
+
+<section class="slide" data-label="Six calls" id="six-calls" data-lo="LO3">
+  <div class="kicker">Lab 3.4, six scripted calls</div>
+  <h2>Confirmation turned two wrong bookings into two corrections</h2>
+  <table class="t">
+    <tr><th>Policy</th><th class="num">Intended booking</th><th class="num">Wrong booking</th><th class="num">Turns per call</th></tr>
+    <tr><td>Book when the slots are full</td><td class="num">4/6</td><td class="num">2</td><td class="num">1 to 3</td></tr>
+    <tr class="hl"><td>Confirm, then book</td><td class="num">6/6</td><td class="num">0</td><td class="num">2 to 4</td></tr>
+  </table>
+  <p class="small mt">The cost is one turn per call. The wrong bookings were K2 (the 14th for the 11th) and K5 (six people for five).</p>
+  <aside class="notes"><p>Six calls prove the policy works on these scripts, not that it is safe in general; Lab 4.2 runs twenty simulated callers who change their minds and correct themselves. Grading is from the store, not from what Rahhal said: a call passes when exactly one booking exists and matches the intended slots.</p></aside>
+</section>
+
+<section class="slide" data-label="Tool latency" id="tool-latency" data-lo="LO3">
+  <div class="kicker">Lab 3.4, call K1, the booking turn</div>
+  <h2>A 900 ms tool on the path doubles the silence; a true filler line hides it</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">1,220 ms</div><div class="lbl">an ordinary turn</div></div>
+    <div class="stat"><div class="big">2,135 ms</div><div class="lbl">the booking turn, silent until the tool returns</div></div>
+    <div class="stat"><div class="big">1,235 ms</div><div class="lbl">the booking turn with a filler line</div></div>
+  </div>
+  <aside class="notes"><p>Modelled clock from rahhal.py: the stage constants plus a small seeded variation, and 900 ms for book_visit. The filler is spoken at the normal time; the result follows when the tool returns. Note that the ordinary turn itself is a little over 1,200 ms on this clock: the endpoint work of Session 3 is what brings it under.</p></aside>
+</section>
+
+<section class="slide" data-label="Honest filler" id="honest-filler" data-lo="LO3">
+  <div class="kicker">What the filler may say</div>
+  <h2>A filler says what is happening, never what has not happened yet</h2>
+  <div class="chat">
+    <div class="msg ai good"><span class="who">True</span>One moment, I am booking that. <span class="ar">لحظة، أحجز لك الآن.</span></div>
+    <div class="msg ai bad"><span class="who">Not yet true</span>Your booking is confirmed. <span class="ar">تم تأكيد حجزك.</span></div>
+  </div>
+  <div class="callout warn mt"><b>K4 is why.</b> The 5th was full: the tool refused, and a filler that had already said "confirmed" would have been false.</div>
+  <aside class="notes"><p>This is the third session outcome: masking a slow tool without misleading the caller. The same rule applies to "I have found a slot" before the availability check returns. The stretch adds an idempotency key so that a booking retried after a timeout is not written twice: two calls with the same key leave one booking.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-4" data-lo="LO3">
+  <div class="kicker">Checkpoint</div>
+  <h2>Where does the confirmation go?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">Rahhal has heard: Clay Village, 9 December, six people. The caller meant five. Which sequence prevents a wrong booking?</p>
+    <div class="opts">
+      <div class="opt" data-why="Believes a confirmation after the write can undo it as cheaply as before">Book, then read the booking back and cancel it if the caller objects</div>
+      <div class="opt" data-why="Thinks the tool's argument checks catch a wrong but valid value">Book at once: the tool refuses invalid party sizes</div>
+      <div class="opt" data-ok>Read back "Clay Village, Wednesday the ninth of December, six people", wait for a yes, and read back again after "no, five"</div>
+      <div class="opt" data-why="Assumes a filler line confirms the slots to the caller">Say "one moment, I am booking that" and book while the caller listens</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Six is a valid party size, so only the caller can catch it, and only before the write. After the correction the slots changed, so they are read back again.</div>
+  </div>
+  <aside class="notes"><p>Answer: C. This is call K5 in the lab. B is the trap: argument checks catch impossible values, not wrong ones. A works in theory but costs a cancellation and assumes the caller stays on the line.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-3-4" data-auto="lab" data-lab="3.4">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: comparing a date string with a date object; checking capacity without the party being booked; letting the run loop continue after the booking reference is set. Without any key the whole lab runs: the agent, the store and the clock are local. Point early finishers to the idempotency stretch, and remind everyone that the confirmation policy and the tool are the core of the capstone agent.</p></aside>
 </section>
 
-<section class="slide" id="wrap-up">
-  <div class="kicker">Day 3 · wrap-up</div>
-  <h2>Three things to keep</h2>
-  <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+<!-- ======================= CLOSE ======================= -->
+<section class="slide" data-label="Wrap-up" id="wrap-up">
+  <div class="kicker">Day 3 · Three things to keep</div>
+  <h2>What to carry into the capstone</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Speak for the ear</h4><p class="small mb0">Spoken forms, chunked codes, under 12 seconds, and a listening test by category.</p></div>
+    <div class="card c-cyan"><h4>Trace before tuning</h4><p class="small mb0">Per-stage times at the 90th percentile; stream the first sentence; hold the turn only mid-phrase.</p></div>
+    <div class="card c-coral"><h4>Confirm before writing</h4><p class="small mb0">Read back, book on a yes with the last confirmed slots, and fill silence only with what is true.</p></div>
   </div>
+  <aside class="notes"><p>Ask each participant which of today's four numbers they would put first in the capstone README: listening accuracy, 90th percentile, turns right, or wrong bookings. The failure log gains the voice agent's modes: cut-ins, late or missed turns, and bookings on misheard slots.</p></aside>
 </section>
 
-<section class="slide dark" id="next" data-label="Next">
-  <div class="kicker">Next</div>
-  <h2>Day 4: Evaluating and choosing</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+<section class="slide dark" data-label="Next" id="next">
+  <div class="kicker">Tomorrow · Day 4</div>
+  <h2>Evaluating and choosing: test sets, simulated callers, cost and consent</h2>
+  <ul class="bullets">
+    <li>Keep today's artifacts: the latency trace and the threshold sweep feed the decision record.</li>
+    <li>Think of one caller who would break Rahhal: the simulated callers of Lab 4.2 are built from such cards.</li>
+    <li>Read the consent and labelling sections of the national Deepfakes Guidelines before Session 4.</li>
+  </ul>
+  <aside class="notes"><p>Lab 4.2 tests a version of this agent with a planted bug from today's takeaway: it books with the slots first heard after a correction. Do not tell the room which bug; the simulated callers should find it. The Deepfakes Guidelines are the SDAIA guidelines listed in the course sources.</p></aside>
 </section>

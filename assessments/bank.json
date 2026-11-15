@@ -465,6 +465,238 @@
       "level": "analyze",
       "pool": "practice",
       "weight": 1
+    },
+    {
+      "id": "q-d3-spoken-party",
+      "type": "single",
+      "prompt": "Rahhal confirms a booking for two people in Arabic. The template inserts the stored number before the noun. What should the voice be given?",
+      "options": [
+        "The digit 2 followed by the plural noun",
+        "The dual form, two people as one word",
+        "The digits spelled out one by one",
+        "The number in English, since digits are universal"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Arabic uses the dual for two; a generic number-to-words rule produces a form callers notice as wrong.",
+      "misconceptions": [
+        "Leaves the reading of a stored value to the voice",
+        "",
+        "Treats a party size like a code to be spelled",
+        "Mixes languages in a read-back meant for an Arabic caller"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 1,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-listening-interval",
+      "type": "single",
+      "prompt": "In a listening test with 32 answers per cell, names were heard right 29 times from the raw form and 31 times from the read-back form. The 95% intervals overlap. What do you report?",
+      "options": [
+        "Read-back improves names by six points",
+        "Read-back is not shown to change names on this test",
+        "Read-back makes no difference to names",
+        "Names need no read-back because they start high"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Overlapping intervals mean the test does not show a difference; it does not show equality either.",
+      "misconceptions": [
+        "Reports a point difference as a result without its interval",
+        "",
+        "Reads overlapping intervals as proof of equality",
+        "Generalises from a high average to every name, including rare ones"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 1,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-p90",
+      "type": "single",
+      "prompt": "Twenty traced turns have a median time to first audio of 1,100 ms and a 90th percentile of 2,400 ms. The budget is 1,200 ms. Does the agent meet it?",
+      "options": [
+        "Yes, because the median is under the budget",
+        "No, because about one reply in ten or more takes twice the budget",
+        "Yes, if the mean is under the budget",
+        "It cannot be said without the recogniser's error rate"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The budget is held at the 90th percentile: the slow tail is what callers remember as a dropped line.",
+      "misconceptions": [
+        "Judges a latency budget by the typical turn only",
+        "",
+        "Uses a mean that a few fast turns can pull down",
+        "Mixes accuracy and latency measures"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 2,
+      "level": "understand",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-s2s-tradeoff",
+      "type": "single",
+      "prompt": "A speech-to-speech session answers in 560 ms at the median against 1,550 ms for the cascade. Wedad must also report error rates by dialect, as on Day 2. What is the main risk of switching?",
+      "options": [
+        "Speech-to-speech cannot speak Arabic",
+        "The design may not give a separate transcript to slice and check before tool calls",
+        "Speech-to-speech is always more expensive",
+        "Its latency gets worse at the 90th percentile"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The cascade's transcript is what makes dialect slicing and argument checks possible; check what the speech-to-speech service returns before deciding.",
+      "misconceptions": [
+        "Assumes a language limitation without evidence",
+        "",
+        "States a price rule that depends on the provider and volume",
+        "Contradicts the measured traces"
+      ],
+      "lo": [
+        "LO6"
+      ],
+      "day": "day3",
+      "session": 2,
+      "level": "evaluate",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-threshold-math",
+      "type": "single",
+      "prompt": "After the endpoint, the pipeline takes 620 ms to the first audio. The budget is 1,200 ms. What is the longest silence threshold that keeps an ordinary reply within budget?",
+      "options": [
+        "1,200 ms",
+        "620 ms",
+        "580 ms",
+        "1,820 ms"
+      ],
+      "correct": [
+        2
+      ],
+      "explanation": "The threshold is spent before the pipeline starts: 1,200 minus 620 leaves 580 ms.",
+      "misconceptions": [
+        "Forgets that the pipeline runs after the threshold",
+        "Confuses the pipeline time with the threshold",
+        "",
+        "Adds the two instead of subtracting"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 3,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-hold-rule",
+      "type": "single",
+      "prompt": "At a 500 ms threshold, Rahhal cuts in on callers who pause after \"for\" or \"on\", before a number. Which change reduces cut-ins without making ordinary replies late?",
+      "options": [
+        "Raise the threshold to 900 ms for every turn",
+        "Wait an extra 600 ms only when the words so far end mid-phrase",
+        "Lower the threshold to 300 ms so replies come sooner",
+        "Stop the agent whenever the caller makes any sound"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The extra wait applies only where the words say the caller has not finished; other turns keep the base threshold.",
+      "misconceptions": [
+        "Pays the extra wait on every turn",
+        "",
+        "Makes cut-ins more frequent, not less",
+        "Confuses end-of-turn detection with barge-in"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 3,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-confirm-before",
+      "type": "single",
+      "prompt": "The recogniser heard six people; the caller meant five. Six is a valid party size. Where does Rahhal catch the error?",
+      "options": [
+        "In the tool's argument checks",
+        "In a read-back of the key fields before the booking call",
+        "In the confirmation message sent after booking",
+        "In the filler line while the tool runs"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Only the caller knows six is wrong, and only a read-back before the write lets them say so without a cancellation.",
+      "misconceptions": [
+        "Expects argument checks to catch wrong but valid values",
+        "",
+        "Moves the check after the write, when undoing it costs a cancellation",
+        "Treats a filler line as a confirmation"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 4,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d3-honest-filler",
+      "type": "single",
+      "prompt": "The booking tool takes 900 ms. Which line may Rahhal say while it runs?",
+      "options": [
+        "Your booking is confirmed",
+        "One moment, I am booking that",
+        "Your code is H, T, B",
+        "Thank you, goodbye"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "A filler may say what is happening; anything that claims a result the tool has not returned can turn false, as on a full day.",
+      "misconceptions": [
+        "Claims a result before the tool returns",
+        "",
+        "Reads a code that does not exist yet",
+        "Ends the call before the result is known"
+      ],
+      "lo": [
+        "LO3"
+      ],
+      "day": "day3",
+      "session": 4,
+      "level": "evaluate",
+      "pool": "practice",
+      "weight": 1
     }
   ]
 }
