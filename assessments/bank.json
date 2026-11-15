@@ -697,6 +697,240 @@
       "level": "evaluate",
       "pool": "practice",
       "weight": 1
+    },
+    {
+      "id": "q-d4-targets-first",
+      "type": "single",
+      "prompt": "Why should coverage targets for a test set be written before any item is selected or scored?",
+      "options": [
+        "So the selection runs faster",
+        "So the targets state what the sign-off must cover, not what flatters the system",
+        "Because the pool cannot be read until targets exist",
+        "So that every cell of the pool is used"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Targets set after seeing results can be bent toward a good number; written first, they record what the test set is for.",
+      "misconceptions": [
+        "Treats targets as an efficiency device",
+        "",
+        "Invents a technical dependency",
+        "Confuses coverage with using all of the data"
+      ],
+      "lo": [
+        "LO5"
+      ],
+      "day": "day4",
+      "session": 1,
+      "level": "understand",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-gap",
+      "type": "single",
+      "prompt": "The pool holds one recording of a southern caller cancelling a booking. The test set must cover cancellations by dialect. What do you report for that cell?",
+      "options": [
+        "A success rate from the one item",
+        "A rate borrowed from Najdi cancellations",
+        "A named gap with a request for recordings",
+        "Nothing, and drop the row from the coverage table"
+      ],
+      "correct": [
+        2
+      ],
+      "explanation": "One item gives no rate, borrowed items measure another group, and a hidden row misleads; a named gap tells the reader what is not covered.",
+      "misconceptions": [
+        "Reports a rate on a single item",
+        "Fills a gap with items from another cell",
+        "",
+        "Hides the gap instead of stating it"
+      ],
+      "lo": [
+        "LO5"
+      ],
+      "day": "day4",
+      "session": 1,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-grade-store",
+      "type": "single",
+      "prompt": "Rahhal ends a simulated call with \"Booked. Your reference is HTB-1437.\" How should the call be graded?",
+      "options": [
+        "As passed, because the agent confirmed a booking",
+        "By checking the store for exactly one booking that matches the caller's final goal",
+        "By the word error rate of the caller's turns",
+        "By asking the agent whether the booking matched"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The store is what the visitor will find; the agent's words can announce a booking with the wrong date.",
+      "misconceptions": [
+        "Trusts the system's own claim",
+        "",
+        "Measures transcription, not the task",
+        "Asks the system under test to grade itself"
+      ],
+      "lo": [
+        "LO5"
+      ],
+      "day": "day4",
+      "session": 2,
+      "level": "understand",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-agent-or-asr",
+      "type": "single",
+      "prompt": "In 6 of 20 simulated calls the booking carries the wrong date. Transcript WER is low, and in every failing call the read-back of the corrected date was confirmed. Where is the fault?",
+      "options": [
+        "In the recogniser, on dates",
+        "In the agent, which called the tool with the first-heard slots",
+        "In the simulated callers, which said yes too quickly",
+        "In the store, which saved the wrong field"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "The read-back caught the recogniser's error and the caller confirmed the right date, so the stale arguments came from the agent.",
+      "misconceptions": [
+        "Blames the recogniser for an error that was caught",
+        "",
+        "Blames the test for the system's behaviour",
+        "Blames a tool that stored exactly what it was given"
+      ],
+      "lo": [
+        "LO5",
+        "LO3"
+      ],
+      "day": "day4",
+      "session": 2,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-cost-per-call",
+      "type": "single",
+      "prompt": "A rented node costs 14,500 SAR a month plus 0.02 SAR a minute. Calls last 3.2 minutes and there are 18,000 a month. What is the cost per call?",
+      "options": [
+        "About 0.06 SAR",
+        "About 0.87 SAR",
+        "About 14,500 SAR",
+        "About 2.58 SAR"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "14,500 / 18,000 is about 0.81, plus 0.02 × 3.2 = 0.064, so about 0.87 SAR.",
+      "misconceptions": [
+        "Counts only the per-minute price",
+        "",
+        "Gives the monthly fixed cost, not a cost per call",
+        "Multiplies the fixed share by the call length"
+      ],
+      "lo": [
+        "LO6"
+      ],
+      "day": "day4",
+      "session": 3,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-break-even",
+      "type": "single",
+      "prompt": "The cascaded design costs 0.87 SAR a call at 18,000 calls a month; a hosted design costs 3.04 SAR a call at any volume. The break-even is about 4,900 calls. What happens to the comparison in a pilot of 3,000 calls a month?",
+      "options": [
+        "Nothing: the cascade is always cheaper",
+        "The hosted design becomes cheaper per call",
+        "Both cost the same",
+        "The cascade becomes free"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Below the break-even the node's fixed cost is spread over too few calls: about 4.90 SAR a call at 3,000.",
+      "misconceptions": [
+        "Treats a cost per call as independent of volume",
+        "",
+        "Confuses a volume below break-even with the break-even",
+        "Ignores the fixed cost"
+      ],
+      "lo": [
+        "LO6"
+      ],
+      "day": "day4",
+      "session": 3,
+      "level": "analyze",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-retention",
+      "type": "single",
+      "prompt": "The data-handling note keeps no caller audio after transcription. What does the team give up?",
+      "options": [
+        "Nothing",
+        "The ability to re-evaluate recognisers on production calls without a separate consented collection",
+        "The ability to book visits",
+        "The latency trace"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Without audio, Day 2's evaluation cannot be repeated on real calls; a consented collection becomes the route.",
+      "misconceptions": [
+        "Assumes minimising data has no cost",
+        "",
+        "Confuses audio with the booking itself",
+        "Confuses audio with timing data that holds no speech"
+      ],
+      "lo": [
+        "LO6"
+      ],
+      "day": "day4",
+      "session": 4,
+      "level": "evaluate",
+      "pool": "practice",
+      "weight": 1
+    },
+    {
+      "id": "q-d4-disclosure",
+      "type": "single",
+      "prompt": "Where in the call should Rahhal tell callers that it is an automated assistant with a generated voice?",
+      "options": [
+        "At the end, with the booking reference",
+        "Only if the caller asks",
+        "In the first line, in the caller's language, before any personal question",
+        "In the terms on the website"
+      ],
+      "correct": [
+        2
+      ],
+      "explanation": "The caller decides what to share knowing who they are talking to; told later, they could not.",
+      "misconceptions": [
+        "Places the disclosure after the caller has shared data",
+        "Makes disclosure depend on the caller suspecting it",
+        "",
+        "Moves the disclosure where callers will not hear it"
+      ],
+      "lo": [
+        "LO6",
+        "LO4"
+      ],
+      "day": "day4",
+      "session": 4,
+      "level": "apply",
+      "pool": "practice",
+      "weight": 1
     }
   ]
 }

@@ -609,7 +609,7 @@
                 "minutes": 7
               }
             ],
-            "stretch": "Hold out ten items for the capstone defence"
+            "stretch": "Hold out ten items that nobody tunes on"
           },
           "summary": "A test set designed for coverage across modality, dialect and task, with its gaps stated"
         },
@@ -725,7 +725,7 @@
                 "minutes": 6
               }
             ],
-            "stretch": "A consent withdrawal that deletes a caller's recordings"
+            "stretch": "A consent withdrawal that deletes a caller's personal records"
           },
           "summary": "Recordings and photos as personal data, and the disclosure callers hear"
         }

@@ -1,158 +1,430 @@
+<!-- ======================= OPENING ======================= -->
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">REPLACE: welcome; introduce yourself; one question to the room that calibrates the pace; the rhythm of the day</aside>
+  <aside class="notes"><p>Day 4 is about deciding. Three people in the case study need an answer by the end of the day: Wedad Al-Omari signs off on a test set, Fayyad Al-Ghamdi on the release candidate, Ghusoun Al-Mutlaq on the data-handling note. Ask the room which of the three they would least like to face with yesterday's numbers alone.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-auto="agenda"></section>
 
-<!-- Session 1 -->
-
-<section class="slide section" id="s1" data-auto="section" data-session="1"></section>
-
-<section class="slide" id="s1-idea" data-lo="LO5">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+<section class="slide" id="review-day3" data-lo="LO3">
+  <div class="kicker">Review of Day 3</div>
+  <h2>What did the booking turn cost?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3">
+    <p class="lead">An ordinary turn reaches the caller in about 1,220 ms; the booking tool takes 900 ms. Rahhal says "one moment, I am booking that" at the normal time. When does the first audio of the booking turn arrive?</p>
+    <div class="opts">
+      <div class="opt" data-ok>At about the time of an ordinary turn; the result follows when the tool returns</div>
+      <div class="opt" data-why="Adds the tool time even though the filler is spoken before the tool returns">At about 2,100 ms, after the tool returns</div>
+      <div class="opt" data-why="Believes a filler line removes the tool's time instead of covering it">At about 320 ms, because the filler replaces the pipeline</div>
+      <div class="opt" data-why="Thinks the tool must finish before any audio can play on a cascaded line">Only after the booking reference is known</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> In Lab 3.4 the booking turn took 2,135 ms in silence and 1,235 ms with a filler line. The filler covers the wait; it must not claim the result.</div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <aside class="notes"><p>Answer: A. Use the answer to recall the three Day 3 controls that go into today's release candidate: the hold rule, the read-back with confirmation, and the honest filler. Session 2 tests that release candidate with simulated callers.</p></aside>
 </section>
 
-<section class="slide" id="s1-steps" data-lo="LO5">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<!-- ======================= SESSION 1 ======================= -->
+<section class="slide section" id="s1" data-auto="section" data-session="1"></section>
+
+<section class="slide" data-label="Random set" id="random-set" data-lo="LO5">
+  <div class="kicker">Lab 4.1, a random 60 from the pool of 240</div>
+  <h2>A random test set copies the pool, including what the pool lacks</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">4</div><div class="lbl">southern callers in the random 60</div></div>
+    <div class="stat"><div class="big">2</div><div class="lbl">Egyptian callers</div></div>
+    <div class="stat"><div class="big">3 / 17</div><div class="lbl">seeded failures from the failure log</div></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <div class="callout warn mt"><b>What goes wrong.</b> Day 2 showed southern callers worse served; a test set with four of them cannot tell whether a fix helped.</div>
+  <aside class="notes"><p>The pool in data/test_pool.csv is synthetic labels over 240 items: 158 call recordings and 82 photos, with 8 southern and 7 Egyptian callers in total. The random draw uses a fixed seed, so every participant sees the same four. The sign-off question is not "how good is Rahhal on average" but "is it good enough for each group of callers and each task".</p></aside>
+</section>
+
+<section class="slide" data-label="Targets" id="targets-first" data-lo="LO5">
+  <div class="kicker">Write them before selecting</div>
+  <h2>Coverage targets state what the sign-off must be able to answer</h2>
+  <table class="t small">
+    <tr><th>Column</th><th>Target in the 60</th><th>Why</th></tr>
+    <tr><td>Modality</td><td>exactly 40 audio, 20 image</td><td>both services signed off together</td></tr>
+    <tr><td>Dialect</td><td>at least 5 of each of six</td><td>the error-rate report by dialect</td></tr>
+    <tr><td>Channel</td><td>at least 15 telephone</td><td>Rahhal is a phone line</td></tr>
+    <tr><td>Code-switched</td><td>at least 6</td><td>English words in Arabic calls</td></tr>
+    <tr><td>Seeded failures</td><td>at least 10</td><td>every mode of the failure log tested</td></tr>
+    <tr><td>Task</td><td>6 per audio task, 4 per image task</td><td>every task the services perform</td></tr>
+  </table>
+  <aside class="notes"><p>Nineteen targets in all. Written first, they say what the test set is for; chosen after seeing results, they can be set to flatter the system. Five per dialect is a floor for a coverage check, not enough for a precise rate: say so in the report, and use Day 2's intervals.</p></aside>
+</section>
+
+<section class="slide" data-label="Selection" id="greedy-selection" data-lo="LO5">
+  <div class="kicker">Lab 4.1, step 3</div>
+  <h2>Select the item that meets the most unmet targets, then fill at random</h2>
+  <div class="flow">
+    <div class="step c-navy"><b>1 · Score</b>count the unmet targets each item would meet</div>
+    <div class="arrow frag" data-frag="b">→</div><div class="step c-teal frag" data-frag="b"><b>2 · Take the best</b>within the modality quota</div>
+    <div class="arrow frag" data-frag="c">→</div><div class="step c-cyan frag" data-frag="c"><b>3 · Repeat</b>until every target is met</div>
+    <div class="arrow frag" data-frag="d">→</div><div class="step c-coral frag" data-frag="d"><b>4 · Fill</b>the rest at random, with a seed</div>
+  </div>
+  <div class="callout tip mt frag" data-frag="e"><b>Result.</b> 60 distinct items, every one of the 19 targets met. The random 60 missed five.</div>
+  <aside class="notes"><p>Press once per step. The greedy selection is simple on purpose: participants can explain every choice it made. The random 60 missed image count, southern, Egyptian, seeded failures and the extract-fields task. The seed on the fill makes the set reproducible, which the capstone requires.</p></aside>
+</section>
+
+<section class="slide" data-label="Coverage" id="coverage-table" data-lo="LO5">
+  <div class="kicker">Lab 4.1, the 40 audio items</div>
+  <h2>The coverage table goes in the report beside every result</h2>
+  <table class="t small">
+    <tr><th>Dialect</th><th class="num">Telephone</th><th class="num">Wideband</th><th class="num">All</th></tr>
+    <tr><td>Najdi</td><td class="num">6</td><td class="num">3</td><td class="num">9</td></tr>
+    <tr><td>Gulf</td><td class="num">5</td><td class="num">2</td><td class="num">7</td></tr>
+    <tr><td>MSA</td><td class="num">5</td><td class="num">2</td><td class="num">7</td></tr>
+    <tr><td>Hijazi</td><td class="num">4</td><td class="num">2</td><td class="num">6</td></tr>
+    <tr><td>Egyptian</td><td class="num">3</td><td class="num">3</td><td class="num">6</td></tr>
+    <tr class="hl"><td>Southern</td><td class="num">2</td><td class="num">3</td><td class="num">5</td></tr>
+  </table>
+  <aside class="notes"><p>The image items, 20 of them, are covered by task: 4 to 6 per image task. A reader of any result should be able to see how many items stand behind it: a rate for southern telephone callers rests on two items, which is a coverage fact, not a finding.</p></aside>
+</section>
+
+<section class="slide" data-label="Gaps" id="gaps" data-lo="LO5">
+  <div class="kicker">What no selection can fix</div>
+  <h2>Six dialect and task cells have fewer than three items in the whole pool</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Dialect</th><th>Task</th><th class="num">Items in pool</th></tr>
+      <tr><td>Southern</td><td>book a visit</td><td class="num">1</td></tr>
+      <tr><td>Southern</td><td>cancel</td><td class="num">1</td></tr>
+      <tr><td>Egyptian</td><td>cancel</td><td class="num">1</td></tr>
+      <tr><td>Egyptian</td><td>book a visit</td><td class="num">2</td></tr>
+      <tr><td>Egyptian</td><td>change</td><td class="num">2</td></tr>
+      <tr><td>Egyptian</td><td>enquiry</td><td class="num">2</td></tr>
+    </table>
+    <div class="card c-coral flat"><h4>A gap is a data request</h4><p class="small mb0">Name it in the report and ask for recordings. Never fill a cell by copying items from a neighbouring one.</p></div>
+  </div>
+  <aside class="notes"><p>Southern callers booking a visit: one item in 240. Any claim about that group is not supported by this pool. In a real programme the request goes to the people who run the line, with consent for recording (Session 4). Public sets such as Common Voice can help for read speech but are no substitute for calls.</p></aside>
+</section>
+
+<section class="slide" data-label="Hold-out" id="hold-out" data-lo="LO5">
+  <div class="kicker">Lab 4.1 stretch</div>
+  <h2>Keep ten items that nobody tunes on</h2>
+  <ul class="bullets">
+    <li>Every threshold and rule of Day 3 was tuned on data you looked at; the hold-out is the check that it was not tuned to those items alone.</li>
+    <li>Stratify it too: a plain random 10 from the 60 held <b>no seeded failure</b>; one per modality on purpose gives two.</li>
+    <li>Look at the hold-out <b>once</b>, at the end, and report the result whatever it is.</li>
+  </ul>
+  <aside class="notes"><p>The numbers come from the stretch of Lab 4.1. Ten items cannot give a precise rate; the hold-out is a check for over-fitting, not a second benchmark. If the hold-out result is far below the tuned result, report both and say which settings were tuned.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-1" data-lo="LO5">
+  <div class="kicker">Checkpoint</div>
+  <h2>What do you do with this cell?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5">
+    <p class="lead">Your 60-item test set must report task success for southern callers booking a visit. The whole pool holds one such recording. What goes in the report?</p>
+    <div class="opts">
+      <div class="opt" data-why="Believes a result on one item is a rate">Task success for that group: 1/1, 100%</div>
+      <div class="opt" data-why="Fills a gap with items from another cell, which measures a different group">Five Najdi booking calls relabelled as southern</div>
+      <div class="opt" data-ok>The cell as a named gap, with a request for recordings, and no rate for it</div>
+      <div class="opt" data-why="Thinks a missing group can be dropped from the scope without saying so">Nothing: leave southern booking calls out of the coverage table</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> One item gives no rate worth reporting, and borrowed items measure someone else. Naming the gap tells the reader what the sign-off does not cover.</div>
+  </div>
+  <aside class="notes"><p>Answer: C. B happens more often than people admit, usually as "close enough" dialects. D is the quiet version: the coverage table should show the empty cell, not hide it.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-4-1" data-auto="lab" data-lab="4.1">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: targets on the integer columns written as strings ("1" against 1); the greedy loop exceeding the modality quota; a fill without a seed, so two runs give different sets. Remind participants that the test set and its coverage table are capstone deliverables: the file goes to artifacts/D4_1.</p></aside>
 </section>
 
-<!-- Session 2 -->
-
+<!-- ======================= SESSION 2 ======================= -->
 <section class="slide section" id="s2" data-auto="section" data-session="2"></section>
 
-<section class="slide" id="s2-idea" data-lo="LO5">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
+<section class="slide" data-label="A card" id="caller-card" data-lo="LO5">
+  <div class="kicker">A simulated caller</div>
+  <h2>A card gives a caller a goal, a dialect and a way of behaving</h2>
   <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
+    <pre class="code s" data-file="data/callers.jsonl"><code class="language-json">{"caller_id": "SC04",
+ "language": "en", "dialect": "southern",
+ "behaviour": "cooperative",
+ "goal": {"site_code": "HT-06",
+          "date": "2026-12-20",
+          "party_size": 6},
+ "change_to": null}</code></pre>
+    <div class="stack">
+      <div class="card c-teal flat"><h4>Six behaviours</h4><p class="small mb0">cooperative, long pauses, mumbles, code-switches, interrupts, changes their mind.</p></div>
+      <div class="card c-coral flat"><h4>Through the recogniser</h4><p class="small mb0">Every caller turn passes through a stand-in recogniser with errors by dialect: what Rahhal hears is not what the card says.</p></div>
+    </div>
   </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+  <aside class="notes"><p>Twenty cards: seven cooperative, three each code-switching, changing their mind and interrupting, two each with long pauses and mumbling. Cards are cheap to write, so write the callers who worry you: the one who corrects a date, the one who switches language mid-sentence. The scripted callers say exactly what the card says; the stretch lets a hosted model play the caller for variety.</p></aside>
 </section>
 
-<section class="slide" id="s2-steps" data-lo="LO5">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" data-label="Grade the store" id="grade-the-store" data-lo="LO5">
+  <div class="kicker">What counts as success</div>
+  <h2>Grade the booking in the store, not what Rahhal said</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-coral"><h4>What Rahhal said</h4><p class="small mb0">"Booked. Your reference is HTB-1437." True that a booking exists; silent about which one.</p></div>
+    <div class="card c-teal"><h4>What the store holds</h4><p class="small mb0">Exactly one booking for the caller, matching site, date and party of the final goal, after any change of mind.</p></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <div class="callout tip mt"><b>Reasons, not just pass or fail:</b> no booking, duplicate, wrong site, wrong date, wrong party.</div>
+  <aside class="notes"><p>The same idea as Day 1's reference fields: compare with ground truth, not with the system's own claims. Grading from the store also catches the opposite failure, a booking Rahhal never announced. The reasons make the failure table useful to the engineer who has to fix it.</p></aside>
+</section>
+
+<section class="slide" data-label="Results" id="simulation-results" data-lo="LO5">
+  <div class="kicker">Lab 4.2, the release candidate</div>
+  <h2>Fourteen of twenty callers got the booking they confirmed</h2>
+  <div class="cols cols-2">
+    <div class="stat"><div class="big">14 / 20</div><div class="lbl">task success, 95% interval 0.48 to 0.85</div></div>
+    <table class="t small">
+      <tr><th>Behaviour</th><th class="num">Calls</th><th class="num">Failed</th></tr>
+      <tr class="hl"><td>changes their mind</td><td class="num">3</td><td class="num">3</td></tr>
+      <tr><td>cooperative</td><td class="num">7</td><td class="num">2</td></tr>
+      <tr><td>mumbles</td><td class="num">2</td><td class="num">1</td></tr>
+      <tr><td>code-switches</td><td class="num">3</td><td class="num">0</td></tr>
+      <tr><td>interrupts</td><td class="num">3</td><td class="num">0</td></tr>
+      <tr><td>long pauses</td><td class="num">2</td><td class="num">0</td></tr>
+    </table>
+  </div>
+  <aside class="notes"><p>Every failure has the same reason: wrong date. The two cooperative failures are a southern and an Egyptian caller whose date the recogniser misheard and who corrected it; the mumbling failure is a southern caller too. So "cooperative" hides a correction. Ask the room what the six have in common before the next slide: a date changed during the call.</p></aside>
+</section>
+
+<section class="slide" data-label="Two kinds of error" id="transcript-or-task" data-lo="LO5 LO3">
+  <div class="kicker">Separate the recogniser from the agent</div>
+  <h2>The recogniser's errors were caught; the agent lost the correction</h2>
+  <div class="cols cols-2">
+    <div class="stack">
+      <div class="stat"><div class="big">0.022</div><div class="lbl">transcript WER over all caller turns, said against heard</div></div>
+      <div class="stat"><div class="big">0.053</div><div class="lbl">for southern callers, the highest</div></div>
+    </div>
+    <div class="trace s">
+      <div class="ev user"><b>heard</b>Clay Village on 2026-12-23 for 6 people</div>
+      <div class="ev model"><b>Rahhal</b>To confirm: Clay Village, on 2026-12-23, for 6. Shall I book?</div>
+      <div class="ev user"><b>heard</b>no, on 2026-12-20</div>
+      <div class="ev model"><b>Rahhal</b>To confirm: Clay Village, on 2026-12-20, for 6. Shall I book?</div>
+      <div class="ev user"><b>heard</b>yes book it</div>
+      <div class="ev error"><b>store</b>HT-06, 2026-12-23, 6</div>
+    </div>
+  </div>
+  <aside class="notes"><p>Call SC04. The read-back worked: the caller heard the wrong date and corrected it, and the corrected date was read back. The tool was called with the slots first heard. This is the planted bug, stale_confirmation, the takeaway of Day 3 Session 4. Without the transcript error rate beside the task result, a team would blame the recogniser for southern callers and spend weeks on the wrong fix.</p></aside>
+</section>
+
+<section class="slide" data-label="After the fix" id="after-the-fix" data-lo="LO5">
+  <div class="kicker">The same twenty callers, after the fix</div>
+  <h2>Twenty of twenty, and still only a lower bound of 0.84</h2>
+  <ul class="bullets">
+    <li>The fix: book with the slots the caller <b>last confirmed</b>.</li>
+    <li>Re-run the <b>same</b> cards: a change that fixes one caller can break another.</li>
+    <li>20/20 has a 95% interval of 0.84 to 1.00: twenty scripts cannot show the line is ready.</li>
+    <li>Keep the cards as a <b>regression suite</b>: every future change runs them.</li>
+  </ul>
+  <aside class="notes"><p>The Wilson interval for 20 of 20 starts at about 0.84. The point for the capstone: report the simulated result with its interval and its cards, and say what the scripts do not cover (real wording, noise, callers who give up). Frameworks such as Inspect can run such suites at scale; the labs keep it in plain Python.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-2" data-lo="LO5">
+  <div class="kicker">Checkpoint</div>
+  <h2>Whose error is it?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5">
+    <p class="lead">A caller says the 20th; the recogniser hears the 23rd; Rahhal reads back the 23rd; the caller says "no, the 20th"; Rahhal reads back the 20th; the caller says yes. The store holds the 23rd. What do you log?</p>
+    <div class="opts">
+      <div class="opt" data-why="Blames the recogniser for an error the read-back caught">A recogniser error on southern dates</div>
+      <div class="opt" data-why="Assumes the caller confirmed the wrong date">A caller error: they said yes to the wrong date</div>
+      <div class="opt" data-why="Treats a correct booking tool as the cause of wrong arguments">A tool error: the booking tool stored the wrong date</div>
+      <div class="opt" data-ok>An agent error: the tool was called with the first-heard date, not the confirmed one</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The recogniser's error was caught by the read-back and the caller confirmed the right date. The agent passed stale slots to a tool that stored what it was given.</div>
+  </div>
+  <aside class="notes"><p>Answer: D. This is the separation the session outcome asks for: transcript errors against task failures. A and C are the two wrong fixes a team would otherwise try.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-4-2" data-auto="lab" data-lab="4.2">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: one store shared across all twenty calls, so capacity from one caller affects another; grading against the card's first goal instead of the final one; computing the transcript WER on the agent's lines. Point early finishers to the stretch; without a key it prints the caller prompt only.</p></aside>
 </section>
 
-<!-- Session 3 -->
-
+<!-- ======================= SESSION 3 ======================= -->
 <section class="slide section" id="s3" data-auto="section" data-session="3"></section>
 
-<section class="slide" id="s3-idea" data-lo="LO6">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
-  </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+<section class="slide" data-label="Two pipelines" id="two-pipelines" data-lo="LO6">
+  <div class="kicker">Lab 4.3, 60 test calls each</div>
+  <h2>Two designs measured on the same calls</h2>
+  <table class="t small">
+    <tr><th></th><th>Cascaded, open-weight</th><th>Hosted speech-to-speech</th></tr>
+    <tr><td>How it is paid for</td><td>one rented node, 14,500 SAR a month, plus 0.02 SAR a minute</td><td>0.95 SAR a minute</td></tr>
+    <tr><td>Task success</td><td>51/60</td><td>54/60</td></tr>
+    <tr><td>WER</td><td>0.164</td><td>no transcript</td></tr>
+    <tr><td>Time to first audio, p50 / p90</td><td>980 / 1,690 ms</td><td>560 / 890 ms</td></tr>
+  </table>
+  <div class="callout warn mt"><b>The prices are illustrative,</b> supplied by the case study. Use your own quotes in a real decision.</div>
+  <aside class="notes"><p>data/pipelines.json. The measured results are synthetic but consistent with the rest of the course: the cascade is the Rahhal of Day 3 after streaming and the hold rule, still over budget at the 90th percentile. Do not let anyone quote these prices as a vendor's: they were chosen to make the trade visible.</p></aside>
 </section>
 
-<section class="slide" id="s3-steps" data-lo="LO6">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" data-label="Cost per call" id="cost-per-call" data-lo="LO6">
+  <div class="kicker">Lab 4.3, step 2</div>
+  <h2>At 18,000 calls a month the cascade costs under a third as much per call</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">0.87 SAR</div><div class="lbl">cascaded, per call: 14,500 / 18,000 + 0.02 × 3.2</div></div>
+    <div class="stat"><div class="big">3.04 SAR</div><div class="lbl">hosted, per call: 0.95 × 3.2</div></div>
+    <div class="stat"><div class="big">4,872</div><div class="lbl">calls a month where the two cost the same</div></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <aside class="notes"><p>Monthly: 15,660 SAR against 54,720. The break-even solves fixed / N + 0.064 = 3.04 for N. Below it the hosted design is cheaper, because a rented node costs the same whether it takes ten calls or ten thousand. The stretch varies the volume and adds a second node above 60,000 calls a month.</p></aside>
+</section>
+
+<section class="slide" data-label="Volume" id="volume-curve" data-lo="LO6">
+  <div class="kicker">Lab 4.3 stretch, cost per call by volume</div>
+  <h2>The cheaper design depends on the volume you plan for</h2>
+  <div class="bars">
+    <div class="row"><span>3,000 calls</span><div class="bar c-coral" style="--w:100%"></div><span class="val">4.90 against 3.04: hosted</span></div>
+    <div class="row"><span>5,000 calls</span><div class="bar c-amber" style="--w:60%"></div><span class="val">2.96 against 3.04: cascaded</span></div>
+    <div class="row"><span>18,000 calls</span><div class="bar c-teal" style="--w:18%"></div><span class="val">0.87 against 3.04: cascaded</span></div>
+    <div class="row"><span>90,000 calls</span><div class="bar c-teal" style="--w:8%"></div><span class="val">0.39 (two nodes) against 3.04</span></div>
+  </div>
+  <p class="small mt">Bars show the cascaded cost per call; the hosted cost is 3.04 at every volume.</p>
+  <aside class="notes"><p>A pilot at 3,000 calls a month and a full launch at 18,000 can rationally use different designs. The decision record should say which volume it assumed, and the forecast behind it. Above 60,000 calls the cascade needs a second node, which is why 90,000 costs more per call than 60,000.</p></aside>
+</section>
+
+<section class="slide" data-label="Quality" id="quality-not-shown" data-lo="LO6">
+  <div class="kicker">Lab 4.3, step 3</div>
+  <h2>Task success is not shown to differ; latency is</h2>
+  <table class="t">
+    <tr><th>Pipeline</th><th class="num">Task success</th><th>95% interval</th><th class="num">p90 (ms)</th><th>p90 within 1,200?</th></tr>
+    <tr><td>Cascaded</td><td class="num">51/60</td><td>0.74 to 0.92</td><td class="num">1,690</td><td>no</td></tr>
+    <tr><td>Hosted</td><td class="num">54/60</td><td>0.80 to 0.95</td><td class="num">890</td><td>yes</td></tr>
+  </table>
+  <div class="callout note mt"><b>So the choice is latency against cost and control,</b> not quality against cost.</div>
+  <aside class="notes"><p>The same discipline as Day 2's slices: overlapping intervals mean the 60 calls do not show a difference in success. A larger test, or one weighted toward the gaps of Session 1, might. The latency difference is large and consistent with Day 3's traces.</p></aside>
+</section>
+
+<section class="slide" data-label="Decision record" id="decision-record" data-lo="LO6">
+  <div class="kicker">One page</div>
+  <h2>A decision record says what was chosen, why, and what would change it</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal flat"><h4>The lab's example</h4><p class="small mb0">Cascaded for the pilot, on condition that its p90 is brought under 1,200 ms before launch: success not shown to differ, under a third of the cost, a transcript for dialect slices and argument checks, audio on a node the authority controls.</p></div>
+    <div class="card c-coral flat"><h4>What would change it</h4><p class="small mb0">p90 still over budget after the Day 3 fixes; volume under about 4,900 calls a month; a larger test showing a difference in success.</p></div>
+  </div>
+  <aside class="notes"><p>This is one defensible reading, not the answer. A team that weighs the 90th percentile above cost can write the opposite record from the same figures. What the assessor looks for is that the reasons trace to the table and the conditions are testable.</p></aside>
+</section>
+
+<section class="slide" data-label="Fingerprint" id="fingerprint" data-lo="LO6">
+  <div class="kicker">Re-run to the same figures</div>
+  <h2>A fingerprint lets a reviewer check the figures without trusting them</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 4.3"><code class="language-python">def fingerprint(raw, table):
+    data = raw + table.to_csv()
+    return sha256(data.encode()).hexdigest()[:16]
+
+# Fingerprint: a0c892e8bf47525f</code></pre>
+    <ul class="bullets">
+      <li>The SHA-256 of the input file and the decision table.</li>
+      <li>A reviewer re-runs the notebook: the same fingerprint, or a difference to explain.</li>
+      <li>Line endings are normalised first, so Windows and Colab agree.</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>The course outcome asks for a record "that a reviewer re-runs to the same figures". The fingerprint makes that check one comparison. It proves the computation is repeatable, not that the inputs are right: the record still has to say where the measurements came from.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-3" data-lo="LO6">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which sentence belongs in the record?</h2>
+  <div class="quiz" data-type="single" data-lo="LO6">
+    <p class="lead">Cascaded: 51/60 calls succeed, 0.87 SAR a call, p90 1,690 ms. Hosted: 54/60, 3.04 SAR a call, p90 890 ms. The intervals on success overlap. Which reason is sound?</p>
+    <div class="opts">
+      <div class="opt" data-why="Reads a point difference as a result when the intervals overlap">Hosted, because it succeeds on more calls</div>
+      <div class="opt" data-ok>Success is not shown to differ, so the choice rests on latency against cost</div>
+      <div class="opt" data-why="Ignores that the cascaded design misses the latency budget at the 90th percentile">Cascaded, because it is cheaper and nothing else differs</div>
+      <div class="opt" data-why="Treats a cost per call as fixed when the cascade's depends on volume">Hosted, because per-minute pricing is always cheaper than a node</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The intervals overlap, so quality does not decide; the cascade misses the p90 budget and the hosted design costs about 3.5 times more at this volume. The record must weigh those two.</div>
+  </div>
+  <aside class="notes"><p>Answer: B. C is half right: cheaper, yes, but latency differs. D is false at 18,000 calls and true only below the break-even.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-4-3" data-auto="lab" data-lab="4.3">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: cost per call using minutes per month instead of minutes per call; the break-even with the sign reversed; a fingerprint over a table that includes a timestamp, so it changes on every run. Ask each participant to write their own decision sentence before reading the lab's example.</p></aside>
 </section>
 
-<!-- Session 4 -->
-
+<!-- ======================= SESSION 4 ======================= -->
 <section class="slide section" id="s4" data-auto="section" data-session="4"></section>
 
-<section class="slide" id="s4-idea" data-lo="LO6">
-  <div class="kicker">REPLACE: the question this slide answers</div>
-  <h2>REPLACE: one idea, stated as a sentence</h2>
-  <div class="cols cols-2">
-    <ul class="bullets">
-      <li>REPLACE: at most six bullets, each a complete thought</li>
-      <li>REPLACE: bold the key phrase; numbers come from the lab run, not from memory</li>
-    </ul>
-    <div class="card c-teal"><h4>In the case study</h4><p class="small mb0">REPLACE: tie the idea to the case study and its data</p></div>
-  </div>
-  <div class="callout warn mt"><b>What goes wrong.</b> REPLACE: the failure participants will hit, and how to recognise it</div>
-  <aside class="notes">REPLACE: what to say, the demo to run, the question to ask the room, the common failure and its fix</aside>
+<section class="slide" data-label="Inventory" id="inventory" data-lo="LO6">
+  <div class="kicker">Lab 4.4, step 1</div>
+  <h2>List what each service keeps, whether it identifies a person, and for how long</h2>
+  <table class="t small">
+    <tr><th>Item</th><th>Personal?</th><th>Class</th><th class="num">Keep (days)</th></tr>
+    <tr><td>Trail photo as uploaded</td><td>yes</td><td>confidential</td><td class="num">7</td></tr>
+    <tr><td>Photo with faces blurred</td><td>no</td><td>restricted</td><td class="num">365</td></tr>
+    <tr><td>Booking: name, phone, site, date, party</td><td>yes</td><td>confidential</td><td class="num">90</td></tr>
+    <tr class="hl"><td>Caller audio</td><td>yes</td><td>confidential</td><td class="num">0</td></tr>
+    <tr><td>Full transcript</td><td>yes</td><td>confidential</td><td class="num">30</td></tr>
+    <tr><td>Redacted transcript</td><td>no</td><td>restricted</td><td class="num">365</td></tr>
+  </table>
+  <aside class="notes"><p>The classes and periods are the case study's choices, to be discussed against the Personal Data Protection Law, its implementing regulation and the national data classification policy; they are not legal advice, and the lab says so. A voice recording identifies a person; so does a face. Keeping no audio means Day 2's evaluation cannot be repeated on production calls without a separate, consented collection: say that trade aloud.</p></aside>
 </section>
 
-<section class="slide" id="s4-steps" data-lo="LO6">
-  <div class="kicker">Step by step</div>
-  <h2>REPLACE: a process, shown one step per key press</h2>
-  <div class="flow">
-    <div class="step c-teal"><b>1 · REPLACE: name</b>REPLACE: what happens first</div>
-    <div class="arrow frag" data-frag="b">→</div><div class="step c-cyan frag" data-frag="b"><b>2 · REPLACE: name</b>REPLACE: the next piece</div>
-    <div class="arrow frag" data-frag="c">→</div><div class="step c-coral frag" data-frag="c"><b>3 · REPLACE: name</b>REPLACE: the result</div>
+<section class="slide" data-label="Faces" id="blur-faces" data-lo="LO6 LO4">
+  <div class="kicker">Lab 4.4, step 2</div>
+  <h2>Blur faces before storing, and test that the blur worked</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">24 / 60</div><div class="lbl">photos show at least one face, 29 faces in all</div></div>
+    <div class="stat"><div class="big">100%</div><div class="lbl">of faces with their pixel spread cut by more than half</div></div>
+    <div class="stat"><div class="big">0</div><div class="lbl">pixels changed outside the face boxes</div></div>
   </div>
-  <div class="callout tip mt frag"><b>Takeaway.</b> REPLACE: the one sentence to remember</div>
-  <aside class="notes">Press once per step and say what each step adds before the next one appears. REPLACE: the example to walk through</aside>
+  <div class="callout warn mt"><b>What goes wrong.</b> A blur that is never tested: a box drawn in the wrong coordinates leaves the face sharp and blurs a rock.</div>
+  <aside class="notes"><p>The lab uses the reference face boxes from refs.jsonl, so it tests the blur, not face detection. In production a detector finds the faces, and its misses are the risk: the failure log should count faces missed on a sample checked by a person. Lamha's incident needs the scene, not the people in it.</p></aside>
+</section>
+
+<section class="slide" data-label="Redaction" id="redaction" data-lo="LO6">
+  <div class="kicker">Lab 4.4, step 3</div>
+  <h2>Redact identifiers, and keep what the service needs</h2>
+  <div class="trace s">
+    <div class="ev user"><b>R01</b>my number is [PHONE] and I want to book Red Rock Path for four</div>
+    <div class="ev user"><b>R04</b><span class="ar">رقم الهوية [ID] والحجز باسم الوالد</span></div>
+    <div class="ev user"><b>R03</b>you can email me at [EMAIL] about the booking</div>
+    <div class="ev model"><b>R06 · code kept</b><span class="ar">أبي ألغي الحجز رقم HTB-4821</span></div>
+  </div>
+  <p class="small mt">Mobile numbers (05 and eight digits), ID numbers (ten digits starting 1 or 2) and email addresses. All ten sample lines clean.</p>
+  <aside class="notes"><p>The sample numbers are synthetic and the addresses use example domains. Patterns catch formats, not meaning: "my father's name is…" in R04 is still in the redacted text. That is why the redacted transcript is restricted, not public. Over-redaction is a failure too: a booking code removed is a caller who cannot cancel.</p></aside>
+</section>
+
+<section class="slide" data-label="Disclosure" id="disclosure" data-lo="LO6">
+  <div class="kicker">Lab 4.4, step 4</div>
+  <h2>The first thing every caller hears says the voice is generated</h2>
+  <div class="chat">
+    <div class="msg ai good"><span class="who">Arabic, 4.5 s</span><span class="ar">مسارات التراث. أنا رحّال، مساعد آلي بصوت مولّد.</span></div>
+    <div class="msg ai good"><span class="who">English, 4.9 s</span>This is Rahhal, an automated assistant with a generated voice.</div>
+  </div>
+  <div class="callout tip mt"><b>The case study's rule:</b> first, in the caller's language, under 6 seconds, before any question about a name or a number.</div>
+  <aside class="notes"><p>The national Deepfakes Guidelines ask that synthetic content be disclosed and labelled, and that a real person's voice or likeness not be used without consent; Rahhal uses a stock generated voice, not a cloned one. The lengths are the stand-in's estimates; with a Groq key the lab measures synthesised audio. Paraphrase the guidelines in class; do not quote them as legal text.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-4" data-lo="LO6">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which control answers the officer?</h2>
+  <div class="quiz" data-type="single" data-lo="LO6">
+    <p class="lead">Ghusoun asks how Lamha avoids keeping images of visitors who happen to be in a trail photo. Which answer is complete?</p>
+    <div class="opts">
+      <div class="opt" data-ok>Faces are blurred before storage, the blur is tested on every face box, and the original is deleted after seven days</div>
+      <div class="opt" data-why="Believes a policy statement is a control without any test">The terms of use tell visitors not to photograph people</div>
+      <div class="opt" data-why="Treats access control as a substitute for not keeping the data">Only rangers can open the photos</div>
+      <div class="opt" data-why="Assumes the model's own output removes personal data from the stored image">The model is told to ignore people when it extracts fields</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Minimising what is stored, testing that it worked, and limiting how long the original exists answers the question; the others leave the image of the visitor in storage.</div>
+  </div>
+  <aside class="notes"><p>Answer: A. C is a useful second layer, not the answer. D confuses the extracted fields with the stored photo: the model never touches the file in storage.</p></aside>
 </section>
 
 <section class="slide lab" id="lab-4-4" data-auto="lab" data-lab="4.4">
-  <aside class="notes">REPLACE: what to watch for while participants work, the typical problems, and the fallback for anyone who did not finish an earlier lab</aside>
+  <aside class="notes"><p>Common problems: a face box blurred at a different width from the one the boxes were drawn at; a phone pattern that also matches the digits inside a booking code; a disclosure that grows past six seconds once a greeting is added. The stretch prints a deletion receipt that names what was deleted without repeating the data.</p></aside>
 </section>
 
-<section class="slide" id="wrap-up">
-  <div class="kicker">Day 4 · wrap-up</div>
-  <h2>Three things to keep</h2>
-  <div class="cols cols-3">
-    <div class="card c-teal"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-coral"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
-    <div class="card c-purple"><h4>Remember</h4><p class="small mb0">REPLACE: one idea participants keep</p></div>
+<!-- ======================= CLOSE ======================= -->
+<section class="slide" data-label="Wrap-up" id="wrap-up">
+  <div class="kicker">Day 4 · Three things to keep</div>
+  <h2>What to carry into the capstone</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Coverage before scores</h4><p class="small mb0">Targets first, a coverage table beside every result, and gaps named as data requests.</p></div>
+    <div class="card c-cyan"><h4>Grade the outcome</h4><p class="small mb0">Simulated callers graded from the store, with transcript errors kept apart from task failures.</p></div>
+    <div class="card c-coral"><h4>Decide on the record</h4><p class="small mb0">Cost per call at a stated volume, intervals on quality, a fingerprint, and a data-handling note.</p></div>
   </div>
+  <aside class="notes"><p>The capstone brings the four days together. Ask each participant to name the one failure from their log they will explain at the defence: the assessor will ask for one.</p></aside>
 </section>
 
-<section class="slide dark" id="next" data-label="Next">
-  <div class="kicker">Next</div>
-  <h2>Capstone: Capstone project presentations</h2>
-  <p class="lead">REPLACE: what participants prepare before then; unfinished labs can be finished at home</p>
-  <aside class="notes">REPLACE: accounts, installs or reading participants need before the next unit</aside>
+<section class="slide dark" data-label="Next" id="next">
+  <div class="kicker">Next · Capstone</div>
+  <h2>Capstone: present the system you built and defend one failure</h2>
+  <ul class="bullets">
+    <li>A public repository: image pipeline, speech evaluation, voice agent, test set and simulation, traces and decision record.</li>
+    <li>A README that reports the measured results and links the script that reproduces them.</li>
+    <li>10 minutes of presentation and 5 of questions, with a call and a photo the assessor supplies.</li>
+  </ul>
+  <aside class="notes"><p>Remind participants that the lab artifacts (test set, graded calls, latency trace, threshold sweep, decision record) are the raw material. A participant whose labs ran on the stand-in must say so in the README; that is honest and acceptable.</p></aside>
 </section>
