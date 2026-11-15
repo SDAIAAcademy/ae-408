@@ -1,5 +1,5 @@
 <section class="slide title" id="title" data-auto="title">
-  <aside class="notes">Today is theirs: keep your own talking to the opening and the closing. Confirm the running order and the demo setup (screen sharing, accounts, a recorded backup) first.</aside>
+  <aside class="notes"><p>Today is theirs: keep your own talking to the opening and the closing. Confirm the running order and the demo setup first: screen sharing, the participant's keys or the stand-in, and a recorded backup of one call. The capstone is AI-full: assistants may write code, and the participant defends every line live.</p></aside>
 </section>
 
 <section class="slide" id="agenda" data-label="Agenda">
@@ -7,9 +7,10 @@
   <h2>How the presentations run</h2>
   <div class="agenda">
     <div class="item now"><div><b>Expectations and final prep</b><small>the rubric, a last rehearsal, then the first presentations</small></div></div>
-    <div class="item"><div><b>Presentations</b><small>each one timed, with questions after it</small></div></div>
-    <div class="item"><div><b>Review and closing</b><small>peer feedback, the trainer's review, what next</small></div></div>
+    <div class="item"><div><b>Presentations</b><small>each one timed, with questions on a call and a photo you have not seen</small></div></div>
+    <div class="item"><div><b>Review and closing</b><small>peer feedback, the trainer's review, the follow-up task</small></div></div>
   </div>
+  <aside class="notes"><p>Announce the timings now so nobody plans a 20-minute talk. With more than eight participants, run two rooms with one assessor each and a shared rubric.</p></aside>
 </section>
 
 <section class="slide" id="rubric" data-label="The rubric">
@@ -23,18 +24,19 @@
     <div class="row"><span>Decision record</span><div class="bar c-amber" style="--w:40%"></div><span class="val">10%</span></div>
   </div>
   <div class="callout tip mt"><b>Show results from at least two measured runs.</b> A claim without a number is a plan, not a result.</div>
-  <aside class="notes">Walk through each criterion with one example of what full marks look like.</aside>
+  <aside class="notes"><p>What full marks look like. Image pipeline: field accuracy and grounding on the test set, with the invented-object probe rate. Speech evaluation: WER by dialect and channel with intervals and the rules named. Voice agent: the per-stage trace of twenty scripted calls against the 1,200 ms budget, and no booking without a confirmed yes. Test set and simulation: the coverage table with its gaps, and calls graded from the store. Decision record: one page, re-run to the same fingerprint. Passing needs 70% overall and at least 60% on this rubric.</p></aside>
 </section>
 
 <section class="slide" id="format" data-label="Format">
   <div class="kicker">Format</div>
-  <h2>REPLACE: how many minutes each presentation and its questions take</h2>
+  <h2>10 minutes to present, then 5 minutes of questions</h2>
   <div class="cols cols-3">
-    <div class="card c-teal"><h4>1 · The problem</h4><p class="small mb0">Who, what, why now. One slide.</p></div>
-    <div class="card c-cyan"><h4>2 · What you built</h4><p class="small mb0">Design, decisions, trade-offs. Then the live demo.</p></div>
-    <div class="card c-coral"><h4>3 · What you measured</h4><p class="small mb0">Baseline, improvement, failures found, what comes next.</p></div>
+    <div class="card c-teal"><h4>1 · The system · 2 min</h4><p class="small mb0">Lamha and Rahhal, or your equivalent: the design and the decision record in one slide.</p></div>
+    <div class="card c-cyan"><h4>2 · The results · 5 min</h4><p class="small mb0">Field accuracy, WER by slice, the latency trace, simulated calls: each with its interval and its test set.</p></div>
+    <div class="card c-coral"><h4>3 · One failure · 3 min</h4><p class="small mb0">One failure from your log: the cause, the mitigation and the number before and after.</p></div>
   </div>
-  <div class="callout note mt"><b>Peer feedback.</b> After each talk, everyone writes one strength, one question and one suggestion.</div>
+  <div class="callout note mt"><b>In the questions,</b> the assessor gives you a call and a photo you have not seen; run your system on them.</div>
+  <aside class="notes"><p>Prepare the assessor's inputs before the day: one short audio file of a booking call with a correction in it, and one trail photo with a face and a sign. Synthetic or consented material only. Peer feedback after each talk: one strength, one question, one suggestion, written.</p></aside>
 </section>
 
 <section class="slide order" id="running-order" data-label="Running order">
@@ -58,14 +60,18 @@
   <div class="kicker">Before the first presentation</div>
   <h1>Final prep · 20 minutes</h1>
   <div class="timer" data-minutes="20"></div>
-  <p class="lead">Rehearse once, record a backup, try the demo on this screen.</p>
+  <p class="lead">Rehearse once, record a backup call, and run one photo and one call on this screen.</p>
   <aside class="notes">Press T to start the timer. Breaks are not slides: press B when the room needs one.</aside>
 </section>
 
 <section class="slide dark presenting" id="now-presenting" data-label="Now presenting">
   <div class="kicker center">Now presenting</div>
   <div class="center"><input placeholder="Presenter · project"></div>
-  <aside class="notes">Type the presenter's name and press T to start the timer. Reuse this slide for every presenter.</aside>
+  <div class="timers mt">
+    <div><h3>Presentation</h3><div class="timer" data-minutes="10"></div></div>
+    <div><h3>Questions</h3><div class="timer" data-minutes="5"></div></div>
+  </div>
+  <aside class="notes">Type the presenter's name and press T to start the timer. Reuse this slide for every presenter. In the questions, hand over the assessor's call and photo first, then ask about one failure from the log.</aside>
 </section>
 
 <section class="slide" id="review" data-label="Trainer review">
@@ -84,12 +90,15 @@
   <h2>Keep going</h2>
   <ul class="bullets">
     <li><b>Your project stays yours:</b> keep it reproducible and add the next improvement you named today</li>
-    <li><b>Next Academy course:</b> REPLACE: the course that follows this one</li>
+    <li><b>The follow-up task, within 30 days:</b> meet one condition from your decision record (for example the 90th percentile under budget) and send the new trace with its fingerprint</li>
+    <li><b>Next Academy course:</b> the catalog names no follow-on for this course; the AI Engineering track lists the related courses</li>
   </ul>
+  <aside class="notes"><p>The follow-up task is tracked: collect the links at 30 days. Synthetic, consented or anonymised material only: no real caller audio or visitor photos leave the participant's entity.</p></aside>
 </section>
 
 <section class="slide dark" id="thanks" data-label="Thank you">
   <div class="kicker">SDAIA Academy</div>
   <h1>Thank you</h1>
   <p class="lead">Multimodal and Speech Systems Engineering</p>
+  <aside class="notes">Thank the participants and the assessors; remind them where the course page and the labs stay available.</aside>
 </section>
