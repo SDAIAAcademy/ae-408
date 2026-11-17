@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="ai-engineering">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 4 · Evaluating and choosing · Multimodal and Speech Systems Engineering</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="day4.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Multimodal and Speech Systems Engineering" data-track="ai-engineering" data-day="Day 4">
+<!-- ======================= OPENING ======================= -->
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Multimodal and Speech Systems Engineering</div>
+  <h1>Evaluating and choosing</h1>
+  <p class="lead mt">Day 4: Test sets, simulated callers, the decision record and the data-handling note</p>
+  <div class="meta"><span class="track">AI Engineering Track</span><span>4 teaching days + capstone day</span><span>4 sessions · 4 labs</span><span>AE-408</span></div>
+  <aside class="notes"><p>Day 4 is about deciding. Three people in the case study need an answer by the end of the day: Wedad Al-Omari signs off on a test set, Fayyad Al-Ghamdi on the release candidate, Ghusoun Al-Mutlaq on the data-handling note. Ask the room which of the three they would least like to face with yesterday's numbers alone.</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">Today</div>
+  <h2>Evaluating and choosing</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · Multimodal test sets</b><small>A test set designed for coverage across modality, dialect and task, with its gaps stated</small></div></div><div class="item"><div><b>Session 2 · Simulated callers</b><small>Simulated callers with goals and behaviours, graded on outcome and on transcript</small></div></div><div class="item"><div><b>Session 3 · Choosing by quality, latency and cost</b><small>Open-weight or hosted, cascaded or speech-to-speech, decided on measured figures</small></div></div><div class="item"><div><b>Session 4 · Voice, faces and consent</b><small>Recordings and photos as personal data, and the disclosure callers hear</small></div></div></div>
+</section>
+
+<section class="slide" id="review-day3" data-lo="LO3" data-n="3">
+  <div class="kicker">Review of Day 3</div>
+  <h2>What did the booking turn cost?</h2>
+  <div class="quiz" data-type="single" data-lo="LO3" data-id="review-day3-q1">
+    <p class="lead">An ordinary turn reaches the caller in about 1,220 ms; the booking tool takes 900 ms. Rahhal says "one moment, I am booking that" at the normal time. When does the first audio of the booking turn arrive?</p>
+    <div class="opts">
+      <div class="opt" data-ok data-k="A">At about the time of an ordinary turn; the result follows when the tool returns</div>
+      <div class="opt" data-why="Adds the tool time even though the filler is spoken before the tool returns" data-k="B">At about 2,100 ms, after the tool returns</div>
+      <div class="opt" data-why="Believes a filler line removes the tool's time instead of covering it" data-k="C">At about 320 ms, because the filler replaces the pipeline</div>
+      <div class="opt" data-why="Thinks the tool must finish before any audio can play on a cascaded line" data-k="D">Only after the booking reference is known</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> In Lab 3.4 the booking turn took 2,135 ms in silence and 1,235 ms with a filler line. The filler covers the wait; it must not claim the result.</div>
+  </div>
+  <aside class="notes"><p>Answer: A. Use the answer to recall the three Day 3 controls that go into today's release candidate: the hold rule, the read-back with confirmation, and the honest filler. Session 2 tests that release candidate with simulated callers.</p></aside>
+</section>
+
+<!-- ======================= SESSION 1 ======================= -->
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="4">
+  <div class="kicker">Session 1</div>
+  <h1>Multimodal test sets</h1>
+  <ul class="bullets outcomes"><li>Define coverage targets across modality, dialect and task</li><li>Select a stratified test set from a pool of candidates</li><li>Report the coverage table and the gaps it leaves</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" data-label="Random set" id="random-set" data-lo="LO5" data-n="5" data-session="1">
+  <div class="kicker">Lab 4.1, a random 60 from the pool of 240</div>
+  <h2>A random test set copies the pool, including what the pool lacks</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">4</div><div class="lbl">southern callers in the random 60</div></div>
+    <div class="stat"><div class="big">2</div><div class="lbl">Egyptian callers</div></div>
+    <div class="stat"><div class="big">3 / 17</div><div class="lbl">seeded failures from the failure log</div></div>
+  </div>
+  <div class="callout warn mt"><b>What goes wrong.</b> Day 2 showed southern callers worse served; a test set with four of them cannot tell whether a fix helped.</div>
+  <aside class="notes"><p>The pool in data/test_pool.csv is synthetic labels over 240 items: 158 call recordings and 82 photos, with 8 southern and 7 Egyptian callers in total. The random draw uses a fixed seed, so every participant sees the same four. The sign-off question is not "how good is Rahhal on average" but "is it good enough for each group of callers and each task".</p></aside>
+</section>
+
+<section class="slide" data-label="Targets" id="targets-first" data-lo="LO5" data-n="6" data-session="1">
+  <div class="kicker">Write them before selecting</div>
+  <h2>Coverage targets state what the sign-off must be able to answer</h2>
+  <table class="t small">
+    <tr><th>Column</th><th>Target in the 60</th><th>Why</th></tr>
+    <tr><td>Modality</td><td>exactly 40 audio, 20 image</td><td>both services signed off together</td></tr>
+    <tr><td>Dialect</td><td>at least 5 of each of six</td><td>the error-rate report by dialect</td></tr>
+    <tr><td>Channel</td><td>at least 15 telephone</td><td>Rahhal is a phone line</td></tr>
+    <tr><td>Code-switched</td><td>at least 6</td><td>English words in Arabic calls</td></tr>
+    <tr><td>Seeded failures</td><td>at least 10</td><td>every mode of the failure log tested</td></tr>
+    <tr><td>Task</td><td>6 per audio task, 4 per image task</td><td>every task the services perform</td></tr>
+  </table>
+  <aside class="notes"><p>Nineteen targets in all. Written first, they say what the test set is for; chosen after seeing results, they can be set to flatter the system. Five per dialect is a floor for a coverage check, not enough for a precise rate: say so in the report, and use Day 2's intervals.</p></aside>
+</section>
+
+<section class="slide" data-label="Selection" id="greedy-selection" data-lo="LO5" data-n="7" data-session="1">
+  <div class="kicker">Lab 4.1, step 3</div>
+  <h2>Select the item that meets the most unmet targets, then fill at random</h2>
+  <div class="flow">
+    <div class="step c-navy"><b>1 · Score</b>count the unmet targets each item would meet</div>
+    <div class="arrow frag" data-frag="b">→</div><div class="step c-teal frag" data-frag="b"><b>2 · Take the best</b>within the modality quota</div>
+    <div class="arrow frag" data-frag="c">→</div><div class="step c-cyan frag" data-frag="c"><b>3 · Repeat</b>until every target is met</div>
+    <div class="arrow frag" data-frag="d">→</div><div class="step c-coral frag" data-frag="d"><b>4 · Fill</b>the rest at random, with a seed</div>
+  </div>
+  <div class="callout tip mt frag" data-frag="e"><b>Result.</b> 60 distinct items, every one of the 19 targets met. The random 60 missed five.</div>
+  <aside class="notes"><p>Press once per step. The greedy selection is simple on purpose: participants can explain every choice it made. The random 60 missed image count, southern, Egyptian, seeded failures and the extract-fields task. The seed on the fill makes the set reproducible, which the capstone requires.</p></aside>
+</section>
+
+<section class="slide" data-label="Coverage" id="coverage-table" data-lo="LO5" data-n="8" data-session="1">
+  <div class="kicker">Lab 4.1, the 40 audio items</div>
+  <h2>The coverage table goes in the report beside every result</h2>
+  <table class="t small">
+    <tr><th>Dialect</th><th class="num">Telephone</th><th class="num">Wideband</th><th class="num">All</th></tr>
+    <tr><td>Najdi</td><td class="num">6</td><td class="num">3</td><td class="num">9</td></tr>
+    <tr><td>Gulf</td><td class="num">5</td><td class="num">2</td><td class="num">7</td></tr>
+    <tr><td>MSA</td><td class="num">5</td><td class="num">2</td><td class="num">7</td></tr>
+    <tr><td>Hijazi</td><td class="num">4</td><td class="num">2</td><td class="num">6</td></tr>
+    <tr><td>Egyptian</td><td class="num">3</td><td class="num">3</td><td class="num">6</td></tr>
+    <tr class="hl"><td>Southern</td><td class="num">2</td><td class="num">3</td><td class="num">5</td></tr>
+  </table>
+  <aside class="notes"><p>The image items, 20 of them, are covered by task: 4 to 6 per image task. A reader of any result should be able to see how many items stand behind it: a rate for southern telephone callers rests on two items, which is a coverage fact, not a finding.</p></aside>
+</section>
+
+<section class="slide" data-label="Gaps" id="gaps" data-lo="LO5" data-n="9" data-session="1">
+  <div class="kicker">What no selection can fix</div>
+  <h2>Six dialect and task cells have fewer than three items in the whole pool</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>Dialect</th><th>Task</th><th class="num">Items in pool</th></tr>
+      <tr><td>Southern</td><td>book a visit</td><td class="num">1</td></tr>
+      <tr><td>Southern</td><td>cancel</td><td class="num">1</td></tr>
+      <tr><td>Egyptian</td><td>cancel</td><td class="num">1</td></tr>
+      <tr><td>Egyptian</td><td>book a visit</td><td class="num">2</td></tr>
+      <tr><td>Egyptian</td><td>change</td><td class="num">2</td></tr>
+      <tr><td>Egyptian</td><td>enquiry</td><td class="num">2</td></tr>
+    </table>
+    <div class="card c-coral flat"><h4>A gap is a data request</h4><p class="small mb0">Name it in the report and ask for recordings. Never fill a cell by copying items from a neighbouring one.</p></div>
+  </div>
+  <aside class="notes"><p>Southern callers booking a visit: one item in 240. Any claim about that group is not supported by this pool. In a real programme the request goes to the people who run the line, with consent for recording (Session 4). Public sets such as Common Voice can help for read speech but are no substitute for calls.</p></aside>
+</section>
+
+<section class="slide" data-label="Hold-out" id="hold-out" data-lo="LO5" data-n="10" data-session="1">
+  <div class="kicker">Lab 4.1 stretch</div>
+  <h2>Keep ten items that nobody tunes on</h2>
+  <ul class="bullets">
+    <li>Every threshold and rule of Day 3 was tuned on data you looked at; the hold-out is the check that it was not tuned to those items alone.</li>
+    <li>Stratify it too: a plain random 10 from the 60 held <b>no seeded failure</b>; one per modality on purpose gives two.</li>
+    <li>Look at the hold-out <b>once</b>, at the end, and report the result whatever it is.</li>
+  </ul>
+  <aside class="notes"><p>The numbers come from the stretch of Lab 4.1. Ten items cannot give a precise rate; the hold-out is a check for over-fitting, not a second benchmark. If the hold-out result is far below the tuned result, report both and say which settings were tuned.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-1" data-lo="LO5" data-n="11" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>What do you do with this cell?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5" data-id="checkpoint-1-q1">
+    <p class="lead">Your 60-item test set must report task success for southern callers booking a visit. The whole pool holds one such recording. What goes in the report?</p>
+    <div class="opts">
+      <div class="opt" data-why="Believes a result on one item is a rate" data-k="A">Task success for that group: 1/1, 100%</div>
+      <div class="opt" data-why="Fills a gap with items from another cell, which measures a different group" data-k="B">Five Najdi booking calls relabelled as southern</div>
+      <div class="opt" data-ok data-k="C">The cell as a named gap, with a request for recordings, and no rate for it</div>
+      <div class="opt" data-why="Thinks a missing group can be dropped from the scope without saying so" data-k="D">Nothing: leave southern booking calls out of the coverage table</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> One item gives no rate worth reporting, and borrowed items measure someone else. Naming the gap tells the reader what the sign-off does not cover.</div>
+  </div>
+  <aside class="notes"><p>Answer: C. B happens more often than people admit, usually as "close enough" dialects. D is the quiet version: the coverage table should show the empty cell, not hide it.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-4-1" data-auto="lab" data-lab="4.1" data-label="Lab 4.1" data-n="12" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 4.1 · 25 min</div><h2>Sixty items with coverage</h2><p class="lead small">Build a 60-item test set across image, audio and dialects from a pool of candidates, with a coverage table and its gaps.</p><a class="nb" href="../labs/D4_1_test_set.ipynb">D4_1_test_set.ipynb</a></div><ul class="checklist"><li>Read the pool of 240 candidates <span class="min">4 min</span></li><li>Write the coverage targets <span class="min">6 min</span></li><li>Select 60 items stratified by the targets <span class="min">8 min</span></li><li>The coverage table and its gaps <span class="min">7 min</span></li><li class="stretch">✱ Stretch: Hold out ten items that nobody tunes on</li></ul></div>
+  <aside class="notes"><p>Common problems: targets on the integer columns written as strings ("1" against 1); the greedy loop exceeding the modality quota; a fill without a seed, so two runs give different sets. Remind participants that the test set and its coverage table are capstone deliverables: the file goes to artifacts/D4_1.</p></aside>
+</section>
+
+<!-- ======================= SESSION 2 ======================= -->
+<section class="slide section" id="s2" data-auto="section" data-session="2" data-n="13">
+  <div class="kicker">Session 2</div>
+  <h1>Simulated callers</h1>
+  <ul class="bullets outcomes"><li>Write simulated callers with a goal, a dialect and a behaviour</li><li>Grade a call on its outcome in the booking store</li><li>Separate task failures from transcript errors</li></ul>
+  <div class="sess-no">02</div>
+</section>
+
+<section class="slide" data-label="A card" id="caller-card" data-lo="LO5" data-n="14" data-session="2">
+  <div class="kicker">A simulated caller</div>
+  <h2>A card gives a caller a goal, a dialect and a way of behaving</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="data/callers.jsonl"><code class="language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;caller_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;SC04&quot;</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;language&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;en&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;dialect&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;southern&quot;</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;behaviour&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;cooperative&quot;</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;goal&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;site_code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;HT-06&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-12-20&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;party_size&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">6</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;change_to&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">}</span></code></pre>
+    <div class="stack">
+      <div class="card c-teal flat"><h4>Six behaviours</h4><p class="small mb0">cooperative, long pauses, mumbles, code-switches, interrupts, changes their mind.</p></div>
+      <div class="card c-coral flat"><h4>Through the recogniser</h4><p class="small mb0">Every caller turn passes through a stand-in recogniser with errors by dialect: what Rahhal hears is not what the card says.</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Twenty cards: seven cooperative, three each code-switching, changing their mind and interrupting, two each with long pauses and mumbling. Cards are cheap to write, so write the callers who worry you: the one who corrects a date, the one who switches language mid-sentence. The scripted callers say exactly what the card says; the stretch lets a hosted model play the caller for variety.</p></aside>
+</section>
+
+<section class="slide" data-label="Grade the store" id="grade-the-store" data-lo="LO5" data-n="15" data-session="2">
+  <div class="kicker">What counts as success</div>
+  <h2>Grade the booking in the store, not what Rahhal said</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-coral"><h4>What Rahhal said</h4><p class="small mb0">"Booked. Your reference is HTB-1437." True that a booking exists; silent about which one.</p></div>
+    <div class="card c-teal"><h4>What the store holds</h4><p class="small mb0">Exactly one booking for the caller, matching site, date and party of the final goal, after any change of mind.</p></div>
+  </div>
+  <div class="callout tip mt"><b>Reasons, not just pass or fail:</b> no booking, duplicate, wrong site, wrong date, wrong party.</div>
+  <aside class="notes"><p>The same idea as Day 1's reference fields: compare with ground truth, not with the system's own claims. Grading from the store also catches the opposite failure, a booking Rahhal never announced. The reasons make the failure table useful to the engineer who has to fix it.</p></aside>
+</section>
+
+<section class="slide" data-label="Results" id="simulation-results" data-lo="LO5" data-n="16" data-session="2">
+  <div class="kicker">Lab 4.2, the release candidate</div>
+  <h2>Fourteen of twenty callers got the booking they confirmed</h2>
+  <div class="cols cols-2">
+    <div class="stat"><div class="big">14 / 20</div><div class="lbl">task success, 95% interval 0.48 to 0.85</div></div>
+    <table class="t small">
+      <tr><th>Behaviour</th><th class="num">Calls</th><th class="num">Failed</th></tr>
+      <tr class="hl"><td>changes their mind</td><td class="num">3</td><td class="num">3</td></tr>
+      <tr><td>cooperative</td><td class="num">7</td><td class="num">2</td></tr>
+      <tr><td>mumbles</td><td class="num">2</td><td class="num">1</td></tr>
+      <tr><td>code-switches</td><td class="num">3</td><td class="num">0</td></tr>
+      <tr><td>interrupts</td><td class="num">3</td><td class="num">0</td></tr>
+      <tr><td>long pauses</td><td class="num">2</td><td class="num">0</td></tr>
+    </table>
+  </div>
+  <aside class="notes"><p>Every failure has the same reason: wrong date. The two cooperative failures are a southern and an Egyptian caller whose date the recogniser misheard and who corrected it; the mumbling failure is a southern caller too. So "cooperative" hides a correction. Ask the room what the six have in common before the next slide: a date changed during the call.</p></aside>
+</section>
+
+<section class="slide" data-label="Two kinds of error" id="transcript-or-task" data-lo="LO5 LO3" data-n="17" data-session="2">
+  <div class="kicker">Separate the recogniser from the agent</div>
+  <h2>The recogniser's errors were caught; the agent lost the correction</h2>
+  <div class="cols cols-2">
+    <div class="stack">
+      <div class="stat"><div class="big">0.022</div><div class="lbl">transcript WER over all caller turns, said against heard</div></div>
+      <div class="stat"><div class="big">0.053</div><div class="lbl">for southern callers, the highest</div></div>
+    </div>
+    <div class="trace s">
+      <div class="ev user"><b>heard</b>Clay Village on 2026-12-23 for 6 people</div>
+      <div class="ev model"><b>Rahhal</b>To confirm: Clay Village, on 2026-12-23, for 6. Shall I book?</div>
+      <div class="ev user"><b>heard</b>no, on 2026-12-20</div>
+      <div class="ev model"><b>Rahhal</b>To confirm: Clay Village, on 2026-12-20, for 6. Shall I book?</div>
+      <div class="ev user"><b>heard</b>yes book it</div>
+      <div class="ev error"><b>store</b>HT-06, 2026-12-23, 6</div>
+    </div>
+  </div>
+  <aside class="notes"><p>Call SC04. The read-back worked: the caller heard the wrong date and corrected it, and the corrected date was read back. The tool was called with the slots first heard. This is the planted bug, stale_confirmation, the takeaway of Day 3 Session 4. Without the transcript error rate beside the task result, a team would blame the recogniser for southern callers and spend weeks on the wrong fix.</p></aside>
+</section>
+
+<section class="slide" data-label="After the fix" id="after-the-fix" data-lo="LO5" data-n="18" data-session="2">
+  <div class="kicker">The same twenty callers, after the fix</div>
+  <h2>Twenty of twenty, and still only a lower bound of 0.84</h2>
+  <ul class="bullets">
+    <li>The fix: book with the slots the caller <b>last confirmed</b>.</li>
+    <li>Re-run the <b>same</b> cards: a change that fixes one caller can break another.</li>
+    <li>20/20 has a 95% interval of 0.84 to 1.00: twenty scripts cannot show the line is ready.</li>
+    <li>Keep the cards as a <b>regression suite</b>: every future change runs them.</li>
+    <li>The same run writes the <b>per-stage latency trace</b> of the twenty calls: p90 2,086 ms.</li>
+  </ul>
+  <aside class="notes"><p>The Wilson interval for 20 of 20 starts at about 0.84. The latency trace of the twenty fixed calls (62 turns, Rahhal's modelled clock, no filler line): time to first audio p50 1,214 ms and p90 2,086 ms, 25 turns within 1,200 ms; the 90th percentile is the booking turns with the 900 ms tool. This trace is the voice agent's evidence for the capstone; Day 3's filler line and endpoint work are what bring it under budget. The point for the capstone: report the simulated result with its interval and its cards, and say what the scripts do not cover (real wording, noise, callers who give up). Frameworks such as Inspect can run such suites at scale; the labs keep it in plain Python.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-2" data-lo="LO5" data-n="19" data-session="2">
+  <div class="kicker">Checkpoint</div>
+  <h2>Whose error is it?</h2>
+  <div class="quiz" data-type="single" data-lo="LO5" data-id="checkpoint-2-q1">
+    <p class="lead">A caller says the 20th; the recogniser hears the 23rd; Rahhal reads back the 23rd; the caller says "no, the 20th"; Rahhal reads back the 20th; the caller says yes. The store holds the 23rd. What do you log?</p>
+    <div class="opts">
+      <div class="opt" data-why="Blames the recogniser for an error the read-back caught" data-k="A">A recogniser error on southern dates</div>
+      <div class="opt" data-why="Assumes the caller confirmed the wrong date" data-k="B">A caller error: they said yes to the wrong date</div>
+      <div class="opt" data-why="Treats a correct booking tool as the cause of wrong arguments" data-k="C">A tool error: the booking tool stored the wrong date</div>
+      <div class="opt" data-ok data-k="D">An agent error: the tool was called with the first-heard date, not the confirmed one</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The recogniser's error was caught by the read-back and the caller confirmed the right date. The agent passed stale slots to a tool that stored what it was given.</div>
+  </div>
+  <aside class="notes"><p>Answer: D. This is the separation the session outcome asks for: transcript errors against task failures. A and C are the two wrong fixes a team would otherwise try.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-4-2" data-auto="lab" data-lab="4.2" data-label="Lab 4.2" data-n="20" data-session="2">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 4.2 · 25 min</div><h2>Twenty simulated calls</h2><p class="lead small">Run 20 simulated calls against a provided agent and grade task success from the booking store and transcript errors from the recogniser.</p><a class="nb" href="../labs/D4_2_simulated_callers.ipynb">D4_2_simulated_callers.ipynb</a></div><ul class="checklist"><li>Read the 20 caller cards <span class="min">3 min</span></li><li>Run the calls against the agent <span class="min">8 min</span></li><li>Grade task success from the booking store <span class="min">7 min</span></li><li>Transcript errors, and failures by behaviour <span class="min">7 min</span></li><li class="stretch">✱ Stretch: Let a hosted model play the caller from the same card</li></ul></div>
+  <aside class="notes"><p>Common problems: one store shared across all twenty calls, so capacity from one caller affects another; grading against the card's first goal instead of the final one; computing the transcript WER on the agent's lines. Point early finishers to the stretch; without a key it prints the caller prompt only.</p></aside>
+</section>
+
+<!-- ======================= SESSION 3 ======================= -->
+<section class="slide section" id="s3" data-auto="section" data-session="3" data-n="21">
+  <div class="kicker">Session 3</div>
+  <h1>Choosing by quality, latency and cost</h1>
+  <ul class="bullets outcomes"><li>Compute cost per call for a self-hosted and a hosted pipeline</li><li>Compare pipelines on quality, latency and cost with their uncertainty</li><li>Write a decision record that a reviewer re-runs to the same figures</li></ul>
+  <div class="sess-no">03</div>
+</section>
+
+<section class="slide" data-label="Two pipelines" id="two-pipelines" data-lo="LO6" data-n="22" data-session="3">
+  <div class="kicker">Lab 4.3, 60 test calls each</div>
+  <h2>Two designs measured on the same calls</h2>
+  <table class="t small">
+    <tr><th></th><th>Cascaded, open-weight</th><th>Hosted speech-to-speech</th></tr>
+    <tr><td>How it is paid for</td><td>one rented node, 14,500 SAR a month, plus 0.02 SAR a minute</td><td>0.95 SAR a minute</td></tr>
+    <tr><td>Task success</td><td>51/60</td><td>54/60</td></tr>
+    <tr><td>WER</td><td>0.164</td><td>no transcript</td></tr>
+    <tr><td>Time to first audio, p50 / p90</td><td>980 / 1,690 ms</td><td>560 / 890 ms</td></tr>
+  </table>
+  <div class="callout warn mt"><b>The prices are illustrative,</b> supplied by the case study. Use your own quotes in a real decision.</div>
+  <aside class="notes"><p>data/pipelines.json. The measured results are synthetic but consistent with the rest of the course: the cascade is the Rahhal of Day 3 after streaming and the hold rule, still over budget at the 90th percentile. Do not let anyone quote these prices as a vendor's: they were chosen to make the trade visible.</p></aside>
+</section>
+
+<section class="slide" data-label="Cost per call" id="cost-per-call" data-lo="LO6" data-n="23" data-session="3">
+  <div class="kicker">Lab 4.3, step 2</div>
+  <h2>At 18,000 calls a month the cascade costs under a third as much per call</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">0.87 SAR</div><div class="lbl">cascaded, per call: 14,500 / 18,000 + 0.02 × 3.2</div></div>
+    <div class="stat"><div class="big">3.04 SAR</div><div class="lbl">hosted, per call: 0.95 × 3.2</div></div>
+    <div class="stat"><div class="big">4,872</div><div class="lbl">calls a month where the two cost the same</div></div>
+  </div>
+  <aside class="notes"><p>Monthly: 15,660 SAR against 54,720. The break-even solves fixed / N + 0.064 = 3.04 for N. Below it the hosted design is cheaper, because a rented node costs the same whether it takes ten calls or ten thousand. The stretch varies the volume and adds a second node above 60,000 calls a month.</p></aside>
+</section>
+
+<section class="slide" data-label="Volume" id="volume-curve" data-lo="LO6" data-n="24" data-session="3">
+  <div class="kicker">Lab 4.3 stretch, cost per call by volume</div>
+  <h2>The cheaper design depends on the volume you plan for</h2>
+  <div class="bars">
+    <div class="row"><span>3,000 calls</span><div class="bar c-coral" style="--w:100%"></div><span class="val">4.90 against 3.04: hosted</span></div>
+    <div class="row"><span>5,000 calls</span><div class="bar c-amber" style="--w:60%"></div><span class="val">2.96 against 3.04: cascaded</span></div>
+    <div class="row"><span>18,000 calls</span><div class="bar c-teal" style="--w:18%"></div><span class="val">0.87 against 3.04: cascaded</span></div>
+    <div class="row"><span>90,000 calls</span><div class="bar c-teal" style="--w:8%"></div><span class="val">0.39 (two nodes) against 3.04</span></div>
+  </div>
+  <p class="small mt">Bars show the cascaded cost per call; the hosted cost is 3.04 at every volume.</p>
+  <aside class="notes"><p>A pilot at 3,000 calls a month and a full launch at 18,000 can rationally use different designs. The decision record should say which volume it assumed, and the forecast behind it. Above 60,000 calls the cascade needs a second node, which is why 90,000 costs more per call than 60,000.</p></aside>
+</section>
+
+<section class="slide" data-label="Quality" id="quality-not-shown" data-lo="LO6" data-n="25" data-session="3">
+  <div class="kicker">Lab 4.3, step 3</div>
+  <h2>Task success is not shown to differ; latency is</h2>
+  <table class="t">
+    <tr><th>Pipeline</th><th class="num">Task success</th><th>95% interval</th><th class="num">p90 (ms)</th><th>p90 within 1,200?</th></tr>
+    <tr><td>Cascaded</td><td class="num">51/60</td><td>0.74 to 0.92</td><td class="num">1,690</td><td>no</td></tr>
+    <tr><td>Hosted</td><td class="num">54/60</td><td>0.80 to 0.95</td><td class="num">890</td><td>yes</td></tr>
+  </table>
+  <div class="callout note mt"><b>So the choice is latency against cost and control,</b> not quality against cost.</div>
+  <aside class="notes"><p>The same discipline as Day 2's slices: overlapping intervals mean the 60 calls do not show a difference in success. A larger test, or one weighted toward the gaps of Session 1, might. The latency difference is large and consistent with Day 3's traces.</p></aside>
+</section>
+
+<section class="slide" data-label="Decision record" id="decision-record" data-lo="LO6" data-n="26" data-session="3">
+  <div class="kicker">One page</div>
+  <h2>A decision record says what was chosen, why, and what would change it</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal flat"><h4>The lab's example</h4><p class="small mb0">Cascaded for the pilot, on condition that its p90 is brought under 1,200 ms before launch: success not shown to differ, under a third of the cost, a transcript for dialect slices and argument checks, audio on a node the authority controls.</p></div>
+    <div class="card c-coral flat"><h4>What would change it</h4><p class="small mb0">p90 still over budget after the Day 3 fixes; volume under about 4,900 calls a month; a larger test showing a difference in success.</p></div>
+  </div>
+  <aside class="notes"><p>This is one defensible reading, not the answer. A team that weighs the 90th percentile above cost can write the opposite record from the same figures. What the assessor looks for is that the reasons trace to the table and the conditions are testable.</p></aside>
+</section>
+
+<section class="slide" data-label="Fingerprint" id="fingerprint" data-lo="LO6" data-n="27" data-session="3">
+  <div class="kicker">Re-run to the same figures</div>
+  <h2>A fingerprint lets a reviewer check the figures without trusting them</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 4.3"><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fingerprint</span>(<span class="hljs-params">raw, table</span>):
+    data = raw + table.to_csv()
+    <span class="hljs-keyword">return</span> sha256(data.encode()).hexdigest()[:<span class="hljs-number">16</span>]
+
+<span class="hljs-comment"># Fingerprint: a0c892e8bf47525f</span></code></pre>
+    <ul class="bullets">
+      <li>The SHA-256 of the input file and the decision table.</li>
+      <li>A reviewer re-runs the notebook: the same fingerprint, or a difference to explain.</li>
+      <li>Line endings are normalised first, so Windows and Colab agree.</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>The course outcome asks for a record "that a reviewer re-runs to the same figures". The fingerprint makes that check one comparison. It proves the computation is repeatable, not that the inputs are right: the record still has to say where the measurements came from.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-3" data-lo="LO6" data-n="28" data-session="3">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which sentence belongs in the record?</h2>
+  <div class="quiz" data-type="single" data-lo="LO6" data-id="checkpoint-3-q1">
+    <p class="lead">Cascaded: 51/60 calls succeed, 0.87 SAR a call, p90 1,690 ms. Hosted: 54/60, 3.04 SAR a call, p90 890 ms. The intervals on success overlap. Which reason is sound?</p>
+    <div class="opts">
+      <div class="opt" data-why="Reads a point difference as a result when the intervals overlap" data-k="A">Hosted, because it succeeds on more calls</div>
+      <div class="opt" data-ok data-k="B">Success is not shown to differ, so the choice rests on latency against cost</div>
+      <div class="opt" data-why="Ignores that the cascaded design misses the latency budget at the 90th percentile" data-k="C">Cascaded, because it is cheaper and nothing else differs</div>
+      <div class="opt" data-why="Treats a cost per call as fixed when the cascade's depends on volume" data-k="D">Hosted, because per-minute pricing is always cheaper than a node</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The intervals overlap, so quality does not decide; the cascade misses the p90 budget and the hosted design costs about 3.5 times more at this volume. The record must weigh those two.</div>
+  </div>
+  <aside class="notes"><p>Answer: B. C is half right: cheaper, yes, but latency differs. D is false at 18,000 calls and true only below the break-even.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-4-3" data-auto="lab" data-lab="4.3" data-label="Lab 4.3" data-n="29" data-session="3">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 4.3 · 25 min</div><h2>The decision record</h2><p class="lead small">Compare open-weight and hosted pipelines on provided measurements, compute cost per call and draft a decision record that re-runs to the same figures.</p><a class="nb" href="../labs/D4_3_decision_record.ipynb">D4_3_decision_record.ipynb</a></div><ul class="checklist"><li>Load the measurements of two pipelines <span class="min">4 min</span></li><li>Cost per call and the break-even volume <span class="min">7 min</span></li><li>Quality, latency and cost in one table <span class="min">6 min</span></li><li>The decision record and its fingerprint <span class="min">8 min</span></li><li class="stretch">✱ Stretch: Change the call volume and see when the decision flips</li></ul></div>
+  <aside class="notes"><p>Common problems: cost per call using minutes per month instead of minutes per call; the break-even with the sign reversed; a fingerprint over a table that includes a timestamp, so it changes on every run. Ask each participant to write their own decision sentence before reading the lab's example.</p></aside>
+</section>
+
+<!-- ======================= SESSION 4 ======================= -->
+<section class="slide section" id="s4" data-auto="section" data-session="4" data-n="30">
+  <div class="kicker">Session 4</div>
+  <h1>Voice, faces and consent</h1>
+  <ul class="bullets outcomes"><li>Classify recordings, transcripts and photos and set their retention</li><li>Minimise what is stored: blur faces and redact transcripts</li><li>Write the synthetic-voice disclosure and test when callers hear it</li></ul>
+  <div class="sess-no">04</div>
+</section>
+
+<section class="slide" data-label="Inventory" id="inventory" data-lo="LO6" data-n="31" data-session="4">
+  <div class="kicker">Lab 4.4, step 1</div>
+  <h2>List what each service keeps, whether it identifies a person, and for how long</h2>
+  <table class="t small">
+    <tr><th>Item</th><th>Personal?</th><th>Class</th><th class="num">Keep (days)</th></tr>
+    <tr><td>Trail photo as uploaded</td><td>yes, faces: sensitive</td><td>confidential</td><td class="num">7</td></tr>
+    <tr><td>Photo with faces blurred</td><td>no</td><td>restricted</td><td class="num">365</td></tr>
+    <tr><td>Booking: name, phone, site, date, party</td><td>yes</td><td>confidential</td><td class="num">90</td></tr>
+    <tr class="hl"><td>Caller audio</td><td>yes, a voice: sensitive</td><td>confidential</td><td class="num">0</td></tr>
+    <tr><td>Full transcript</td><td>yes</td><td>confidential</td><td class="num">30</td></tr>
+    <tr><td>Redacted transcript</td><td>no</td><td>restricted</td><td class="num">365</td></tr>
+  </table>
+  <aside class="notes"><p>The classes and periods are the case study's choices, to be discussed against the Personal Data Protection Law, its implementing regulation and the national data classification policy; they are not legal advice, and the lab says so. A voice recording identifies a person; so does a face. The course treats voiceprints and faces as sensitive personal data, on top of the class: the two items that hold them are flagged sensitive and kept shortest, and the lab checks that. Keeping no audio means Day 2's evaluation cannot be repeated on production calls without a separate, consented collection: say that trade aloud.</p></aside>
+</section>
+
+<section class="slide" data-label="Faces" id="blur-faces" data-lo="LO6 LO4" data-n="32" data-session="4">
+  <div class="kicker">Lab 4.4, step 2</div>
+  <h2>Blur faces before storing, and test that the blur worked</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">24 / 60</div><div class="lbl">photos show at least one face, 29 faces in all</div></div>
+    <div class="stat"><div class="big">100%</div><div class="lbl">of faces with their pixel spread cut by more than half</div></div>
+    <div class="stat"><div class="big">0</div><div class="lbl">pixels changed outside the face boxes</div></div>
+  </div>
+  <div class="callout warn mt"><b>What goes wrong.</b> A blur that is never tested: a box drawn in the wrong coordinates leaves the face sharp and blurs a rock.</div>
+  <aside class="notes"><p>The lab uses the reference face boxes from refs.jsonl, so it tests the blur, not face detection. In production a detector finds the faces, and its misses are the risk: the failure log should count faces missed on a sample checked by a person. Lamha's incident needs the scene, not the people in it.</p></aside>
+</section>
+
+<section class="slide" data-label="Redaction" id="redaction" data-lo="LO6" data-n="33" data-session="4">
+  <div class="kicker">Lab 4.4, step 3</div>
+  <h2>Redact identifiers, and keep what the service needs</h2>
+  <div class="trace s">
+    <div class="ev user"><b>R01</b>my number is [PHONE] and I want to book Red Rock Path for four</div>
+    <div class="ev user"><b>R04</b><span class="ar">رقم الهوية [ID] والحجز باسم الوالد</span></div>
+    <div class="ev user"><b>R03</b>you can email me at [EMAIL] about the booking</div>
+    <div class="ev model"><b>R06 · code kept</b><span class="ar">أبي ألغي الحجز رقم HTB-4821</span></div>
+  </div>
+  <p class="small mt">Mobile numbers (05 and eight digits), ID numbers (ten digits starting 1 or 2) and email addresses. All ten sample lines clean.</p>
+  <aside class="notes"><p>The sample numbers are synthetic and the addresses use example domains. Patterns catch formats, not meaning: "my father's name is…" in R04 is still in the redacted text. That is why the redacted transcript is restricted, not public. Over-redaction is a failure too: a booking code removed is a caller who cannot cancel.</p></aside>
+</section>
+
+<section class="slide" data-label="Disclosure" id="disclosure" data-lo="LO6" data-n="34" data-session="4">
+  <div class="kicker">Lab 4.4, step 4</div>
+  <h2>The first thing every caller hears says the voice is generated</h2>
+  <div class="chat">
+    <div class="msg ai good"><span class="who">Arabic, 4.5 s</span><span class="ar">مسارات التراث. أنا رحّال، مساعد آلي بصوت مولّد.</span></div>
+    <div class="msg ai good"><span class="who">English, 4.9 s</span>This is Rahhal, an automated assistant with a generated voice.</div>
+  </div>
+  <div class="callout tip mt"><b>The case study's rule:</b> first, in the caller's language, under 6 seconds, before any question about a name or a number.</div>
+  <aside class="notes"><p>The national Deepfakes Guidelines ask that synthetic content be disclosed and labelled, and that a real person's voice or likeness not be used without consent; Rahhal uses a stock generated voice, not a cloned one. The lengths are the stand-in's estimates; with a Groq key the lab measures synthesised audio. Paraphrase the guidelines in class; do not quote them as legal text.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-4" data-lo="LO6" data-n="35" data-session="4">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which control answers the officer?</h2>
+  <div class="quiz" data-type="single" data-lo="LO6" data-id="checkpoint-4-q1">
+    <p class="lead">Ghusoun asks how Lamha avoids keeping images of visitors who happen to be in a trail photo. Which answer is complete?</p>
+    <div class="opts">
+      <div class="opt" data-ok data-k="A">Faces are blurred before storage, the blur is tested on every face box, and the original is deleted after seven days</div>
+      <div class="opt" data-why="Believes a policy statement is a control without any test" data-k="B">The terms of use tell visitors not to photograph people</div>
+      <div class="opt" data-why="Treats access control as a substitute for not keeping the data" data-k="C">Only rangers can open the photos</div>
+      <div class="opt" data-why="Assumes the model's own output removes personal data from the stored image" data-k="D">The model is told to ignore people when it extracts fields</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Minimising what is stored, testing that it worked, and limiting how long the original exists answers the question; the others leave the image of the visitor in storage.</div>
+  </div>
+  <aside class="notes"><p>Answer: A. C is a useful second layer, not the answer. D confuses the extracted fields with the stored photo: the model never touches the file in storage.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-4-4" data-auto="lab" data-lab="4.4" data-label="Lab 4.4" data-n="36" data-session="4">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 4.4 · 25 min</div><h2>The data-handling note</h2><p class="lead small">Write the data-handling note for recordings and photos and the synthetic-voice disclosure callers hear, with tests for blurring, redaction and disclosure timing.</p><a class="nb" href="../labs/D4_4_consent_note.ipynb">D4_4_consent_note.ipynb</a></div><ul class="checklist"><li>Inventory and classification of what the service keeps <span class="min">6 min</span></li><li>Blur faces in photos and check <span class="min">7 min</span></li><li>Redact transcripts and set retention <span class="min">6 min</span></li><li>The disclosure and when callers hear it <span class="min">6 min</span></li><li class="stretch">✱ Stretch: A consent withdrawal that deletes a caller's personal records</li></ul></div>
+  <aside class="notes"><p>Common problems: a face box blurred at a different width from the one the boxes were drawn at; a phone pattern that also matches the digits inside a booking code; a disclosure that grows past six seconds once a greeting is added. The stretch prints a deletion receipt that names what was deleted without repeating the data.</p></aside>
+</section>
+
+<!-- ======================= CLOSE ======================= -->
+<section class="slide" data-label="Wrap-up" id="wrap-up" data-n="37" data-session="4">
+  <div class="kicker">Day 4 · Three things to keep</div>
+  <h2>What to carry into the capstone</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Coverage before scores</h4><p class="small mb0">Targets first, a coverage table beside every result, and gaps named as data requests.</p></div>
+    <div class="card c-cyan"><h4>Grade the outcome</h4><p class="small mb0">Simulated callers graded from the store, with transcript errors kept apart from task failures.</p></div>
+    <div class="card c-coral"><h4>Decide on the record</h4><p class="small mb0">Cost per call at a stated volume, intervals on quality, a fingerprint, and a data-handling note.</p></div>
+  </div>
+  <aside class="notes"><p>The capstone brings the four days together. Ask each participant to name the one failure from their log they will explain at the defence: the assessor will ask for one.</p></aside>
+</section>
+
+<section class="slide dark" data-label="Next" id="next" data-n="38" data-session="4">
+  <div class="kicker">Next · Capstone</div>
+  <h2>Capstone: present the system you built and defend one failure</h2>
+  <ul class="bullets">
+    <li>A public repository: image pipeline, speech evaluation, voice agent, test set and simulation, traces and decision record.</li>
+    <li>A README that reports the measured results and links the script that reproduces them.</li>
+    <li>10 minutes of presentation and 5 of questions, with a call and a photo the assessor supplies.</li>
+  </ul>
+  <aside class="notes"><p>Remind participants that the lab artifacts (test set, graded calls, latency trace, threshold sweep, decision record) are the raw material. A participant whose labs ran on the stand-in must say so in the README; that is honest and acceptable.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-15T22:27:07Z","version":"2027.1.0","commit":"c687f48"},"course":{"id":"ae-408","code":"AE-408","title":"Multimodal and Speech Systems Engineering","track":"ai-engineering","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/ae-408/","repo":"SDAIAAcademy/ae-408","home":"../index.html"},"deck":{"id":"day4","kind":"day","day":4,"label":"Day 4","title":"Evaluating and choosing","prev":"day3.html","next":"capstone.html","md":"day4.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"Multimodal test sets","slide":"s1","outcomes":["Define coverage targets across modality, dialect and task","Select a stratified test set from a pool of candidates","Report the coverage table and the gaps it leaves"],"minutes":50,"lab":{"id":"4.1","title":"Sixty items with coverage","minutes":25,"href":"../labs/D4_1_test_set.ipynb"}},{"n":2,"label":"Session 2","title":"Simulated callers","slide":"s2","outcomes":["Write simulated callers with a goal, a dialect and a behaviour","Grade a call on its outcome in the booking store","Separate task failures from transcript errors"],"minutes":50,"lab":{"id":"4.2","title":"Twenty simulated calls","minutes":25,"href":"../labs/D4_2_simulated_callers.ipynb"}},{"n":3,"label":"Session 3","title":"Choosing by quality, latency and cost","slide":"s3","outcomes":["Compute cost per call for a self-hosted and a hosted pipeline","Compare pipelines on quality, latency and cost with their uncertainty","Write a decision record that a reviewer re-runs to the same figures"],"minutes":50,"lab":{"id":"4.3","title":"The decision record","minutes":25,"href":"../labs/D4_3_decision_record.ipynb"}},{"n":4,"label":"Session 4","title":"Voice, faces and consent","slide":"s4","outcomes":["Classify recordings, transcripts and photos and set their retention","Minimise what is stored: blur faces and redact transcripts","Write the synthetic-voice disclosure and test when callers hear it"],"minutes":50,"lab":{"id":"4.4","title":"The data-handling note","minutes":25,"href":"../labs/D4_4_consent_note.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Evaluating and choosing","kind":"title","session":0,"hash":"ea5f2bbd","md":"#### [day4#title] Evaluating and choosing\n\n*SDAIA Academy · Multimodal and Speech Systems Engineering*\n\nDay 4: Test sets, simulated callers, the decision record and the data-handling note\n\nAI Engineering Track · 4 teaching days + capstone day · 4 sessions · 4 labs · AE-408","notes":"Day 4 is about deciding. Three people in the case study need an answer by the end of the day: Wedad Al-Omari signs off on a test set, Fayyad Al-Ghamdi on the release candidate, Ghusoun Al-Mutlaq on the data-handling note. Ask the room which of the three they would least like to face with yesterday's numbers alone.","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Evaluating and choosing","kind":"content","session":0,"hash":"bc026d39","md":"#### [day4#agenda] Evaluating and choosing\n\n*Today*\n\n- **Session 1 · Multimodal test sets**: A test set designed for coverage across modality, dialect and task, with its gaps stated\n- **Session 2 · Simulated callers**: Simulated callers with goals and behaviours, graded on outcome and on transcript\n- **Session 3 · Choosing by quality, latency and cost**: Open-weight or hosted, cascaded or speech-to-speech, decided on measured figures\n- **Session 4 · Voice, faces and consent**: Recordings and photos as personal data, and the disclosure callers hear","notes":"","minutes":null,"lo":[]},{"id":"review-day3","n":3,"title":"What did the booking turn cost?","kind":"quiz","session":0,"hash":"39a403e1","md":"#### [day4#review-day3] What did the booking turn cost?\n\n*Review of Day 3*\n\n**Question:** An ordinary turn reaches the caller in about 1,220 ms; the booking tool takes 900 ms. Rahhal says \"one moment, I am booking that\" at the normal time. When does the first audio of the booking turn arrive?\n\n- A. At about the time of an ordinary turn; the result follows when the tool returns\n- B. At about 2,100 ms, after the tool returns\n- C. At about 320 ms, because the filler replaces the pipeline\n- D. Only after the booking reference is known","notes":"Answer: A. Use the answer to recall the three Day 3 controls that go into today's release candidate: the hold rule, the read-back with confirmation, and the honest filler. Session 2 tests that release candidate with simulated callers.","minutes":null,"lo":["LO3"]},{"id":"s1","n":4,"title":"Multimodal test sets","kind":"section","session":1,"hash":"421b121a","md":"#### [day4#s1] Multimodal test sets\n\n*Session 1*\n\n- Define coverage targets across modality, dialect and task\n- Select a stratified test set from a pool of candidates\n- Report the coverage table and the gaps it leaves","notes":"","minutes":null,"lo":["LO5"]},{"id":"random-set","n":5,"title":"A random test set copies the pool, including what the pool lacks","kind":"content","session":1,"hash":"db0c194b","md":"#### [day4#random-set] A random test set copies the pool, including what the pool lacks\n\n*Lab 4.1, a random 60 from the pool of 240*\n\n- **4** southern callers in the random 60\n- **2** Egyptian callers\n- **3 / 17** seeded failures from the failure log\n\n> **What goes wrong.** Day 2 showed southern callers worse served; a test set with four of them cannot tell whether a fix helped.","notes":"The pool in data/test_pool.csv is synthetic labels over 240 items: 158 call recordings and 82 photos, with 8 southern and 7 Egyptian callers in total. The random draw uses a fixed seed, so every participant sees the same four. The sign-off question is not \"how good is Rahhal on average\" but \"is it good enough for each group of callers and each task\".","minutes":null,"lo":["LO5"]},{"id":"targets-first","n":6,"title":"Coverage targets state what the sign-off must be able to answer","kind":"content","session":1,"hash":"daaf5f6e","md":"#### [day4#targets-first] Coverage targets state what the sign-off must be able to answer\n\n*Write them before selecting*\n\n| Column | Target in the 60 | Why |\n| --- | --- | --- |\n| Modality | exactly 40 audio, 20 image | both services signed off together |\n| Dialect | at least 5 of each of six | the error-rate report by dialect |\n| Channel | at least 15 telephone | Rahhal is a phone line |\n| Code-switched | at least 6 | English words in Arabic calls |\n| Seeded failures | at least 10 | every mode of the failure log tested |\n| Task | 6 per audio task, 4 per image task | every task the services perform |","notes":"Nineteen targets in all. Written first, they say what the test set is for; chosen after seeing results, they can be set to flatter the system. Five per dialect is a floor for a coverage check, not enough for a precise rate: say so in the report, and use Day 2's intervals.","minutes":null,"lo":["LO5"]},{"id":"greedy-selection","n":7,"title":"Select the item that meets the most unmet targets, then fill at random","kind":"content","session":1,"hash":"9698b4ea","md":"#### [day4#greedy-selection] Select the item that meets the most unmet targets, then fill at random\n\n*Lab 4.1, step 3*\n\n1. **1 · Score** count the unmet targets each item would meet\n2. **2 · Take the best** within the modality quota\n3. **3 · Repeat** until every target is met\n4. **4 · Fill** the rest at random, with a seed\n\n> **Result.** 60 distinct items, every one of the 19 targets met. The random 60 missed five.","notes":"Press once per step. The greedy selection is simple on purpose: participants can explain every choice it made. The random 60 missed image count, southern, Egyptian, seeded failures and the extract-fields task. The seed on the fill makes the set reproducible, which the capstone requires.","minutes":null,"lo":["LO5"]},{"id":"coverage-table","n":8,"title":"The coverage table goes in the report beside every result","kind":"content","session":1,"hash":"0611d025","md":"#### [day4#coverage-table] The coverage table goes in the report beside every result\n\n*Lab 4.1, the 40 audio items*\n\n| Dialect | Telephone | Wideband | All |\n| --- | --- | --- | --- |\n| Najdi | 6 | 3 | 9 |\n| Gulf | 5 | 2 | 7 |\n| MSA | 5 | 2 | 7 |\n| Hijazi | 4 | 2 | 6 |\n| Egyptian | 3 | 3 | 6 |\n| Southern | 2 | 3 | 5 |","notes":"The image items, 20 of them, are covered by task: 4 to 6 per image task. A reader of any result should be able to see how many items stand behind it: a rate for southern telephone callers rests on two items, which is a coverage fact, not a finding.","minutes":null,"lo":["LO5"]},{"id":"gaps","n":9,"title":"Six dialect and task cells have fewer than three items in the whole pool","kind":"content","session":1,"hash":"f54f2921","md":"#### [day4#gaps] Six dialect and task cells have fewer than three items in the whole pool\n\n*What no selection can fix*\n\n| Dialect | Task | Items in pool |\n| --- | --- | --- |\n| Southern | book a visit | 1 |\n| Southern | cancel | 1 |\n| Egyptian | cancel | 1 |\n| Egyptian | book a visit | 2 |\n| Egyptian | change | 2 |\n| Egyptian | enquiry | 2 |\n\n- **A gap is a data request.** Name it in the report and ask for recordings. Never fill a cell by copying items from a neighbouring one.","notes":"Southern callers booking a visit: one item in 240. Any claim about that group is not supported by this pool. In a real programme the request goes to the people who run the line, with consent for recording (Session 4). Public sets such as Common Voice can help for read speech but are no substitute for calls.","minutes":null,"lo":["LO5"]},{"id":"hold-out","n":10,"title":"Keep ten items that nobody tunes on","kind":"content","session":1,"hash":"4d42dfa9","md":"#### [day4#hold-out] Keep ten items that nobody tunes on\n\n*Lab 4.1 stretch*\n\n- Every threshold and rule of Day 3 was tuned on data you looked at; the hold-out is the check that it was not tuned to those items alone.\n- Stratify it too: a plain random 10 from the 60 held **no seeded failure**; one per modality on purpose gives two.\n- Look at the hold-out **once**, at the end, and report the result whatever it is.","notes":"The numbers come from the stretch of Lab 4.1. Ten items cannot give a precise rate; the hold-out is a check for over-fitting, not a second benchmark. If the hold-out result is far below the tuned result, report both and say which settings were tuned.","minutes":null,"lo":["LO5"]},{"id":"checkpoint-1","n":11,"title":"What do you do with this cell?","kind":"quiz","session":1,"hash":"8f8447da","md":"#### [day4#checkpoint-1] What do you do with this cell?\n\n*Checkpoint*\n\n**Question:** Your 60-item test set must report task success for southern callers booking a visit. The whole pool holds one such recording. What goes in the report?\n\n- A. Task success for that group: 1/1, 100%\n- B. Five Najdi booking calls relabelled as southern\n- C. The cell as a named gap, with a request for recordings, and no rate for it\n- D. Nothing: leave southern booking calls out of the coverage table","notes":"Answer: C. B happens more often than people admit, usually as \"close enough\" dialects. D is the quiet version: the coverage table should show the empty cell, not hide it.","minutes":null,"lo":["LO5"]},{"id":"lab-4-1","n":12,"title":"Sixty items with coverage","kind":"lab","session":1,"hash":"d8908ff9","md":"#### [day4#lab-4-1] Sixty items with coverage\n\nLab 4.1 · 25 min\n\nBuild a 60-item test set across image, audio and dialects from a pool of candidates, with a coverage table and its gaps.\n\n[D4_1_test_set.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D4_1_test_set.ipynb)\n\n- [ ] Read the pool of 240 candidates (4 min)\n- [ ] Write the coverage targets (6 min)\n- [ ] Select 60 items stratified by the targets (8 min)\n- [ ] The coverage table and its gaps (7 min)\n- [ ] ✱ Stretch: Hold out ten items that nobody tunes on","notes":"Common problems: targets on the integer columns written as strings (\"1\" against 1); the greedy loop exceeding the modality quota; a fill without a seed, so two runs give different sets. Remind participants that the test set and its coverage table are capstone deliverables: the file goes to artifacts/D4_1.","minutes":null,"lo":[]},{"id":"s2","n":13,"title":"Simulated callers","kind":"section","session":2,"hash":"b24c5581","md":"#### [day4#s2] Simulated callers\n\n*Session 2*\n\n- Write simulated callers with a goal, a dialect and a behaviour\n- Grade a call on its outcome in the booking store\n- Separate task failures from transcript errors","notes":"","minutes":null,"lo":["LO5","LO3"]},{"id":"caller-card","n":14,"title":"A card gives a caller a goal, a dialect and a way of behaving","kind":"content","session":2,"hash":"ff3fec9f","md":"#### [day4#caller-card] A card gives a caller a goal, a dialect and a way of behaving\n\n*A simulated caller*\n\n```json\n// file: data/callers.jsonl\n{\"caller_id\": \"SC04\",\n \"language\": \"en\", \"dialect\": \"southern\",\n \"behaviour\": \"cooperative\",\n \"goal\": {\"site_code\": \"HT-06\",\n          \"date\": \"2026-12-20\",\n          \"party_size\": 6},\n \"change_to\": null}\n```\n\n- **Six behaviours.** cooperative, long pauses, mumbles, code-switches, interrupts, changes their mind.\n- **Through the recogniser.** Every caller turn passes through a stand-in recogniser with errors by dialect: what Rahhal hears is not what the card says.","notes":"Twenty cards: seven cooperative, three each code-switching, changing their mind and interrupting, two each with long pauses and mumbling. Cards are cheap to write, so write the callers who worry you: the one who corrects a date, the one who switches language mid-sentence. The scripted callers say exactly what the card says; the stretch lets a hosted model play the caller for variety.","minutes":null,"lo":["LO5"]},{"id":"grade-the-store","n":15,"title":"Grade the booking in the store, not what Rahhal said","kind":"content","session":2,"hash":"6ba7f718","md":"#### [day4#grade-the-store] Grade the booking in the store, not what Rahhal said\n\n*What counts as success*\n\n- **What Rahhal said.** \"Booked. Your reference is HTB-1437.\" True that a booking exists; silent about which one.\n- **What the store holds.** Exactly one booking for the caller, matching site, date and party of the final goal, after any change of mind.\n\n> **Reasons, not just pass or fail:** no booking, duplicate, wrong site, wrong date, wrong party.","notes":"The same idea as Day 1's reference fields: compare with ground truth, not with the system's own claims. Grading from the store also catches the opposite failure, a booking Rahhal never announced. The reasons make the failure table useful to the engineer who has to fix it.","minutes":null,"lo":["LO5"]},{"id":"simulation-results","n":16,"title":"Fourteen of twenty callers got the booking they confirmed","kind":"content","session":2,"hash":"f0c09a5b","md":"#### [day4#simulation-results] Fourteen of twenty callers got the booking they confirmed\n\n*Lab 4.2, the release candidate*\n\n**14 / 20** task success, 95% interval 0.48 to 0.85\n\n| Behaviour | Calls | Failed |\n| --- | --- | --- |\n| changes their mind | 3 | 3 |\n| cooperative | 7 | 2 |\n| mumbles | 2 | 1 |\n| code-switches | 3 | 0 |\n| interrupts | 3 | 0 |\n| long pauses | 2 | 0 |","notes":"Every failure has the same reason: wrong date. The two cooperative failures are a southern and an Egyptian caller whose date the recogniser misheard and who corrected it; the mumbling failure is a southern caller too. So \"cooperative\" hides a correction. Ask the room what the six have in common before the next slide: a date changed during the call.","minutes":null,"lo":["LO5"]},{"id":"transcript-or-task","n":17,"title":"The recogniser's errors were caught; the agent lost the correction","kind":"content","session":2,"hash":"ab796921","md":"#### [day4#transcript-or-task] The recogniser's errors were caught; the agent lost the correction\n\n*Separate the recogniser from the agent*\n\n- **0.022** transcript WER over all caller turns, said against heard\n- **0.053** for southern callers, the highest\n\n- heard: Clay Village on 2026-12-23 for 6 people\n- Rahhal: To confirm: Clay Village, on 2026-12-23, for 6. Shall I book?\n- heard: no, on 2026-12-20\n- Rahhal: To confirm: Clay Village, on 2026-12-20, for 6. Shall I book?\n- heard: yes book it\n- store: HT-06, 2026-12-23, 6","notes":"Call SC04. The read-back worked: the caller heard the wrong date and corrected it, and the corrected date was read back. The tool was called with the slots first heard. This is the planted bug, stale_confirmation, the takeaway of Day 3 Session 4. Without the transcript error rate beside the task result, a team would blame the recogniser for southern callers and spend weeks on the wrong fix.","minutes":null,"lo":["LO5","LO3"]},{"id":"after-the-fix","n":18,"title":"Twenty of twenty, and still only a lower bound of 0.84","kind":"content","session":2,"hash":"20a79ba9","md":"#### [day4#after-the-fix] Twenty of twenty, and still only a lower bound of 0.84\n\n*The same twenty callers, after the fix*\n\n- The fix: book with the slots the caller **last confirmed**.\n- Re-run the **same** cards: a change that fixes one caller can break another.\n- 20/20 has a 95% interval of 0.84 to 1.00: twenty scripts cannot show the line is ready.\n- Keep the cards as a **regression suite**: every future change runs them.\n- The same run writes the **per-stage latency trace** of the twenty calls: p90 2,086 ms.","notes":"The Wilson interval for 20 of 20 starts at about 0.84. The latency trace of the twenty fixed calls (62 turns, Rahhal's modelled clock, no filler line): time to first audio p50 1,214 ms and p90 2,086 ms, 25 turns within 1,200 ms; the 90th percentile is the booking turns with the 900 ms tool. This trace is the voice agent's evidence for the capstone; Day 3's filler line and endpoint work are what bring it under budget. The point for the capstone: report the simulated result with its interval and its cards, and say what the scripts do not cover (real wording, noise, callers who give up). Frameworks such as Inspect can run such suites at scale; the labs keep it in plain Python.","minutes":null,"lo":["LO5"]},{"id":"checkpoint-2","n":19,"title":"Whose error is it?","kind":"quiz","session":2,"hash":"51cc07d1","md":"#### [day4#checkpoint-2] Whose error is it?\n\n*Checkpoint*\n\n**Question:** A caller says the 20th; the recogniser hears the 23rd; Rahhal reads back the 23rd; the caller says \"no, the 20th\"; Rahhal reads back the 20th; the caller says yes. The store holds the 23rd. What do you log?\n\n- A. A recogniser error on southern dates\n- B. A caller error: they said yes to the wrong date\n- C. A tool error: the booking tool stored the wrong date\n- D. An agent error: the tool was called with the first-heard date, not the confirmed one","notes":"Answer: D. This is the separation the session outcome asks for: transcript errors against task failures. A and C are the two wrong fixes a team would otherwise try.","minutes":null,"lo":["LO5"]},{"id":"lab-4-2","n":20,"title":"Twenty simulated calls","kind":"lab","session":2,"hash":"4a6dbd6a","md":"#### [day4#lab-4-2] Twenty simulated calls\n\nLab 4.2 · 25 min\n\nRun 20 simulated calls against a provided agent and grade task success from the booking store and transcript errors from the recogniser.\n\n[D4_2_simulated_callers.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D4_2_simulated_callers.ipynb)\n\n- [ ] Read the 20 caller cards (3 min)\n- [ ] Run the calls against the agent (8 min)\n- [ ] Grade task success from the booking store (7 min)\n- [ ] Transcript errors, and failures by behaviour (7 min)\n- [ ] ✱ Stretch: Let a hosted model play the caller from the same card","notes":"Common problems: one store shared across all twenty calls, so capacity from one caller affects another; grading against the card's first goal instead of the final one; computing the transcript WER on the agent's lines. Point early finishers to the stretch; without a key it prints the caller prompt only.","minutes":null,"lo":[]},{"id":"s3","n":21,"title":"Choosing by quality, latency and cost","kind":"section","session":3,"hash":"20e7d126","md":"#### [day4#s3] Choosing by quality, latency and cost\n\n*Session 3*\n\n- Compute cost per call for a self-hosted and a hosted pipeline\n- Compare pipelines on quality, latency and cost with their uncertainty\n- Write a decision record that a reviewer re-runs to the same figures","notes":"","minutes":null,"lo":["LO6"]},{"id":"two-pipelines","n":22,"title":"Two designs measured on the same calls","kind":"content","session":3,"hash":"d0a9056b","md":"#### [day4#two-pipelines] Two designs measured on the same calls\n\n*Lab 4.3, 60 test calls each*\n\n|  | Cascaded, open-weight | Hosted speech-to-speech |\n| --- | --- | --- |\n| How it is paid for | one rented node, 14,500 SAR a month, plus 0.02 SAR a minute | 0.95 SAR a minute |\n| Task success | 51/60 | 54/60 |\n| WER | 0.164 | no transcript |\n| Time to first audio, p50 / p90 | 980 / 1,690 ms | 560 / 890 ms |\n\n> **The prices are illustrative,** supplied by the case study. Use your own quotes in a real decision.","notes":"data/pipelines.json. The measured results are synthetic but consistent with the rest of the course: the cascade is the Rahhal of Day 3 after streaming and the hold rule, still over budget at the 90th percentile. Do not let anyone quote these prices as a vendor's: they were chosen to make the trade visible.","minutes":null,"lo":["LO6"]},{"id":"cost-per-call","n":23,"title":"At 18,000 calls a month the cascade costs under a third as much per call","kind":"content","session":3,"hash":"f778eab7","md":"#### [day4#cost-per-call] At 18,000 calls a month the cascade costs under a third as much per call\n\n*Lab 4.3, step 2*\n\n- **0.87 SAR** cascaded, per call: 14,500 / 18,000 + 0.02 × 3.2\n- **3.04 SAR** hosted, per call: 0.95 × 3.2\n- **4,872** calls a month where the two cost the same","notes":"Monthly: 15,660 SAR against 54,720. The break-even solves fixed / N + 0.064 = 3.04 for N. Below it the hosted design is cheaper, because a rented node costs the same whether it takes ten calls or ten thousand. The stretch varies the volume and adds a second node above 60,000 calls a month.","minutes":null,"lo":["LO6"]},{"id":"volume-curve","n":24,"title":"The cheaper design depends on the volume you plan for","kind":"content","session":3,"hash":"e79ca57b","md":"#### [day4#volume-curve] The cheaper design depends on the volume you plan for\n\n*Lab 4.3 stretch, cost per call by volume*\n\n| Item | Value |\n| --- | --- |\n| 3,000 calls | 4.90 against 3.04: hosted |\n| 5,000 calls | 2.96 against 3.04: cascaded |\n| 18,000 calls | 0.87 against 3.04: cascaded |\n| 90,000 calls | 0.39 (two nodes) against 3.04 |\n\nBars show the cascaded cost per call; the hosted cost is 3.04 at every volume.","notes":"A pilot at 3,000 calls a month and a full launch at 18,000 can rationally use different designs. The decision record should say which volume it assumed, and the forecast behind it. Above 60,000 calls the cascade needs a second node, which is why 90,000 costs more per call than 60,000.","minutes":null,"lo":["LO6"]},{"id":"quality-not-shown","n":25,"title":"Task success is not shown to differ; latency is","kind":"content","session":3,"hash":"e85708f1","md":"#### [day4#quality-not-shown] Task success is not shown to differ; latency is\n\n*Lab 4.3, step 3*\n\n| Pipeline | Task success | 95% interval | p90 (ms) | p90 within 1,200? |\n| --- | --- | --- | --- | --- |\n| Cascaded | 51/60 | 0.74 to 0.92 | 1,690 | no |\n| Hosted | 54/60 | 0.80 to 0.95 | 890 | yes |\n\n> **So the choice is latency against cost and control,** not quality against cost.","notes":"The same discipline as Day 2's slices: overlapping intervals mean the 60 calls do not show a difference in success. A larger test, or one weighted toward the gaps of Session 1, might. The latency difference is large and consistent with Day 3's traces.","minutes":null,"lo":["LO6"]},{"id":"decision-record","n":26,"title":"A decision record says what was chosen, why, and what would change it","kind":"content","session":3,"hash":"33e6e20d","md":"#### [day4#decision-record] A decision record says what was chosen, why, and what would change it\n\n*One page*\n\n- **The lab's example.** Cascaded for the pilot, on condition that its p90 is brought under 1,200 ms before launch: success not shown to differ, under a third of the cost, a transcript for dialect slices and argument checks, audio on a node the authority controls.\n- **What would change it.** p90 still over budget after the Day 3 fixes; volume under about 4,900 calls a month; a larger test showing a difference in success.","notes":"This is one defensible reading, not the answer. A team that weighs the 90th percentile above cost can write the opposite record from the same figures. What the assessor looks for is that the reasons trace to the table and the conditions are testable.","minutes":null,"lo":["LO6"]},{"id":"fingerprint","n":27,"title":"A fingerprint lets a reviewer check the figures without trusting them","kind":"content","session":3,"hash":"df43dbfd","md":"#### [day4#fingerprint] A fingerprint lets a reviewer check the figures without trusting them\n\n*Re-run to the same figures*\n\n```python\n# file: Lab 4.3\ndef fingerprint(raw, table):\n    data = raw + table.to_csv()\n    return sha256(data.encode()).hexdigest()[:16]\n\n# Fingerprint: a0c892e8bf47525f\n```\n\n- The SHA-256 of the input file and the decision table.\n- A reviewer re-runs the notebook: the same fingerprint, or a difference to explain.\n- Line endings are normalised first, so Windows and Colab agree.","notes":"The course outcome asks for a record \"that a reviewer re-runs to the same figures\". The fingerprint makes that check one comparison. It proves the computation is repeatable, not that the inputs are right: the record still has to say where the measurements came from.","minutes":null,"lo":["LO6"]},{"id":"checkpoint-3","n":28,"title":"Which sentence belongs in the record?","kind":"quiz","session":3,"hash":"f855fd97","md":"#### [day4#checkpoint-3] Which sentence belongs in the record?\n\n*Checkpoint*\n\n**Question:** Cascaded: 51/60 calls succeed, 0.87 SAR a call, p90 1,690 ms. Hosted: 54/60, 3.04 SAR a call, p90 890 ms. The intervals on success overlap. Which reason is sound?\n\n- A. Hosted, because it succeeds on more calls\n- B. Success is not shown to differ, so the choice rests on latency against cost\n- C. Cascaded, because it is cheaper and nothing else differs\n- D. Hosted, because per-minute pricing is always cheaper than a node","notes":"Answer: B. C is half right: cheaper, yes, but latency differs. D is false at 18,000 calls and true only below the break-even.","minutes":null,"lo":["LO6"]},{"id":"lab-4-3","n":29,"title":"The decision record","kind":"lab","session":3,"hash":"6e5c734f","md":"#### [day4#lab-4-3] The decision record\n\nLab 4.3 · 25 min\n\nCompare open-weight and hosted pipelines on provided measurements, compute cost per call and draft a decision record that re-runs to the same figures.\n\n[D4_3_decision_record.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D4_3_decision_record.ipynb)\n\n- [ ] Load the measurements of two pipelines (4 min)\n- [ ] Cost per call and the break-even volume (7 min)\n- [ ] Quality, latency and cost in one table (6 min)\n- [ ] The decision record and its fingerprint (8 min)\n- [ ] ✱ Stretch: Change the call volume and see when the decision flips","notes":"Common problems: cost per call using minutes per month instead of minutes per call; the break-even with the sign reversed; a fingerprint over a table that includes a timestamp, so it changes on every run. Ask each participant to write their own decision sentence before reading the lab's example.","minutes":null,"lo":[]},{"id":"s4","n":30,"title":"Voice, faces and consent","kind":"section","session":4,"hash":"3fc51f87","md":"#### [day4#s4] Voice, faces and consent\n\n*Session 4*\n\n- Classify recordings, transcripts and photos and set their retention\n- Minimise what is stored: blur faces and redact transcripts\n- Write the synthetic-voice disclosure and test when callers hear it","notes":"","minutes":null,"lo":["LO6","LO4"]},{"id":"inventory","n":31,"title":"List what each service keeps, whether it identifies a person, and for how long","kind":"content","session":4,"hash":"074cc57f","md":"#### [day4#inventory] List what each service keeps, whether it identifies a person, and for how long\n\n*Lab 4.4, step 1*\n\n| Item | Personal? | Class | Keep (days) |\n| --- | --- | --- | --- |\n| Trail photo as uploaded | yes, faces: sensitive | confidential | 7 |\n| Photo with faces blurred | no | restricted | 365 |\n| Booking: name, phone, site, date, party | yes | confidential | 90 |\n| Caller audio | yes, a voice: sensitive | confidential | 0 |\n| Full transcript | yes | confidential | 30 |\n| Redacted transcript | no | restricted | 365 |","notes":"The classes and periods are the case study's choices, to be discussed against the Personal Data Protection Law, its implementing regulation and the national data classification policy; they are not legal advice, and the lab says so. A voice recording identifies a person; so does a face. The course treats voiceprints and faces as sensitive personal data, on top of the class: the two items that hold them are flagged sensitive and kept shortest, and the lab checks that. Keeping no audio means Day 2's evaluation cannot be repeated on production calls without a separate, consented collection: say that trade aloud.","minutes":null,"lo":["LO6"]},{"id":"blur-faces","n":32,"title":"Blur faces before storing, and test that the blur worked","kind":"content","session":4,"hash":"e57ee7c4","md":"#### [day4#blur-faces] Blur faces before storing, and test that the blur worked\n\n*Lab 4.4, step 2*\n\n- **24 / 60** photos show at least one face, 29 faces in all\n- **100%** of faces with their pixel spread cut by more than half\n- **0** pixels changed outside the face boxes\n\n> **What goes wrong.** A blur that is never tested: a box drawn in the wrong coordinates leaves the face sharp and blurs a rock.","notes":"The lab uses the reference face boxes from refs.jsonl, so it tests the blur, not face detection. In production a detector finds the faces, and its misses are the risk: the failure log should count faces missed on a sample checked by a person. Lamha's incident needs the scene, not the people in it.","minutes":null,"lo":["LO6","LO4"]},{"id":"redaction","n":33,"title":"Redact identifiers, and keep what the service needs","kind":"content","session":4,"hash":"d5c2500f","md":"#### [day4#redaction] Redact identifiers, and keep what the service needs\n\n*Lab 4.4, step 3*\n\n- R01: my number is [PHONE] and I want to book Red Rock Path for four\n- R04: رقم الهوية [ID] والحجز باسم الوالد\n- R03: you can email me at [EMAIL] about the booking\n- R06 · code kept: أبي ألغي الحجز رقم HTB-4821\n\nMobile numbers (05 and eight digits), ID numbers (ten digits starting 1 or 2) and email addresses. All ten sample lines clean.","notes":"The sample numbers are synthetic and the addresses use example domains. Patterns catch formats, not meaning: \"my father's name is…\" in R04 is still in the redacted text. That is why the redacted transcript is restricted, not public. Over-redaction is a failure too: a booking code removed is a caller who cannot cancel.","minutes":null,"lo":["LO6"]},{"id":"disclosure","n":34,"title":"The first thing every caller hears says the voice is generated","kind":"content","session":4,"hash":"cf21eeda","md":"#### [day4#disclosure] The first thing every caller hears says the voice is generated\n\n*Lab 4.4, step 4*\n\n**Arabic, 4.5 s (good example):** مسارات التراث. أنا رحّال، مساعد آلي بصوت مولّد.\n\n**English, 4.9 s (good example):** This is Rahhal, an automated assistant with a generated voice.\n\n> **The case study's rule:** first, in the caller's language, under 6 seconds, before any question about a name or a number.","notes":"The national Deepfakes Guidelines ask that synthetic content be disclosed and labelled, and that a real person's voice or likeness not be used without consent; Rahhal uses a stock generated voice, not a cloned one. The lengths are the stand-in's estimates; with a Groq key the lab measures synthesised audio. Paraphrase the guidelines in class; do not quote them as legal text.","minutes":null,"lo":["LO6"]},{"id":"checkpoint-4","n":35,"title":"Which control answers the officer?","kind":"quiz","session":4,"hash":"3a5ddee8","md":"#### [day4#checkpoint-4] Which control answers the officer?\n\n*Checkpoint*\n\n**Question:** Ghusoun asks how Lamha avoids keeping images of visitors who happen to be in a trail photo. Which answer is complete?\n\n- A. Faces are blurred before storage, the blur is tested on every face box, and the original is deleted after seven days\n- B. The terms of use tell visitors not to photograph people\n- C. Only rangers can open the photos\n- D. The model is told to ignore people when it extracts fields","notes":"Answer: A. C is a useful second layer, not the answer. D confuses the extracted fields with the stored photo: the model never touches the file in storage.","minutes":null,"lo":["LO6"]},{"id":"lab-4-4","n":36,"title":"The data-handling note","kind":"lab","session":4,"hash":"3f69375b","md":"#### [day4#lab-4-4] The data-handling note\n\nLab 4.4 · 25 min\n\nWrite the data-handling note for recordings and photos and the synthetic-voice disclosure callers hear, with tests for blurring, redaction and disclosure timing.\n\n[D4_4_consent_note.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D4_4_consent_note.ipynb)\n\n- [ ] Inventory and classification of what the service keeps (6 min)\n- [ ] Blur faces in photos and check (7 min)\n- [ ] Redact transcripts and set retention (6 min)\n- [ ] The disclosure and when callers hear it (6 min)\n- [ ] ✱ Stretch: A consent withdrawal that deletes a caller's personal records","notes":"Common problems: a face box blurred at a different width from the one the boxes were drawn at; a phone pattern that also matches the digits inside a booking code; a disclosure that grows past six seconds once a greeting is added. The stretch prints a deletion receipt that names what was deleted without repeating the data.","minutes":null,"lo":[]},{"id":"wrap-up","n":37,"title":"What to carry into the capstone","kind":"content","session":4,"hash":"841acff2","md":"#### [day4#wrap-up] What to carry into the capstone\n\n*Day 4 · Three things to keep*\n\n- **Coverage before scores.** Targets first, a coverage table beside every result, and gaps named as data requests.\n- **Grade the outcome.** Simulated callers graded from the store, with transcript errors kept apart from task failures.\n- **Decide on the record.** Cost per call at a stated volume, intervals on quality, a fingerprint, and a data-handling note.","notes":"The capstone brings the four days together. Ask each participant to name the one failure from their log they will explain at the defence: the assessor will ask for one.","minutes":null,"lo":[]},{"id":"next","n":38,"title":"Capstone: present the system you built and defend one failure","kind":"content","session":4,"hash":"9d595fba","md":"#### [day4#next] Capstone: present the system you built and defend one failure\n\n*Next · Capstone*\n\n- A public repository: image pipeline, speech evaluation, voice agent, test set and simulation, traces and decision record.\n- A README that reports the measured results and links the script that reproduces them.\n- 10 minutes of presentation and 5 of questions, with a call and a photo the assessor supplies.","notes":"Remind participants that the lab artifacts (test set, graded calls, latency trace, threshold sweep, decision record) are the raw material. A participant whose labs ran on the stand-in must say so in the README; that is honest and acceptable.","minutes":null,"lo":[]}],"activities":[{"id":"review-day3-q1","slide":"review-day3","type":"single","prompt":"An ordinary turn reaches the caller in about 1,220 ms; the booking tool takes 900 ms. Rahhal says \"one moment, I am booking that\" at the normal time. When does the first audio of the booking turn arrive?","options":[{"key":"A","text":"At about the time of an ordinary turn; the result follows when the tool returns"},{"key":"B","text":"At about 2,100 ms, after the tool returns"},{"key":"C","text":"At about 320 ms, because the filler replaces the pipeline"},{"key":"D","text":"Only after the booking reference is known"}],"correct":[0],"explanation":"In Lab 3.4 the booking turn took 2,135 ms in silence and 1,235 ms with a filler line. The filler covers the wait; it must not claim the result.","misconceptions":["","Adds the tool time even though the filler is spoken before the tool returns","Believes a filler line removes the tool's time instead of covering it","Thinks the tool must finish before any audio can play on a cascaded line"],"lo":["LO3"]},{"id":"checkpoint-1-q1","slide":"checkpoint-1","type":"single","prompt":"Your 60-item test set must report task success for southern callers booking a visit. The whole pool holds one such recording. What goes in the report?","options":[{"key":"A","text":"Task success for that group: 1/1, 100%"},{"key":"B","text":"Five Najdi booking calls relabelled as southern"},{"key":"C","text":"The cell as a named gap, with a request for recordings, and no rate for it"},{"key":"D","text":"Nothing: leave southern booking calls out of the coverage table"}],"correct":[2],"explanation":"One item gives no rate worth reporting, and borrowed items measure someone else. Naming the gap tells the reader what the sign-off does not cover.","misconceptions":["Believes a result on one item is a rate","Fills a gap with items from another cell, which measures a different group","","Thinks a missing group can be dropped from the scope without saying so"],"lo":["LO5"]},{"id":"checkpoint-2-q1","slide":"checkpoint-2","type":"single","prompt":"A caller says the 20th; the recogniser hears the 23rd; Rahhal reads back the 23rd; the caller says \"no, the 20th\"; Rahhal reads back the 20th; the caller says yes. The store holds the 23rd. What do you log?","options":[{"key":"A","text":"A recogniser error on southern dates"},{"key":"B","text":"A caller error: they said yes to the wrong date"},{"key":"C","text":"A tool error: the booking tool stored the wrong date"},{"key":"D","text":"An agent error: the tool was called with the first-heard date, not the confirmed one"}],"correct":[3],"explanation":"The recogniser's error was caught by the read-back and the caller confirmed the right date. The agent passed stale slots to a tool that stored what it was given.","misconceptions":["Blames the recogniser for an error the read-back caught","Assumes the caller confirmed the wrong date","Treats a correct booking tool as the cause of wrong arguments",""],"lo":["LO5"]},{"id":"checkpoint-3-q1","slide":"checkpoint-3","type":"single","prompt":"Cascaded: 51/60 calls succeed, 0.87 SAR a call, p90 1,690 ms. Hosted: 54/60, 3.04 SAR a call, p90 890 ms. The intervals on success overlap. Which reason is sound?","options":[{"key":"A","text":"Hosted, because it succeeds on more calls"},{"key":"B","text":"Success is not shown to differ, so the choice rests on latency against cost"},{"key":"C","text":"Cascaded, because it is cheaper and nothing else differs"},{"key":"D","text":"Hosted, because per-minute pricing is always cheaper than a node"}],"correct":[1],"explanation":"The intervals overlap, so quality does not decide; the cascade misses the p90 budget and the hosted design costs about 3.5 times more at this volume. The record must weigh those two.","misconceptions":["Reads a point difference as a result when the intervals overlap","","Ignores that the cascaded design misses the latency budget at the 90th percentile","Treats a cost per call as fixed when the cascade's depends on volume"],"lo":["LO6"]},{"id":"checkpoint-4-q1","slide":"checkpoint-4","type":"single","prompt":"Ghusoun asks how Lamha avoids keeping images of visitors who happen to be in a trail photo. Which answer is complete?","options":[{"key":"A","text":"Faces are blurred before storage, the blur is tested on every face box, and the original is deleted after seven days"},{"key":"B","text":"The terms of use tell visitors not to photograph people"},{"key":"C","text":"Only rangers can open the photos"},{"key":"D","text":"The model is told to ignore people when it extracts fields"}],"correct":[0],"explanation":"Minimising what is stored, testing that it worked, and limiting how long the original exists answers the question; the others leave the image of the visitor in storage.","misconceptions":["","Believes a policy statement is a control without any test","Treats access control as a substitute for not keeping the data","Assumes the model's own output removes personal data from the stored image"],"lo":["LO6"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"day4.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

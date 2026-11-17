@@ -1,0 +1,1030 @@
+{
+  "v": 1,
+  "engine": "1.0.0",
+  "build": {
+    "at": "2026-11-15T22:27:07Z",
+    "version": "2027.1.0",
+    "commit": "c687f48"
+  },
+  "lang": "en",
+  "dir": "ltr",
+  "langs": [
+    "en"
+  ],
+  "alt": {},
+  "course": {
+    "id": "ae-408",
+    "code": "AE-408",
+    "version": "2027.1.0",
+    "title": "Multimodal and Speech Systems Engineering",
+    "tagline": "Build and evaluate applications that see, listen and speak in Arabic and English, and choose their design on measured quality, latency and cost",
+    "description": "Participants build and evaluate applications that see, listen and speak, with Arabic as the main case. For the fictional Heritage Trails Authority they extract grounded fields from visitor and ranger photos with vision-language models, benchmark open-weight speech recognisers on dialects and code-switched speech, test synthesised read-back, and assemble a bilingual voice booking line with turn-taking, interruption and tool calls within a latency budget. They test it with simulated callers and choose between open-weight and hosted, cascaded and speech-to-speech designs on measured quality, latency and cost. Photos are public-domain or synthetic; calls use synthetic voices and public speech corpora.",
+    "track": "ai-engineering",
+    "track_name": "AI Engineering Track",
+    "level": 400,
+    "badge": {
+      "name": "AI Engineering",
+      "level": "Expert"
+    },
+    "audience": "Specialists. Engineers who have completed the level 300 core and the practicum, or can show equivalent work: an AI system they built, operated and defended in review.",
+    "prerequisites": [
+      "AE-301 Applied Natural Language Processing Engineering",
+      "AE-303 Evaluation-Driven Development for Language Model Applications",
+      "Has built a language model application with structured outputs and tool calls",
+      "Computes precision, recall and an error rate with an interval",
+      "Setup: a laptop CPU with uv, or Google Colab. Every lab runs without a key on supplied inputs and a scripted stand-in; free keys for OpenRouter and Groq let the model-calling labs use hosted open-weight models. Nothing downloads a model. See labs/README.md."
+    ],
+    "url": "https://sdaiaacademy.github.io/ae-408/",
+    "repo": "SDAIAAcademy/ae-408",
+    "home": "../index.html",
+    "format": "intensive",
+    "format_note": "Intensive: 4 teaching days of four sessions and a capstone day, with guided pre-work and a tracked follow-up task",
+    "shape": "4 teaching days + capstone day",
+    "hours": {
+      "instruction": 6,
+      "lab": 7,
+      "guided_self_study": 6,
+      "assessment": 1,
+      "capstone": 6,
+      "total": 26
+    },
+    "unit": "day",
+    "outcomes": [
+      {
+        "id": "LO1",
+        "text": "Implement image applications with vision-language models that return validated structured fields grounded in the image, given 60 visitor and ranger photos with reference fields and boxes",
+        "level": "Applied",
+        "evidence": "an extraction pipeline with field accuracy and grounding scores on the test set"
+      },
+      {
+        "id": "LO2",
+        "text": "Evaluate speech recognisers on Arabic dialects and code-switched speech with explicit normalisation rules, given two open-weight recognisers and a sliced set of public and synthetic clips",
+        "level": "Performance",
+        "evidence": "an error-rate report by dialect and channel with intervals and the normalisation rules used"
+      },
+      {
+        "id": "LO3",
+        "text": "Build a bilingual voice agent that handles turn-taking, interruption and confirmed tool calls within a latency budget, given a booking tool and a budget for time to first audio",
+        "level": "Performance",
+        "evidence": "a running agent with per-stage latency traces from twenty scripted calls"
+      },
+      {
+        "id": "LO4",
+        "text": "Diagnose failure modes specific to image and audio inputs, including invented objects, text produced on silence and instructions hidden in images, given seeded failing inputs for each modality",
+        "level": "Performance",
+        "evidence": "a failure log with causes and a mitigation tested for each mode"
+      },
+      {
+        "id": "LO5",
+        "text": "Design a multimodal test set and an end-to-end evaluation with simulated callers, given the full booking and reporting system",
+        "level": "Performance",
+        "evidence": "a test set with a coverage table across modality, dialect and task, and graded results"
+      },
+      {
+        "id": "LO6",
+        "text": "Decide between open-weight and hosted, cascaded and speech-to-speech designs on quality, latency and cost per call, given measured results for two pipelines",
+        "level": "Performance",
+        "evidence": "a one-page decision record with the measurements and a script that a reviewer re-runs to the same figures"
+      }
+    ],
+    "case_study": {
+      "name": "Heritage Trails Authority",
+      "summary": "Heritage Trails Authority is a fictional authority that runs twelve heritage sites and trails, with a photo-reporting service for visitors and rangers (Lamha) and a bilingual voice line for booking guided visits (Rahhal). Participants extract grounded fields from 60 synthetic trail photos, benchmark two open-weight recognisers on 50 sliced clips, build and trace the booking line, test it with simulated callers and write the decision record; all photos, clips, traces and measurements are synthetic and generated with a fixed seed, and no real voice is used."
+    },
+    "days": [
+      {
+        "id": "day1",
+        "kind": "day",
+        "n": 1,
+        "number": 1,
+        "label": "Day 1",
+        "title": "Seeing",
+        "subtitle": "Vision-language models that return validated fields grounded in the photo",
+        "shape": "4 sessions · 4 labs",
+        "deck": "../slides/day1.html",
+        "md": "../slides/day1.md",
+        "url": "https://sdaiaacademy.github.io/ae-408/slides/day1.html",
+        "sessions": [
+          {
+            "n": 1,
+            "label": "Session 1",
+            "title": "How a vision-language model sees",
+            "summary": "Images become visual tokens: resolution trades cost and latency against what the model can read",
+            "outcomes": [
+              "Explain how an image becomes visual tokens and what resolution costs",
+              "Measure tokens, latency and accuracy for one question at three resolutions",
+              "Choose the cheapest resolution that meets an accuracy target"
+            ],
+            "lo": [
+              "LO1"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "1.1",
+              "title": "One question, three resolutions",
+              "summary": "Ask for the trail-marker code on 20 photos at three resolutions, and measure tokens, latency and accuracy to choose the cheapest resolution that meets the target.",
+              "minutes": 25,
+              "href": "../labs/D1_1_resolution_tokens.ipynb",
+              "steps": [
+                {
+                  "text": "Load the photos, the question and the reference codes",
+                  "minutes": 4
+                },
+                {
+                  "text": "Send each photo at three resolutions; record tokens and latency",
+                  "minutes": 7
+                },
+                {
+                  "text": "Score the answers against the reference codes",
+                  "minutes": 7
+                },
+                {
+                  "text": "One table and the cheapest resolution that reaches 90%",
+                  "minutes": 7
+                }
+              ],
+              "stretch": "Crop the marker region and ask again at the lowest resolution"
+            }
+          },
+          {
+            "n": 2,
+            "label": "Session 2",
+            "title": "Structured extraction from photos",
+            "summary": "From a photo to a validated incident record, with an open-weight and a hosted model",
+            "outcomes": [
+              "Write a schema whose fields and enums catch wrong extractions",
+              "Validate and repair a model reply once before giving up",
+              "Compare two models on field accuracy, cost and latency"
+            ],
+            "lo": [
+              "LO1"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "1.2",
+              "title": "Validated incident fields",
+              "summary": "Extract validated incident fields from 30 photos with an open-weight and a hosted model, repair invalid replies once, and compare field accuracy per model and per field.",
+              "minutes": 25,
+              "href": "../labs/D1_2_incident_fields.ipynb",
+              "steps": [
+                {
+                  "text": "The incident schema with enums and validators",
+                  "minutes": 6
+                },
+                {
+                  "text": "Extract from 30 photos with two models, one repair each",
+                  "minutes": 8
+                },
+                {
+                  "text": "Field accuracy per model and per field",
+                  "minutes": 6
+                },
+                {
+                  "text": "Cost and latency per photo",
+                  "minutes": 5
+                }
+              ],
+              "stretch": "Let the schema say \"unknown\" and count how many guesses it removes"
+            }
+          },
+          {
+            "n": 3,
+            "label": "Session 3",
+            "title": "Grounding answers in pixels",
+            "summary": "Boxes and points tie an answer to the image, and probes catch objects that are not there",
+            "outcomes": [
+              "Compute intersection over union and match boxes to references",
+              "Report box precision and recall at a stated threshold",
+              "Probe for invented objects on scenes that do not contain them"
+            ],
+            "lo": [
+              "LO1",
+              "LO4"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "1.3",
+              "title": "Boxes and invented objects",
+              "summary": "Score returned boxes against reference boxes with intersection over union, and flag answers about objects that are not in the photo.",
+              "minutes": 25,
+              "href": "../labs/D1_3_grounding_boxes.ipynb",
+              "steps": [
+                {
+                  "text": "Intersection over union for two boxes",
+                  "minutes": 6
+                },
+                {
+                  "text": "Match boxes and report precision and recall at 0.5",
+                  "minutes": 7
+                },
+                {
+                  "text": "Ask about absent objects and flag invented ones",
+                  "minutes": 7
+                },
+                {
+                  "text": "A grounding score per model",
+                  "minutes": 5
+                }
+              ],
+              "stretch": "Score point answers: does each point fall inside its reference box?"
+            }
+          },
+          {
+            "n": 4,
+            "label": "Session 4",
+            "title": "Arabic text and hidden instructions",
+            "summary": "Reading Arabic signage, and treating text inside an image as data, not instructions",
+            "outcomes": [
+              "Compute character error rate for Arabic text read from images",
+              "Explain how an instruction hidden in an image reaches the model",
+              "Test a mitigation against an injected instruction and log the result"
+            ],
+            "lo": [
+              "LO1",
+              "LO4"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "1.4",
+              "title": "Signage and an injected instruction",
+              "summary": "Read twelve Arabic signs, compute character error rate, and test two photos that carry an injected instruction before and after a mitigation.",
+              "minutes": 25,
+              "href": "../labs/D1_4_signage_injection.ipynb",
+              "steps": [
+                {
+                  "text": "Read twelve signs and compute character error rate",
+                  "minutes": 8
+                },
+                {
+                  "text": "Error rate by text size: where reading fails",
+                  "minutes": 5
+                },
+                {
+                  "text": "Run two photos that carry an instruction",
+                  "minutes": 6
+                },
+                {
+                  "text": "Add a mitigation and test again",
+                  "minutes": 6
+                }
+              ],
+              "stretch": "Hide the instruction in Arabic and in small print, and test again"
+            }
+          }
+        ]
+      },
+      {
+        "id": "day2",
+        "kind": "day",
+        "n": 2,
+        "number": 2,
+        "label": "Day 2",
+        "title": "Listening",
+        "subtitle": "Speech recognition measured by dialect, channel and code-switching, with explicit normalisation",
+        "shape": "4 sessions · 4 labs",
+        "deck": "../slides/day2.html",
+        "md": "../slides/day2.md",
+        "url": "https://sdaiaacademy.github.io/ae-408/slides/day2.html",
+        "sessions": [
+          {
+            "n": 1,
+            "label": "Session 1",
+            "title": "From waveform to text",
+            "summary": "How recognisers turn audio into words, and how word error rate counts their mistakes",
+            "outcomes": [
+              "Describe the path from waveform to features to text in two recogniser families",
+              "Compute word error rate from an alignment of substitutions, deletions and insertions",
+              "Explain why corpus error rate differs from the mean of clip error rates"
+            ],
+            "lo": [
+              "LO2"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "2.1",
+              "title": "Two recognisers, 50 clips",
+              "summary": "Run two open-weight recognisers on 50 clips (or replay their recorded transcripts) and compute word error rates with your own alignment and with jiwer.",
+              "minutes": 25,
+              "href": "../labs/D2_1_two_recognisers.ipynb",
+              "steps": [
+                {
+                  "text": "Load the clips and their references",
+                  "minutes": 4
+                },
+                {
+                  "text": "Transcribe with two recognisers, or replay",
+                  "minutes": 6
+                },
+                {
+                  "text": "Word error rate from your own alignment, checked with jiwer",
+                  "minutes": 8
+                },
+                {
+                  "text": "Corpus against mean error rate, and the worst clips",
+                  "minutes": 7
+                }
+              ],
+              "stretch": "Character error rate beside word error rate for the same clips"
+            }
+          },
+          {
+            "n": 2,
+            "label": "Session 2",
+            "title": "Normalisation decides the error rate",
+            "summary": "Arabic normalisation rules, written down, change the numbers and the ranking",
+            "outcomes": [
+              "Write explicit Arabic normalisation rules for diacritics, letter variants and numerals",
+              "Recompute error rates under each rule set and explain the change",
+              "Spot a rule that hides a real recognition error"
+            ],
+            "lo": [
+              "LO2"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "2.2",
+              "title": "Rules before rates",
+              "summary": "Apply three sets of Arabic normalisation rules to supplied transcripts, recompute the error rates and see the ranking of the two recognisers change. AI off.",
+              "minutes": 25,
+              "href": "../labs/D2_2_normalisation.ipynb",
+              "steps": [
+                {
+                  "text": "Write the rules: diacritics, alef, ta marbuta, alef maqsura, tatweel, digits",
+                  "minutes": 10
+                },
+                {
+                  "text": "Recompute error rates under three rule sets",
+                  "minutes": 7
+                },
+                {
+                  "text": "Which rule moved the rate, and the ranking",
+                  "minutes": 5
+                },
+                {
+                  "text": "Save the rules file the report will cite",
+                  "minutes": 3
+                }
+              ],
+              "stretch": "Find a pair of words the rules merge that mean different things"
+            }
+          },
+          {
+            "n": 3,
+            "label": "Session 3",
+            "title": "Dialects and code-switching",
+            "summary": "Error rates by slice with intervals, so weaker service for some speakers is visible",
+            "outcomes": [
+              "Slice error rates by dialect, channel and code-switching",
+              "Add clip-level bootstrap intervals to each slice",
+              "Decide which slice differences are real given their size"
+            ],
+            "lo": [
+              "LO2"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "2.3",
+              "title": "Slices with intervals",
+              "summary": "Slice error rates by dialect, channel and code-switched speech, add bootstrap intervals and flag the slices that are worse than the whole set.",
+              "minutes": 25,
+              "href": "../labs/D2_3_dialect_slices.ipynb",
+              "steps": [
+                {
+                  "text": "Error rate per dialect, channel and code-switching",
+                  "minutes": 7
+                },
+                {
+                  "text": "A clip-level bootstrap interval per slice",
+                  "minutes": 10
+                },
+                {
+                  "text": "Flag the slices that are worse, with a minimum size",
+                  "minutes": 5
+                },
+                {
+                  "text": "The report table",
+                  "minutes": 3
+                }
+              ],
+              "stretch": "Cross dialect with channel and read what the small cells can say"
+            }
+          },
+          {
+            "n": 4,
+            "label": "Session 4",
+            "title": "Streaming and silence",
+            "summary": "Streaming recognition with voice activity detection, and the text a recogniser writes on silence",
+            "outcomes": [
+              "Detect speech frames with an energy-based voice activity detector",
+              "Stream segments to a recogniser and measure when text arrives",
+              "Catch and suppress text produced on silent segments"
+            ],
+            "lo": [
+              "LO2",
+              "LO4"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "2.4",
+              "title": "Text on silence",
+              "summary": "Stream a synthetic call through voice activity detection to a recogniser and catch the text it produces on silent segments.",
+              "minutes": 25,
+              "href": "../labs/D2_4_streaming_silence.ipynb",
+              "steps": [
+                {
+                  "text": "An energy detector over 20 ms frames",
+                  "minutes": 8
+                },
+                {
+                  "text": "Stream speech segments and time the partial results",
+                  "minutes": 6
+                },
+                {
+                  "text": "Catch text produced on silent segments",
+                  "minutes": 7
+                },
+                {
+                  "text": "Count before and after the gate",
+                  "minutes": 4
+                }
+              ],
+              "stretch": "Tune the hangover and see what it does to cut-off words"
+            }
+          }
+        ]
+      },
+      {
+        "id": "day3",
+        "kind": "day",
+        "n": 3,
+        "number": 3,
+        "label": "Day 3",
+        "title": "Speaking",
+        "subtitle": "A bilingual voice booking line with read-back, turn-taking and tool calls in a latency budget",
+        "shape": "4 sessions · 4 labs",
+        "deck": "../slides/day3.html",
+        "md": "../slides/day3.md",
+        "url": "https://sdaiaacademy.github.io/ae-408/slides/day3.html",
+        "sessions": [
+          {
+            "n": 1,
+            "label": "Session 1",
+            "title": "Synthesis and read-back",
+            "summary": "Speaking names, numbers, dates and booking codes so that callers hear them right",
+            "outcomes": [
+              "Write spoken forms of dates, party sizes and booking codes in Arabic and English",
+              "Chunk a booking code so that it can be heard and repeated",
+              "Score a listening test by category with intervals"
+            ],
+            "lo": [
+              "LO3"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "3.1",
+              "title": "Read-back that callers understand",
+              "summary": "Turn booking confirmations into spoken Arabic and English, synthesise them, and score a short listening test on names, numbers and dates.",
+              "minutes": 25,
+              "href": "../labs/D3_1_readback.ipynb",
+              "steps": [
+                {
+                  "text": "Spoken forms of dates, numbers and codes in two languages",
+                  "minutes": 10
+                },
+                {
+                  "text": "Chunk the booking code for the ear",
+                  "minutes": 4
+                },
+                {
+                  "text": "Synthesise and check the spoken length",
+                  "minutes": 4
+                },
+                {
+                  "text": "Listening-test accuracy by category, with intervals",
+                  "minutes": 7
+                }
+              ],
+              "stretch": "Spell an unusual name letter by letter and test it again"
+            }
+          },
+          {
+            "n": 2,
+            "label": "Session 2",
+            "title": "Cascaded versus speech-to-speech",
+            "summary": "Where the time to first audio goes in a cascaded agent, and what a speech-to-speech session changes",
+            "outcomes": [
+              "Trace per-stage latency of a cascaded voice agent",
+              "Compute time to first audio at the median and the 90th percentile",
+              "Compare a cascaded and a speech-to-speech design on the same calls"
+            ],
+            "lo": [
+              "LO3",
+              "LO6"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "3.2",
+              "title": "Where the time goes",
+              "summary": "Trace per-stage latency of a cascaded agent over 20 turns and compare time to first audio with provided traces of a speech-to-speech session.",
+              "minutes": 25,
+              "href": "../labs/D3_2_latency_trace.ipynb",
+              "steps": [
+                {
+                  "text": "Read the traces into stages",
+                  "minutes": 5
+                },
+                {
+                  "text": "Per-stage time and time to first audio, median and 90th percentile",
+                  "minutes": 8
+                },
+                {
+                  "text": "The same for the speech-to-speech traces",
+                  "minutes": 6
+                },
+                {
+                  "text": "What streaming the first sentence would save",
+                  "minutes": 6
+                }
+              ],
+              "stretch": "Allocate the budget of 1,200 ms across stages and test it"
+            }
+          },
+          {
+            "n": 3,
+            "label": "Session 3",
+            "title": "Turn-taking and interruption",
+            "summary": "When the caller has finished, when to stop talking, and the trade between cut-ins and slow replies",
+            "outcomes": [
+              "Explain end-of-turn detection by silence and by content",
+              "Count false cut-ins and late or missed turns for a threshold",
+              "Handle a caller who interrupts the agent"
+            ],
+            "lo": [
+              "LO3"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "3.3",
+              "title": "Tune the end of a turn",
+              "summary": "Tune end-of-turn detection on scripted calls and count false cut-ins and missed turns for each threshold.",
+              "minutes": 25,
+              "href": "../labs/D3_3_end_of_turn.ipynb",
+              "steps": [
+                {
+                  "text": "Replay the scripted calls frame by frame",
+                  "minutes": 5
+                },
+                {
+                  "text": "An end-of-turn rule on silence",
+                  "minutes": 7
+                },
+                {
+                  "text": "Sweep the threshold: cut-ins against late turns",
+                  "minutes": 8
+                },
+                {
+                  "text": "Hold the turn when the caller is mid-number",
+                  "minutes": 5
+                }
+              ],
+              "stretch": "Stop the agent within 300 ms when the caller talks over it"
+            }
+          },
+          {
+            "n": 4,
+            "label": "Session 4",
+            "title": "Tool calls during speech",
+            "summary": "Confirm the key fields aloud, then call the booking tool, and keep the line from going silent",
+            "outcomes": [
+              "Confirm key booking fields aloud before a write",
+              "Measure the latency a tool call adds to a turn",
+              "Mask a slow tool with a short spoken line without misleading the caller"
+            ],
+            "lo": [
+              "LO3"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "3.4",
+              "title": "A confirmed booking tool",
+              "summary": "Add a booking tool to a provided agent that confirms the key fields aloud before it books, and measure the latency it adds.",
+              "minutes": 25,
+              "href": "../labs/D3_4_booking_tool.ipynb",
+              "steps": [
+                {
+                  "text": "The booking tool and its argument checks",
+                  "minutes": 5
+                },
+                {
+                  "text": "Confirm site, date and party size aloud before the call",
+                  "minutes": 8
+                },
+                {
+                  "text": "Six scripted calls: no booking without a yes",
+                  "minutes": 6
+                },
+                {
+                  "text": "Measure the added time and fill the gap",
+                  "minutes": 6
+                }
+              ],
+              "stretch": "Make a retried booking safe with an idempotency key"
+            }
+          }
+        ]
+      },
+      {
+        "id": "day4",
+        "kind": "day",
+        "n": 4,
+        "number": 4,
+        "label": "Day 4",
+        "title": "Evaluating and choosing",
+        "subtitle": "Test sets, simulated callers, the decision record and the data-handling note",
+        "shape": "4 sessions · 4 labs",
+        "deck": "../slides/day4.html",
+        "md": "../slides/day4.md",
+        "url": "https://sdaiaacademy.github.io/ae-408/slides/day4.html",
+        "sessions": [
+          {
+            "n": 1,
+            "label": "Session 1",
+            "title": "Multimodal test sets",
+            "summary": "A test set designed for coverage across modality, dialect and task, with its gaps stated",
+            "outcomes": [
+              "Define coverage targets across modality, dialect and task",
+              "Select a stratified test set from a pool of candidates",
+              "Report the coverage table and the gaps it leaves"
+            ],
+            "lo": [
+              "LO5"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "4.1",
+              "title": "Sixty items with coverage",
+              "summary": "Build a 60-item test set across image, audio and dialects from a pool of candidates, with a coverage table and its gaps.",
+              "minutes": 25,
+              "href": "../labs/D4_1_test_set.ipynb",
+              "steps": [
+                {
+                  "text": "Read the pool of 240 candidates",
+                  "minutes": 4
+                },
+                {
+                  "text": "Write the coverage targets",
+                  "minutes": 6
+                },
+                {
+                  "text": "Select 60 items stratified by the targets",
+                  "minutes": 8
+                },
+                {
+                  "text": "The coverage table and its gaps",
+                  "minutes": 7
+                }
+              ],
+              "stretch": "Hold out ten items that nobody tunes on"
+            }
+          },
+          {
+            "n": 2,
+            "label": "Session 2",
+            "title": "Simulated callers",
+            "summary": "Simulated callers with goals and behaviours, graded on outcome and on transcript",
+            "outcomes": [
+              "Write simulated callers with a goal, a dialect and a behaviour",
+              "Grade a call on its outcome in the booking store",
+              "Separate task failures from transcript errors"
+            ],
+            "lo": [
+              "LO5",
+              "LO3"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "4.2",
+              "title": "Twenty simulated calls",
+              "summary": "Run 20 simulated calls against a provided agent and grade task success from the booking store and transcript errors from the recogniser.",
+              "minutes": 25,
+              "href": "../labs/D4_2_simulated_callers.ipynb",
+              "steps": [
+                {
+                  "text": "Read the 20 caller cards",
+                  "minutes": 3
+                },
+                {
+                  "text": "Run the calls against the agent",
+                  "minutes": 8
+                },
+                {
+                  "text": "Grade task success from the booking store",
+                  "minutes": 7
+                },
+                {
+                  "text": "Transcript errors, and failures by behaviour",
+                  "minutes": 7
+                }
+              ],
+              "stretch": "Let a hosted model play the caller from the same card"
+            }
+          },
+          {
+            "n": 3,
+            "label": "Session 3",
+            "title": "Choosing by quality, latency and cost",
+            "summary": "Open-weight or hosted, cascaded or speech-to-speech, decided on measured figures",
+            "outcomes": [
+              "Compute cost per call for a self-hosted and a hosted pipeline",
+              "Compare pipelines on quality, latency and cost with their uncertainty",
+              "Write a decision record that a reviewer re-runs to the same figures"
+            ],
+            "lo": [
+              "LO6"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "4.3",
+              "title": "The decision record",
+              "summary": "Compare open-weight and hosted pipelines on provided measurements, compute cost per call and draft a decision record that re-runs to the same figures.",
+              "minutes": 25,
+              "href": "../labs/D4_3_decision_record.ipynb",
+              "steps": [
+                {
+                  "text": "Load the measurements of two pipelines",
+                  "minutes": 4
+                },
+                {
+                  "text": "Cost per call and the break-even volume",
+                  "minutes": 7
+                },
+                {
+                  "text": "Quality, latency and cost in one table",
+                  "minutes": 6
+                },
+                {
+                  "text": "The decision record and its fingerprint",
+                  "minutes": 8
+                }
+              ],
+              "stretch": "Change the call volume and see when the decision flips"
+            }
+          },
+          {
+            "n": 4,
+            "label": "Session 4",
+            "title": "Voice, faces and consent",
+            "summary": "Recordings and photos as personal data, and the disclosure callers hear",
+            "outcomes": [
+              "Classify recordings, transcripts and photos and set their retention",
+              "Minimise what is stored: blur faces and redact transcripts",
+              "Write the synthetic-voice disclosure and test when callers hear it"
+            ],
+            "lo": [
+              "LO6",
+              "LO4"
+            ],
+            "minutes": 50,
+            "lab": {
+              "id": "4.4",
+              "title": "The data-handling note",
+              "summary": "Write the data-handling note for recordings and photos and the synthetic-voice disclosure callers hear, with tests for blurring, redaction and disclosure timing.",
+              "minutes": 25,
+              "href": "../labs/D4_4_consent_note.ipynb",
+              "steps": [
+                {
+                  "text": "Inventory and classification of what the service keeps",
+                  "minutes": 6
+                },
+                {
+                  "text": "Blur faces in photos and check",
+                  "minutes": 7
+                },
+                {
+                  "text": "Redact transcripts and set retention",
+                  "minutes": 6
+                },
+                {
+                  "text": "The disclosure and when callers hear it",
+                  "minutes": 6
+                }
+              ],
+              "stretch": "A consent withdrawal that deletes a caller's personal records"
+            }
+          }
+        ]
+      },
+      {
+        "id": "capstone",
+        "kind": "capstone",
+        "n": 5,
+        "number": null,
+        "label": "Capstone",
+        "title": "Capstone project presentations",
+        "subtitle": "The Heritage Trails booking line and photo-reporting service, defended live on an unseen call and photo",
+        "shape": "",
+        "deck": "../slides/capstone.html",
+        "md": "../slides/capstone.md",
+        "url": "https://sdaiaacademy.github.io/ae-408/slides/capstone.html",
+        "sessions": []
+      }
+    ],
+    "capstone": {
+      "summary": "The Heritage Trails booking line and photo-reporting service, or an equivalent system, with test set, sliced evaluation, latency trace and decision record, in a public repository whose README reports measured results, defended live",
+      "submission": "A public GitHub repository with the image pipeline, the speech evaluation, the voice agent, the test set and its simulation, the latency traces and the decision record, whose README reports the measured results and links the script that reproduces them. Then a live defence: the participant runs the system on a call and a photo the assessor supplies and explains one failure from its log.",
+      "talk_minutes": 10,
+      "qa_minutes": 5,
+      "rubric": [
+        {
+          "criterion": "Image pipeline",
+          "weight": 20
+        },
+        {
+          "criterion": "Speech evaluation",
+          "weight": 25
+        },
+        {
+          "criterion": "Voice agent",
+          "weight": 25
+        },
+        {
+          "criterion": "Test set and simulation",
+          "weight": 20
+        },
+        {
+          "criterion": "Decision record",
+          "weight": 10
+        }
+      ]
+    },
+    "labs": {
+      "kind": "notebooks",
+      "base": "labs/"
+    },
+    "tools": [
+      {
+        "slot": "Vision-language model access",
+        "examples": [
+          "an open-weight model such as Gemma 4 through a free hosted endpoint",
+          "a hosted model through a chat-completions style endpoint"
+        ]
+      },
+      {
+        "slot": "Open-weight speech recognition",
+        "examples": [
+          "Whisper-family models (whisper-large-v3, whisper-large-v3-turbo) on a free hosted endpoint",
+          "wav2vec-family encoders"
+        ]
+      },
+      {
+        "slot": "Voice activity detection and diarisation",
+        "examples": [
+          "Silero VAD",
+          "pyannote.audio",
+          "an energy detector in numpy (the labs)"
+        ]
+      },
+      {
+        "slot": "Speech synthesis and speech-to-speech",
+        "examples": [
+          "an open-weight text-to-speech model such as Orpheus, with a Saudi Arabic voice",
+          "any hosted real-time speech model"
+        ]
+      },
+      {
+        "slot": "Voice agent framework",
+        "examples": [
+          "Pipecat",
+          "LiveKit Agents"
+        ]
+      },
+      {
+        "slot": "Error-rate scoring",
+        "examples": [
+          "jiwer",
+          "a custom scorer with Arabic normalisation"
+        ]
+      },
+      {
+        "slot": "Public data",
+        "examples": [
+          "Mozilla Common Voice",
+          "public-domain image collections"
+        ]
+      },
+      {
+        "slot": "Evaluation harness",
+        "examples": [
+          "Inspect",
+          "pytest with custom scorers"
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "group": "Models and services",
+        "items": [
+          {
+            "title": "Gemma 4 31B model card (visual token budgets)",
+            "url": "https://huggingface.co/google/gemma-4-31b-it"
+          },
+          {
+            "title": "OpenRouter: models list",
+            "url": "https://openrouter.ai/models"
+          },
+          {
+            "title": "Groq: speech to text",
+            "url": "https://console.groq.com/docs/speech-to-text"
+          },
+          {
+            "title": "Groq: text to speech",
+            "url": "https://console.groq.com/docs/text-to-speech"
+          },
+          {
+            "title": "Groq: rate limits",
+            "url": "https://console.groq.com/docs/rate-limits"
+          }
+        ]
+      },
+      {
+        "group": "Libraries and frameworks",
+        "items": [
+          {
+            "title": "jiwer on PyPI",
+            "url": "https://pypi.org/project/jiwer/"
+          },
+          {
+            "title": "Pipecat on PyPI",
+            "url": "https://pypi.org/project/pipecat-ai/"
+          },
+          {
+            "title": "LiveKit Agents on PyPI",
+            "url": "https://pypi.org/project/livekit-agents/"
+          },
+          {
+            "title": "Silero VAD on PyPI",
+            "url": "https://pypi.org/project/silero-vad/"
+          },
+          {
+            "title": "pyannote.audio on PyPI",
+            "url": "https://pypi.org/project/pyannote.audio/"
+          },
+          {
+            "title": "Inspect on PyPI",
+            "url": "https://pypi.org/project/inspect-ai/"
+          }
+        ]
+      },
+      {
+        "group": "Evidence and data",
+        "items": [
+          {
+            "title": "Koenecke et al., Careless Whisper: Speech-to-Text Hallucination Harms (2024)",
+            "url": "https://arxiv.org/abs/2402.08021"
+          },
+          {
+            "title": "OWASP Top 10 for LLM Applications 2025: LLM01 Prompt Injection",
+            "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+          },
+          {
+            "title": "Mozilla Common Voice",
+            "url": "https://commonvoice.mozilla.org/"
+          }
+        ]
+      },
+      {
+        "group": "National references",
+        "items": [
+          {
+            "title": "Personal Data Protection Law",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/PersonalDataProtectionLaw.pdf"
+          },
+          {
+            "title": "Implementing Regulation of the Personal Data Protection Law",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/ImplementingRegulationPersonalDataProtectionLaw.pdf"
+          },
+          {
+            "title": "SDAIA Deepfakes Guidelines",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Files/File0001.pdf"
+          },
+          {
+            "title": "SDAIA Generative AI Guideline for Government",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Files/GenAIGuidelinesForGovernmentENCompressed.pdf"
+          },
+          {
+            "title": "SDAIA Generative AI Guideline for Public",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Files/GenerativeAIPublicEN.pdf"
+          },
+          {
+            "title": "SDAIA AI Ethics Principles",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/ai-principles.pdf"
+          },
+          {
+            "title": "NDMO Data Classification Policy",
+            "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/DataClassificationPolicy.pdf"
+          }
+        ]
+      }
+    ]
+  }
+}

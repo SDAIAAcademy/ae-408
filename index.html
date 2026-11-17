@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="page" data-track="ai-engineering">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multimodal and Speech Systems Engineering · SDAIA Academy</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<meta name="description" content="Build and evaluate applications that see, listen and speak in Arabic and English, and choose their design on measured quality, latency and cost">
+<link rel="icon" href="_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="index.md">
+<link rel="describedby" href="llms.txt">
+<link rel="stylesheet" href="_engine/academy.css">
+</head>
+<body>
+<header>
+<div class="wrap">
+<div class="top"><div class="logo" id="logo"></div><nav><a href="slides/day1.html">Slides</a><a href="practice.html">Practice</a><a href="index.md" type="text/markdown">Markdown</a></nav></div>
+<div class="kicker">AI Engineering Track · SDAIA Academy · AE-408</div>
+<h1>Multimodal and Speech Systems Engineering<span class="sub ar" lang="ar" dir="rtl">هندسة الأنظمة متعددة الوسائط وأنظمة الكلام</span></h1>
+<p>Build and evaluate applications that see, listen and speak in Arabic and English, and choose their design on measured quality, latency and cost</p>
+<div class="meta"><span class="track">AI Engineering Track</span><span>4 teaching days + capstone day</span><span>26 hours</span><span>Level 400</span><span>AI Engineering · Expert badge</span></div>
+</div>
+</header>
+<main class="wrap">
+<h2>About the course</h2>
+<p>Participants build and evaluate applications that see, listen and speak, with Arabic as the main case. For the fictional Heritage Trails Authority they extract grounded fields from visitor and ranger photos with vision-language models, benchmark open-weight speech recognisers on dialects and code-switched speech, test synthesised read-back, and assemble a bilingual voice booking line with turn-taking, interruption and tool calls within a latency budget. They test it with simulated callers and choose between open-weight and hosted, cascaded and speech-to-speech designs on measured quality, latency and cost. Photos are public-domain or synthetic; calls use synthetic voices and public speech corpora.</p>
+<p><b>Who it is for:</b> Specialists. Engineers who have completed the level 300 core and the practicum, or can show equivalent work: an AI system they built, operated and defended in review.</p>
+<p><b>Format:</b> Intensive: 4 teaching days of four sessions and a capstone day, with guided pre-work and a tracked follow-up task</p>
+<h2>The case study</h2>
+<div class="note info"><b>Heritage Trails Authority.</b> Heritage Trails Authority is a fictional authority that runs twelve heritage sites and trails, with a photo-reporting service for visitors and rangers (Lamha) and a bilingual voice line for booking guided visits (Rahhal). Participants extract grounded fields from 60 synthetic trail photos, benchmark two open-weight recognisers on 50 sliced clips, build and trace the booking line, test it with simulated callers and write the decision record; all photos, clips, traces and measurements are synthetic and generated with a fixed seed, and no real voice is used.</div>
+<h2>The course</h2>
+<div class="day">
+<div class="day-head c-teal"><div><div class="t">Day 1 · 4 sessions · 4 labs</div><h3>Seeing</h3></div><a class="btn" href="slides/day1.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>How a vision-language model sees</b><br>Images become visual tokens: resolution trades cost and latency against what the model can read<ul><li>Explain how an image becomes visual tokens and what resolution costs</li><li>Measure tokens, latency and accuracy for one question at three resolutions</li><li>Choose the cheapest resolution that meets an accuracy target</li></ul></td><td><a href="labs/D1_1_resolution_tokens.ipynb">Lab 1.1 · One question, three resolutions</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D1_1_resolution_tokens.ipynb">Open in Colab</a></td></tr>
+<tr><td>2</td><td><b>Structured extraction from photos</b><br>From a photo to a validated incident record, with an open-weight and a hosted model<ul><li>Write a schema whose fields and enums catch wrong extractions</li><li>Validate and repair a model reply once before giving up</li><li>Compare two models on field accuracy, cost and latency</li></ul></td><td><a href="labs/D1_2_incident_fields.ipynb">Lab 1.2 · Validated incident fields</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D1_2_incident_fields.ipynb">Open in Colab</a></td></tr>
+<tr><td>3</td><td><b>Grounding answers in pixels</b><br>Boxes and points tie an answer to the image, and probes catch objects that are not there<ul><li>Compute intersection over union and match boxes to references</li><li>Report box precision and recall at a stated threshold</li><li>Probe for invented objects on scenes that do not contain them</li></ul></td><td><a href="labs/D1_3_grounding_boxes.ipynb">Lab 1.3 · Boxes and invented objects</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D1_3_grounding_boxes.ipynb">Open in Colab</a></td></tr>
+<tr><td>4</td><td><b>Arabic text and hidden instructions</b><br>Reading Arabic signage, and treating text inside an image as data, not instructions<ul><li>Compute character error rate for Arabic text read from images</li><li>Explain how an instruction hidden in an image reaches the model</li><li>Test a mitigation against an injected instruction and log the result</li></ul></td><td><a href="labs/D1_4_signage_injection.ipynb">Lab 1.4 · Signage and an injected instruction</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D1_4_signage_injection.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-cyan"><div><div class="t">Day 2 · 4 sessions · 4 labs</div><h3>Listening</h3></div><a class="btn" href="slides/day2.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>From waveform to text</b><br>How recognisers turn audio into words, and how word error rate counts their mistakes<ul><li>Describe the path from waveform to features to text in two recogniser families</li><li>Compute word error rate from an alignment of substitutions, deletions and insertions</li><li>Explain why corpus error rate differs from the mean of clip error rates</li></ul></td><td><a href="labs/D2_1_two_recognisers.ipynb">Lab 2.1 · Two recognisers, 50 clips</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D2_1_two_recognisers.ipynb">Open in Colab</a></td></tr>
+<tr><td>2</td><td><b>Normalisation decides the error rate</b><br>Arabic normalisation rules, written down, change the numbers and the ranking<ul><li>Write explicit Arabic normalisation rules for diacritics, letter variants and numerals</li><li>Recompute error rates under each rule set and explain the change</li><li>Spot a rule that hides a real recognition error</li></ul></td><td><a href="labs/D2_2_normalisation.ipynb">Lab 2.2 · Rules before rates</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D2_2_normalisation.ipynb">Open in Colab</a></td></tr>
+<tr><td>3</td><td><b>Dialects and code-switching</b><br>Error rates by slice with intervals, so weaker service for some speakers is visible<ul><li>Slice error rates by dialect, channel and code-switching</li><li>Add clip-level bootstrap intervals to each slice</li><li>Decide which slice differences are real given their size</li></ul></td><td><a href="labs/D2_3_dialect_slices.ipynb">Lab 2.3 · Slices with intervals</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D2_3_dialect_slices.ipynb">Open in Colab</a></td></tr>
+<tr><td>4</td><td><b>Streaming and silence</b><br>Streaming recognition with voice activity detection, and the text a recogniser writes on silence<ul><li>Detect speech frames with an energy-based voice activity detector</li><li>Stream segments to a recogniser and measure when text arrives</li><li>Catch and suppress text produced on silent segments</li></ul></td><td><a href="labs/D2_4_streaming_silence.ipynb">Lab 2.4 · Text on silence</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D2_4_streaming_silence.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-coral"><div><div class="t">Day 3 · 4 sessions · 4 labs</div><h3>Speaking</h3></div><a class="btn" href="slides/day3.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Synthesis and read-back</b><br>Speaking names, numbers, dates and booking codes so that callers hear them right<ul><li>Write spoken forms of dates, party sizes and booking codes in Arabic and English</li><li>Chunk a booking code so that it can be heard and repeated</li><li>Score a listening test by category with intervals</li></ul></td><td><a href="labs/D3_1_readback.ipynb">Lab 3.1 · Read-back that callers understand</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D3_1_readback.ipynb">Open in Colab</a></td></tr>
+<tr><td>2</td><td><b>Cascaded versus speech-to-speech</b><br>Where the time to first audio goes in a cascaded agent, and what a speech-to-speech session changes<ul><li>Trace per-stage latency of a cascaded voice agent</li><li>Compute time to first audio at the median and the 90th percentile</li><li>Compare a cascaded and a speech-to-speech design on the same calls</li></ul></td><td><a href="labs/D3_2_latency_trace.ipynb">Lab 3.2 · Where the time goes</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D3_2_latency_trace.ipynb">Open in Colab</a></td></tr>
+<tr><td>3</td><td><b>Turn-taking and interruption</b><br>When the caller has finished, when to stop talking, and the trade between cut-ins and slow replies<ul><li>Explain end-of-turn detection by silence and by content</li><li>Count false cut-ins and late or missed turns for a threshold</li><li>Handle a caller who interrupts the agent</li></ul></td><td><a href="labs/D3_3_end_of_turn.ipynb">Lab 3.3 · Tune the end of a turn</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D3_3_end_of_turn.ipynb">Open in Colab</a></td></tr>
+<tr><td>4</td><td><b>Tool calls during speech</b><br>Confirm the key fields aloud, then call the booking tool, and keep the line from going silent<ul><li>Confirm key booking fields aloud before a write</li><li>Measure the latency a tool call adds to a turn</li><li>Mask a slow tool with a short spoken line without misleading the caller</li></ul></td><td><a href="labs/D3_4_booking_tool.ipynb">Lab 3.4 · A confirmed booking tool</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D3_4_booking_tool.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-purple"><div><div class="t">Day 4 · 4 sessions · 4 labs</div><h3>Evaluating and choosing</h3></div><a class="btn" href="slides/day4.html">Open the slides</a></div>
+<div class="scroll"><table>
+<tr><th>Session</th><th>Topic</th><th>Lab</th></tr>
+<tr><td>1</td><td><b>Multimodal test sets</b><br>A test set designed for coverage across modality, dialect and task, with its gaps stated<ul><li>Define coverage targets across modality, dialect and task</li><li>Select a stratified test set from a pool of candidates</li><li>Report the coverage table and the gaps it leaves</li></ul></td><td><a href="labs/D4_1_test_set.ipynb">Lab 4.1 · Sixty items with coverage</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D4_1_test_set.ipynb">Open in Colab</a></td></tr>
+<tr><td>2</td><td><b>Simulated callers</b><br>Simulated callers with goals and behaviours, graded on outcome and on transcript<ul><li>Write simulated callers with a goal, a dialect and a behaviour</li><li>Grade a call on its outcome in the booking store</li><li>Separate task failures from transcript errors</li></ul></td><td><a href="labs/D4_2_simulated_callers.ipynb">Lab 4.2 · Twenty simulated calls</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D4_2_simulated_callers.ipynb">Open in Colab</a></td></tr>
+<tr><td>3</td><td><b>Choosing by quality, latency and cost</b><br>Open-weight or hosted, cascaded or speech-to-speech, decided on measured figures<ul><li>Compute cost per call for a self-hosted and a hosted pipeline</li><li>Compare pipelines on quality, latency and cost with their uncertainty</li><li>Write a decision record that a reviewer re-runs to the same figures</li></ul></td><td><a href="labs/D4_3_decision_record.ipynb">Lab 4.3 · The decision record</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D4_3_decision_record.ipynb">Open in Colab</a></td></tr>
+<tr><td>4</td><td><b>Voice, faces and consent</b><br>Recordings and photos as personal data, and the disclosure callers hear<ul><li>Classify recordings, transcripts and photos and set their retention</li><li>Minimise what is stored: blur faces and redact transcripts</li><li>Write the synthetic-voice disclosure and test when callers hear it</li></ul></td><td><a href="labs/D4_4_consent_note.ipynb">Lab 4.4 · The data-handling note</a> <span class="muted">(25 min)</span><br><a href="https://colab.research.google.com/github/SDAIAAcademy/ae-408/blob/main/labs/D4_4_consent_note.ipynb">Open in Colab</a></td></tr>
+</table></div>
+</div>
+<div class="day">
+<div class="day-head c-amber"><div><div class="t">Capstone</div><h3>Capstone project presentations</h3></div><a class="btn" href="slides/capstone.html">Open the slides</a></div>
+<div class="scroll"><table><tr><td>The Heritage Trails booking line and photo-reporting service, defended live on an unseen call and photo</td></tr></table></div>
+</div>
+<h2>Capstone</h2>
+<div class="two">
+<div><p>The Heritage Trails booking line and photo-reporting service, or an equivalent system, with test set, sliced evaluation, latency trace and decision record, in a public repository whose README reports measured results, defended live</p><p><b>What you submit:</b> A public GitHub repository with the image pipeline, the speech evaluation, the voice agent, the test set and its simulation, the latency traces and the decision record, whose README reports the measured results and links the script that reproduces them. Then a live defence: the participant runs the system on a call and a photo the assessor supplies and explains one failure from its log.</p><p><b>Format:</b> 10 min talk and demo · 5 min Q&amp;A</p></div>
+<div><h3>Rubric</h3><div class="bar c-teal"><span>Image pipeline<i style="--w:80%"></i></span><b>20%</b></div><div class="bar c-cyan"><span>Speech evaluation<i style="--w:100%"></i></span><b>25%</b></div><div class="bar c-coral"><span>Voice agent<i style="--w:100%"></i></span><b>25%</b></div><div class="bar c-purple"><span>Test set and simulation<i style="--w:80%"></i></span><b>20%</b></div><div class="bar c-amber"><span>Decision record<i style="--w:40%"></i></span><b>10%</b></div></div>
+</div>
+<h2>Outcomes</h2>
+<p>By the end of the course, participants can:</p>
+<div class="day"><div class="scroll"><table>
+<tr><th></th><th>Outcomes</th><th>Level</th><th>Evidence</th></tr>
+<tr><td><b>LO1</b></td><td>Implement image applications with vision-language models that return validated structured fields grounded in the image, given 60 visitor and ranger photos with reference fields and boxes</td><td>Applied</td><td>an extraction pipeline with field accuracy and grounding scores on the test set</td></tr>
+<tr><td><b>LO2</b></td><td>Evaluate speech recognisers on Arabic dialects and code-switched speech with explicit normalisation rules, given two open-weight recognisers and a sliced set of public and synthetic clips</td><td>Performance</td><td>an error-rate report by dialect and channel with intervals and the normalisation rules used</td></tr>
+<tr><td><b>LO3</b></td><td>Build a bilingual voice agent that handles turn-taking, interruption and confirmed tool calls within a latency budget, given a booking tool and a budget for time to first audio</td><td>Performance</td><td>a running agent with per-stage latency traces from twenty scripted calls</td></tr>
+<tr><td><b>LO4</b></td><td>Diagnose failure modes specific to image and audio inputs, including invented objects, text produced on silence and instructions hidden in images, given seeded failing inputs for each modality</td><td>Performance</td><td>a failure log with causes and a mitigation tested for each mode</td></tr>
+<tr><td><b>LO5</b></td><td>Design a multimodal test set and an end-to-end evaluation with simulated callers, given the full booking and reporting system</td><td>Performance</td><td>a test set with a coverage table across modality, dialect and task, and graded results</td></tr>
+<tr><td><b>LO6</b></td><td>Decide between open-weight and hosted, cascaded and speech-to-speech designs on quality, latency and cost per call, given measured results for two pipelines</td><td>Performance</td><td>a one-page decision record with the measurements and a script that a reviewer re-runs to the same figures</td></tr>
+</table></div></div>
+<h2>Tools</h2>
+<div class="grid">
+<div class="card c-teal"><h3>Vision-language model access</h3><p>an open-weight model such as Gemma 4 through a free hosted endpoint · a hosted model through a chat-completions style endpoint</p></div>
+<div class="card c-cyan"><h3>Open-weight speech recognition</h3><p>Whisper-family models (whisper-large-v3, whisper-large-v3-turbo) on a free hosted endpoint · wav2vec-family encoders</p></div>
+<div class="card c-coral"><h3>Voice activity detection and diarisation</h3><p>Silero VAD · pyannote.audio · an energy detector in numpy (the labs)</p></div>
+<div class="card c-purple"><h3>Speech synthesis and speech-to-speech</h3><p>an open-weight text-to-speech model such as Orpheus, with a Saudi Arabic voice · any hosted real-time speech model</p></div>
+<div class="card c-green"><h3>Voice agent framework</h3><p>Pipecat · LiveKit Agents</p></div>
+<div class="card c-teal"><h3>Error-rate scoring</h3><p>jiwer · a custom scorer with Arabic normalisation</p></div>
+<div class="card c-cyan"><h3>Public data</h3><p>Mozilla Common Voice · public-domain image collections</p></div>
+<div class="card c-coral"><h3>Evaluation harness</h3><p>Inspect · pytest with custom scorers</p></div>
+</div>
+<h2>Before you start</h2>
+<h3>Prerequisites</h3>
+<ul><li>AE-301 Applied Natural Language Processing Engineering</li><li>AE-303 Evaluation-Driven Development for Language Model Applications</li><li>Has built a language model application with structured outputs and tool calls</li><li>Computes precision, recall and an error rate with an interval</li><li>Setup: a laptop CPU with uv, or Google Colab. Every lab runs without a key on supplied inputs and a scripted stand-in; free keys for OpenRouter and Groq let the model-calling labs use hosted open-weight models. Nothing downloads a model. See labs/README.md.</li></ul>
+<div class="note tip">The labs are notebooks. Open each one in Google Colab from the table above, or clone the repository and run them locally.</div>
+<h2>Sources</h2>
+<h3>Models and services</h3>
+<ul><li><a href="https://huggingface.co/google/gemma-4-31b-it">Gemma 4 31B model card (visual token budgets)</a></li><li><a href="https://openrouter.ai/models">OpenRouter: models list</a></li><li><a href="https://console.groq.com/docs/speech-to-text">Groq: speech to text</a></li><li><a href="https://console.groq.com/docs/text-to-speech">Groq: text to speech</a></li><li><a href="https://console.groq.com/docs/rate-limits">Groq: rate limits</a></li></ul>
+<h3>Libraries and frameworks</h3>
+<ul><li><a href="https://pypi.org/project/jiwer/">jiwer on PyPI</a></li><li><a href="https://pypi.org/project/pipecat-ai/">Pipecat on PyPI</a></li><li><a href="https://pypi.org/project/livekit-agents/">LiveKit Agents on PyPI</a></li><li><a href="https://pypi.org/project/silero-vad/">Silero VAD on PyPI</a></li><li><a href="https://pypi.org/project/pyannote.audio/">pyannote.audio on PyPI</a></li><li><a href="https://pypi.org/project/inspect-ai/">Inspect on PyPI</a></li></ul>
+<h3>Evidence and data</h3>
+<ul><li><a href="https://arxiv.org/abs/2402.08021">Koenecke et al., Careless Whisper: Speech-to-Text Hallucination Harms (2024)</a></li><li><a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">OWASP Top 10 for LLM Applications 2025: LLM01 Prompt Injection</a></li><li><a href="https://commonvoice.mozilla.org/">Mozilla Common Voice</a></li></ul>
+<h3>National references</h3>
+<ul><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Documents/PersonalDataProtectionLaw.pdf">Personal Data Protection Law</a></li><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Documents/ImplementingRegulationPersonalDataProtectionLaw.pdf">Implementing Regulation of the Personal Data Protection Law</a></li><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Files/File0001.pdf">SDAIA Deepfakes Guidelines</a></li><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Files/GenAIGuidelinesForGovernmentENCompressed.pdf">SDAIA Generative AI Guideline for Government</a></li><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Files/GenerativeAIPublicEN.pdf">SDAIA Generative AI Guideline for Public</a></li><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Documents/ai-principles.pdf">SDAIA AI Ethics Principles</a></li><li><a href="https://sdaia.gov.sa/en/SDAIA/about/Documents/DataClassificationPolicy.pdf">NDMO Data Classification Policy</a></li></ul>
+<h2>Files and links</h2>
+<div class="files">
+<a href="practice.html"><b>practice.html</b><span>Practice questions with feedback</span></a>
+<a href="index.md"><b>index.md</b><span>This page as Markdown, for an AI assistant</span></a>
+<a href="llms.txt"><b>llms.txt</b><span>The course for AI assistants (llms.txt)</span></a>
+<a href="https://github.com/SDAIAAcademy/ae-408"><b>SDAIAAcademy/ae-408</b><span>The course repository</span></a>
+</div>
+</main>
+<footer><div class="wrap">SDAIA Academy · AI Engineering Track · Multimodal and Speech Systems Engineering<br><span class="muted">Course version 2027.1.0 · engine 1.0.0 · built 2026-11-15 · commit c687f48</span></div></footer>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-15T22:27:07Z","version":"2027.1.0","commit":"c687f48"},"course":{"id":"ae-408","code":"AE-408","title":"Multimodal and Speech Systems Engineering","track":"ai-engineering","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/ae-408/","repo":"SDAIAAcademy/ae-408","home":"index.html"},"ai":{"context":{"course":"context/course.md","courseJs":"context/course.js","day":null,"llms":"llms.txt"},"tasks":[],"tools":[]},"features":{},"strings":{}}</script>
+<script src="_engine/academy.js"></script>
+</body>
+</html>

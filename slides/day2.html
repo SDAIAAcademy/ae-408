@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-ax="deck" data-track="ai-engineering">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 · Listening · Multimodal and Speech Systems Engineering</title>
+<meta name="generator" content="SDAIA Academy engine 1.0.0">
+<link rel="icon" href="../_engine/icon.svg">
+<link rel="alternate" type="text/markdown" href="day2.md">
+<link rel="describedby" href="../llms.txt">
+<link rel="stylesheet" href="../_engine/academy.css">
+</head>
+<body>
+<div class="deck" data-course="Multimodal and Speech Systems Engineering" data-track="ai-engineering" data-day="Day 2">
+<!-- ======================= OPENING ======================= -->
+<section class="slide title" id="title" data-auto="title" data-label="Welcome" data-n="1">
+  <div class="kicker">SDAIA Academy · Multimodal and Speech Systems Engineering</div>
+  <h1>Listening</h1>
+  <p class="lead mt">Day 2: Speech recognition measured by dialect, channel and code-switching, with explicit normalisation</p>
+  <div class="meta"><span class="track">AI Engineering Track</span><span>4 teaching days + capstone day</span><span>4 sessions · 4 labs</span><span>AE-408</span></div>
+  <aside class="notes"><p>Day 2 moves from pixels to sound. Ask who has measured a speech recogniser before and with what normalisation: almost nobody will name the rules, which is today's point. Remind the room of the AI policy: Session 2's lab is AI-off.</p></aside>
+</section>
+
+<section class="slide" id="agenda" data-auto="agenda" data-label="Agenda" data-n="2">
+  <div class="kicker">Today</div>
+  <h2>Listening</h2>
+  <div class="agenda"><div class="item"><div><b>Session 1 · From waveform to text</b><small>How recognisers turn audio into words, and how word error rate counts their mistakes</small></div></div><div class="item"><div><b>Session 2 · Normalisation decides the error rate</b><small>Arabic normalisation rules, written down, change the numbers and the ranking</small></div></div><div class="item"><div><b>Session 3 · Dialects and code-switching</b><small>Error rates by slice with intervals, so weaker service for some speakers is visible</small></div></div><div class="item"><div><b>Session 4 · Streaming and silence</b><small>Streaming recognition with voice activity detection, and the text a recogniser writes on silence</small></div></div></div>
+</section>
+
+<section class="slide" id="review-day1" data-lo="LO4" data-n="3">
+  <div class="kicker">Review of Day 1</div>
+  <h2>Which failure is this?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4" data-id="review-day1-q1">
+    <p class="lead">On a photo of an empty trail, Lamha returns a box labelled litter with high confidence. The reference has no litter. What do you log?</p>
+    <div class="opts">
+      <div class="opt" data-why="Confuses a misplaced box with an object that is absent" data-k="A">A localisation error: the box missed the litter</div>
+      <div class="opt" data-why="Blames resolution for a failure that does not depend on reading small details" data-k="B">A resolution problem: the photo was sent too small</div>
+      <div class="opt" data-why="Treats every wrong output as an attack" data-k="C">A prompt injection through the image</div>
+      <div class="opt" data-ok data-k="D">An invented object, to be measured with probes on clean scenes</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> Nothing in the reference matches, so the model invented the object. The probe rate on clean scenes is the measure, and neutral wording with a none option the mitigation to test.</div>
+  </div>
+  <aside class="notes"><p>Answer: D. Use the answers to rebuild yesterday's failure log on the board: wrong reading at low resolution, wrong judged field, invented object, followed instruction. Today adds two audio modes: errors hidden or created by spelling, and text on silence.</p></aside>
+</section>
+
+<!-- ======================= SESSION 1 ======================= -->
+<section class="slide section" id="s1" data-auto="section" data-session="1" data-n="4">
+  <div class="kicker">Session 1</div>
+  <h1>From waveform to text</h1>
+  <ul class="bullets outcomes"><li>Describe the path from waveform to features to text in two recogniser families</li><li>Compute word error rate from an alignment of substitutions, deletions and insertions</li><li>Explain why corpus error rate differs from the mean of clip error rates</li></ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" data-label="Pipeline" id="waveform-to-text" data-lo="LO2" data-n="5" data-session="1">
+  <div class="kicker">What a recogniser does</div>
+  <h2>A recogniser turns a waveform into features, then features into text</h2>
+  <div class="flow">
+    <div class="step c-navy"><b>1 · Sample</b>16,000 values a second; a telephone line keeps 8,000</div>
+    <div class="arrow">→</div>
+    <div class="step c-teal"><b>2 · Features</b>a log-mel spectrogram: energy by pitch band, every 10 ms</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>3 · Encoder</b>turns the frames into vectors</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>4 · Text</b>a decoder writes tokens, or a classifier labels each frame</div>
+  </div>
+  <div class="callout note mt"><b>Telephone audio</b> loses the upper half of the band. Sounds that differ there are the first to be confused.</div>
+  <aside class="notes"><p>Keep the signal processing brief: participants need to know that the model sees a spectrogram, that sample rate limits the bands it can see, and that 8 kHz telephone audio has nothing above 4 kHz. That is why Rahhal's telephone callers will be a slice of their own in Session 3.</p></aside>
+</section>
+
+<section class="slide" data-label="Two families" id="recogniser-families" data-lo="LO2" data-n="6" data-session="1">
+  <div class="kicker">Two families you will meet</div>
+  <h2>Encoder-decoder recognisers write text; encoder-only recognisers label frames</h2>
+  <table class="t small">
+    <tr><th></th><th>Encoder-decoder (Whisper family)</th><th>Encoder with a frame classifier (wav2vec family)</th></tr>
+    <tr><td><b>Output</b></td><td>tokens, written like a language model</td><td>a letter or a blank for every frame</td></tr>
+    <tr><td><b>Strength</b></td><td>punctuation, numbers, many languages in one model</td><td>fast, streams naturally, cannot invent long phrases</td></tr>
+    <tr><td><b>Typical failure</b></td><td>fluent text that was never said, especially on silence</td><td>misspelled words, no punctuation</td></tr>
+    <tr><td><b>In the labs</b></td><td>whisper-large-v3 and whisper-large-v3-turbo, hosted</td><td>named for the capstone</td></tr>
+  </table>
+  <aside class="notes"><p>The two recognisers of the labs are open-weight Whisper-family models served on Groq's free tier: whisper-large-v3 and whisper-large-v3-turbo, both listed on Groq's speech-to-text page. Without a key the labs replay transcripts written by the course's error model; say this every time a number appears. The "typical failure" row is the bridge to Session 4. Sources: Groq speech-to-text documentation.</p></aside>
+</section>
+
+<section class="slide" data-label="WER" id="word-error-rate" data-lo="LO2" data-n="7" data-session="1">
+  <div class="kicker">Counting mistakes</div>
+  <h2>Word error rate counts the cheapest set of edits from reference to transcript</h2>
+  <div class="cols cols-2">
+    <div class="trace s">
+      <div class="ev user"><b>reference</b><span class="ar">أبي ألغي الحجز رقم 1288 على قلعة النخيل</span></div>
+      <div class="ev model"><b>recogniser A</b><span class="ar">اب الغي الحجز رقم 1284 على قلعه النخيل</span></div>
+    </div>
+    <div class="stack">
+      <div class="prompt s" data-tool="Definition">WER = (S + D + I) / N, from the alignment with the fewest edits</div>
+      <p class="small mb0">Here four substitutions over eight words: 0.5. Only one of them, the booking number, changes the booking.</p>
+    </div>
+  </div>
+  <aside class="notes"><p>Clip C001, recogniser A, as recorded in data/clips.jsonl. Walk the alignment: أبي/اب is a real error, ألغي/الغي a hamza, 1288/1284 a real and costly error, قلعة/قلعه a ta marbuta. Participants write the dynamic-programming alignment in step 3 and check it against jiwer on every clip. Ask the room which of the four errors a caller would notice: that question is Session 2.</p></aside>
+</section>
+
+<section class="slide" data-label="Corpus or mean" id="corpus-or-mean" data-lo="LO2" data-n="8" data-session="1">
+  <div class="kicker">Two ways to add up</div>
+  <h2>Report the corpus rate: every word counts once</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-teal"><h4>Corpus WER</h4><p class="small mb0">All edits over all reference words. A long clip weighs more, because it has more words to get wrong.</p></div>
+    <div class="card c-coral"><h4>Mean of clip WERs</h4><p class="small mb0">Each clip weighs the same. Two errors in a four-word clip add 0.5; in a twenty-word clip, 0.1.</p></div>
+  </div>
+  <p class="small mt">In Lab 2.1 the two agree to the third decimal (0.213 and 0.214 for A), because the clips have similar lengths. On real calls they do not: say which one you report.</p>
+  <aside class="notes"><p>Be honest about the lab: the synthetic clips are 6 to 12 words, so the two figures barely differ. The point is the convention, which matters on real recordings where a clip can be two words or two hundred. The capstone report states the corpus figure and the rules.</p></aside>
+</section>
+
+<section class="slide" data-label="Raw result" id="raw-ranking" data-lo="LO2" data-n="9" data-session="1">
+  <div class="kicker">Lab 2.1, 50 clips, raw text</div>
+  <h2>On raw text, recogniser A looks more than twice as good as B</h2>
+  <table class="t">
+    <tr><th>Recogniser</th><th class="num">WER</th><th class="num">S</th><th class="num">D</th><th class="num">I</th><th class="num">CER</th></tr>
+    <tr><td>whisper-large-v3 (A)</td><td class="num">0.213</td><td class="num">82</td><td class="num">10</td><td class="num">9</td><td class="num">0.076</td></tr>
+    <tr><td>whisper-large-v3-turbo (B)</td><td class="num">0.517</td><td class="num">235</td><td class="num">8</td><td class="num">2</td><td class="num">0.159</td></tr>
+  </table>
+  <div class="callout warn mt"><b>Almost all of B's errors are substitutions.</b> Before trusting this ranking, read what the substitutions are.</div>
+  <aside class="notes"><p>Recorded transcripts, written by the course's error model: B was given more spelling variation and fewer real errors, A the reverse. That is planted, and the room should not know yet. Ask them to open three of B's transcripts beside the references (the Look-at cell of Lab 2.1): diacritics, Arabic-Indic digits, hamza dropped. The next session turns this into rules.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-1" data-lo="LO2" data-n="10" data-session="1">
+  <div class="kicker">Checkpoint</div>
+  <h2>How does this count?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="checkpoint-1-q1">
+    <p class="lead">Reference: "five people on Thursday" (4 words). Transcript: "five people Thursday please". What is the WER?</p>
+    <div class="opts">
+      <div class="opt" data-why="Counts only the missing word and forgets the inserted one" data-k="A">0.25: one word is missing</div>
+      <div class="opt" data-ok data-k="B">0.5: one deletion and one insertion over four words</div>
+      <div class="opt" data-why="Divides by the transcript length instead of the reference" data-k="C">0.4: two edits over five words</div>
+      <div class="opt" data-why="Believes a word in the wrong position is a substitution of every word after it" data-k="D">0.75: three words are out of place</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The cheapest alignment deletes "on" and inserts "please": two edits, divided by the four words of the reference.</div>
+  </div>
+  <aside class="notes"><p>Answer: B. C is the common slip: the denominator is always the reference. Point out that WER can exceed 1 when a recogniser inserts many words, which Session 4 shows on silence.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-2-1" data-auto="lab" data-lab="2.1" data-label="Lab 2.1" data-n="11" data-session="1">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 2.1 · 25 min</div><h2>Two recognisers, 50 clips</h2><p class="lead small">Run two open-weight recognisers on 50 clips (or replay their recorded transcripts) and compute word error rates with your own alignment and with jiwer.</p><a class="nb" href="../labs/D2_1_two_recognisers.ipynb">D2_1_two_recognisers.ipynb</a></div><ul class="checklist"><li>Load the clips and their references <span class="min">4 min</span></li><li>Transcribe with two recognisers, or replay <span class="min">6 min</span></li><li>Word error rate from your own alignment, checked with jiwer <span class="min">8 min</span></li><li>Corpus against mean error rate, and the worst clips <span class="min">7 min</span></li><li class="stretch">✱ Stretch: Character error rate beside word error rate for the same clips</li></ul></div>
+  <aside class="notes"><p>Common problems: the backtrace counting a match as a substitution (compare the words, not only the costs); splitting Arabic on non-breaking spaces; mixing corpus and mean. With a Groq key and audio written by make_audio.py the lab sends real audio: that audio is one synthetic voice, so it does not carry dialect differences; tell participants to keep the recorded transcripts for Lab 2.3.</p></aside>
+</section>
+
+<!-- ======================= SESSION 2 ======================= -->
+<section class="slide section" id="s2" data-auto="section" data-session="2" data-n="12">
+  <div class="kicker">Session 2</div>
+  <h1>Normalisation decides the error rate</h1>
+  <ul class="bullets outcomes"><li>Write explicit Arabic normalisation rules for diacritics, letter variants and numerals</li><li>Recompute error rates under each rule set and explain the change</li><li>Spot a rule that hides a real recognition error</li></ul>
+  <div class="sess-no">02</div>
+</section>
+
+<section class="slide" data-label="Spelling" id="one-word-many-spellings" data-lo="LO2" data-n="13" data-session="2">
+  <div class="kicker">Why Arabic needs rules first</div>
+  <h2>The same spoken word has several correct spellings</h2>
+  <table class="t small">
+    <tr><th>Variation</th><th>Written</th><th>Also written</th><th>Heard the same?</th></tr>
+    <tr><td>Diacritics</td><td class="ar">ابي</td><td class="ar">ابَي</td><td>yes</td></tr>
+    <tr><td>Hamza on alef</td><td class="ar">أبي</td><td class="ar">ابي</td><td>yes</td></tr>
+    <tr><td>Ta marbuta</td><td class="ar">جولة</td><td class="ar">جوله</td><td>yes</td></tr>
+    <tr><td>Alef maqsura</td><td class="ar">على</td><td class="ar">علي</td><td>usually, not always</td></tr>
+    <tr><td>Digits</td><td>1288</td><td class="ar">١٢٨٨</td><td>yes</td></tr>
+    <tr><td>Tatweel</td><td class="ar">للاطفال</td><td class="ar">للـاطفال</td><td>yes</td></tr>
+  </table>
+  <aside class="notes"><p>Every pair is taken from the clips. The fourth row is the exception that matters: على (on) and علي (the name Ali) sound alike in fast speech but are different words, and a rule that merges them can hide a real error. This is what the lab's stretch finds. Ask for the word each participant brought from yesterday's "next" slide.</p></aside>
+</section>
+
+<section class="slide" data-label="Rules" id="rules-as-code" data-lo="LO2" data-n="14" data-session="2">
+  <div class="kicker">Rules you can cite</div>
+  <h2>Write each rule as a function, test it, and name the set you report</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 2.2"><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">diacritics</span>(<span class="hljs-params">t</span>):
+    <span class="hljs-keyword">return</span> re.sub(<span class="hljs-string">&quot;[ً-ْٰ]&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, t)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">alef</span>(<span class="hljs-params">t</span>):
+    <span class="hljs-keyword">return</span> re.sub(<span class="hljs-string">&quot;[أإآٱ]&quot;</span>, <span class="hljs-string">&quot;ا&quot;</span>, t)
+
+SETS = {
+  <span class="hljs-string">&quot;none&quot;</span>:  [],
+  <span class="hljs-string">&quot;light&quot;</span>: [<span class="hljs-string">&quot;diacritics&quot;</span>, <span class="hljs-string">&quot;tatweel&quot;</span>, <span class="hljs-string">&quot;digits&quot;</span>, <span class="hljs-string">&quot;punct&quot;</span>],
+  <span class="hljs-string">&quot;full&quot;</span>:  [*light, <span class="hljs-string">&quot;alef&quot;</span>, <span class="hljs-string">&quot;maqsura&quot;</span>, <span class="hljs-string">&quot;ta&quot;</span>]}</code></pre>
+    <div class="stack">
+      <div class="card c-teal flat"><h4>Light</h4><p class="small mb0">Removes what is never a different word: marks, stretching, digit forms, punctuation.</p></div>
+      <div class="card c-coral flat"><h4>Full</h4><p class="small mb0">Also merges letter variants. Fairer to spelling, but it can merge two real words.</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>The lab is AI-off: participants write these seven functions themselves, each with an example test. The supervised check of the course asks exactly this without help: compute error rates under two normalisation rules. The course's reference version is trails.normalise, used by every later lab, so a participant who did not finish still gets the same numbers tomorrow.</p></aside>
+</section>
+
+<section class="slide" data-label="Flip" id="ranking-flips" data-lo="LO2" data-n="15" data-session="2">
+  <div class="kicker">Lab 2.2, 50 clips</div>
+  <h2>Under the full rules the ranking flips</h2>
+  <table class="t">
+    <tr><th>Rule set</th><th class="num">whisper-large-v3 (A)</th><th class="num">whisper-large-v3-turbo (B)</th><th>Better</th></tr>
+    <tr><td>none</td><td class="num">0.213</td><td class="num">0.517</td><td>A</td></tr>
+    <tr><td>light</td><td class="num">0.213</td><td class="num">0.264</td><td>A</td></tr>
+    <tr class="hl"><td>full</td><td class="num">0.160</td><td class="num">0.089</td><td>B</td></tr>
+  </table>
+  <div class="callout warn mt"><b>A WER without its rules is not a result.</b> The same transcripts support either choice.</div>
+  <aside class="notes"><p>The flip is planted by the error model: B writes more spelling variants but makes fewer real errors. The lesson holds for any comparison of real recognisers: without stated rules, two error rates cannot be compared. Wedad's decision rests on the full rules, plus a separate check of the words where merging can hide an error (names, على against علي).</p></aside>
+</section>
+
+<section class="slide" data-label="Ablation" id="which-rule-moved" data-lo="LO2" data-n="16" data-session="2">
+  <div class="kicker">Recogniser B, one rule at a time</div>
+  <h2>Diacritics alone took a third off B's error rate</h2>
+  <div class="bars">
+    <div class="row"><span>+ diacritics</span><div class="bar c-coral" style="--w:100%"></div><span class="val">−0.186</span></div>
+    <div class="row"><span>+ alef</span><div class="bar c-coral" style="--w:45%"></div><span class="val">−0.083</span></div>
+    <div class="row"><span>+ maqsura</span><div class="bar c-amber" style="--w:32%"></div><span class="val">−0.059</span></div>
+    <div class="row"><span>+ tatweel</span><div class="bar c-amber" style="--w:23%"></div><span class="val">−0.042</span></div>
+    <div class="row"><span>+ ta</span><div class="bar c-cyan" style="--w:18%"></div><span class="val">−0.033</span></div>
+    <div class="row"><span>+ digits</span><div class="bar c-cyan" style="--w:13%"></div><span class="val">−0.025</span></div>
+  </div>
+  <p class="small mt">From 0.517 with no rules to 0.089 with all seven. Punctuation changed nothing: the transcripts had none.</p>
+  <aside class="notes"><p>Step 3 of Lab 2.2, rules added in the order of the full set (diacritics, tatweel, digits, punct, alef, maqsura, ta); the bars are sorted by size for reading. The order of addition matters a little, because rules overlap; that is why the report states the set, not only the total.</p></aside>
+</section>
+
+<section class="slide" data-label="Hidden errors" id="rules-can-hide-errors" data-lo="LO2" data-n="17" data-session="2">
+  <div class="kicker">The cost of the full rules</div>
+  <h2>A rule that forgives spelling can also forgive a wrong word</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-coral"><h4>Merged by the full rules</h4><p class="small mb0"><span class="ar">على</span> and <span class="ar">علي</span>; <span class="ar">أبغى</span> and <span class="ar">أبغي</span>; <span class="ar">جولة</span> and <span class="ar">جوله</span>.</p></div>
+    <div class="card c-teal"><h4>What to do</h4><p class="small mb0">Report the full-rule WER, and a second score on the slots that drive a booking (names, numbers, dates) without the letter rules.</p></div>
+  </div>
+  <aside class="notes"><p>The pairs are found by the stretch of Lab 2.2 over the vocabulary of the references. أبغى and أبغي are the Hijazi and Southern spellings of the same verb in the data, harmless; على against علي can change who a booking is for. This is the "rule that hides a real error" the checkpoint asks about.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-2" data-lo="LO2" data-n="18" data-session="2">
+  <div class="kicker">Checkpoint</div>
+  <h2>Which number goes in the report?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="checkpoint-2-q1">
+    <p class="lead">A vendor quotes a word error rate of 0.09 for Arabic. Your raw measurement of the same model on your clips is 0.52. What do you ask first?</p>
+    <div class="opts">
+      <div class="opt" data-why="Assumes a large gap means a different model, before checking how it was counted" data-k="A">Which model version they used</div>
+      <div class="opt" data-why="Believes more data closes a gap that comes from counting rules" data-k="B">Whether they used more clips than you</div>
+      <div class="opt" data-ok data-k="C">Which normalisation rules they applied before counting</div>
+      <div class="opt" data-why="Thinks the measure itself differs; both are word error rates" data-k="D">Whether they measured characters instead of words</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> On the lab's clips the same transcripts give 0.517 raw and 0.089 under the full rules. Rules first, then everything else.</div>
+  </div>
+  <aside class="notes"><p>Answer: C. A and B are reasonable second questions. The habit to build: every WER on a slide, in a vendor sheet or in a paper comes with its rules, or it is not compared.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-2-2" data-auto="lab" data-lab="2.2" data-label="Lab 2.2" data-n="19" data-session="2">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 2.2 · 25 min</div><h2>Rules before rates</h2><p class="lead small">Apply three sets of Arabic normalisation rules to supplied transcripts, recompute the error rates and see the ranking of the two recognisers change. AI off.</p><a class="nb" href="../labs/D2_2_normalisation.ipynb">D2_2_normalisation.ipynb</a></div><ul class="checklist"><li>Write the rules: diacritics, alef, ta marbuta, alef maqsura, tatweel, digits <span class="min">10 min</span></li><li>Recompute error rates under three rule sets <span class="min">7 min</span></li><li>Which rule moved the rate, and the ranking <span class="min">5 min</span></li><li>Save the rules file the report will cite <span class="min">3 min</span></li><li class="stretch">✱ Stretch: Find a pair of words the rules merge that mean different things</li></ul></div>
+  <aside class="notes"><p>AI-off lab: assistants closed. Common problems: a diacritics range that also deletes letters (stay within U+064B to U+0652 and U+0670); replacing ى everywhere instead of at the end (the data has no medial ى, so both pass here, but say which is meant); forgetting to lower-case English words in code-switched clips. The rules file saved in step 4 is cited by the capstone report.</p></aside>
+</section>
+
+<!-- ======================= SESSION 3 ======================= -->
+<section class="slide section" id="s3" data-auto="section" data-session="3" data-n="20">
+  <div class="kicker">Session 3</div>
+  <h1>Dialects and code-switching</h1>
+  <ul class="bullets outcomes"><li>Slice error rates by dialect, channel and code-switching</li><li>Add clip-level bootstrap intervals to each slice</li><li>Decide which slice differences are real given their size</li></ul>
+  <div class="sess-no">03</div>
+</section>
+
+<section class="slide" data-label="Slices" id="one-rate-hides-callers" data-lo="LO2" data-n="21" data-session="3">
+  <div class="kicker">Who gets worse service</div>
+  <h2>One error rate for the whole line hides the callers it fails</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Dialect</h4><p class="small mb0">Najdi, Hijazi, Gulf, Southern, Modern Standard Arabic, and Egyptian visitors.</p></div>
+    <div class="card c-cyan"><h4>Channel</h4><p class="small mb0">Wideband app audio against an 8 kHz telephone line.</p></div>
+    <div class="card c-coral"><h4>Code-switching</h4><p class="small mb0">Arabic with English words: booking, guide, family ticket, confirm.</p></div>
+  </div>
+  <div class="callout note mt"><b>The responsible-use rule of this course:</b> error rates are reported by dialect, so weaker service for some speakers is visible before launch.</div>
+  <aside class="notes"><p>The catalog entry asks for error rates by dialect so that weaker service is visible before launch; this is a fairness requirement stated as an engineering deliverable. Link it to the SDAIA AI Ethics Principles on fairness without quoting them. The clips per slice: Najdi 10, Hijazi 10, Gulf 8, Southern 8, MSA 8, Egyptian 6; 22 telephone, 28 wideband; 14 code-switched.</p></aside>
+</section>
+
+<section class="slide" data-label="Clip bootstrap" id="resample-clips" data-lo="LO2" data-n="22" data-session="3">
+  <div class="kicker">Intervals that are honest about dependence</div>
+  <h2>Resample clips, not words: words of one clip share a speaker and a line</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 2.3"><code class="language-python">rng = np.random.default_rng(<span class="hljs-number">408</span>)
+idx = rng.integers(<span class="hljs-number">0</span>, n, size=(reps, n))
+rates = edits[idx].<span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span>) / words[idx].<span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span>)
+lo, hi = np.percentile(rates, [<span class="hljs-number">2.5</span>, <span class="hljs-number">97.5</span>])</code></pre>
+    <div class="stack">
+      <div class="card c-teal flat"><h4>Each draw</h4><p class="small mb0">n clips with replacement; the slice's corpus rate on that draw.</p></div>
+      <div class="card c-coral flat"><h4>Word resampling</h4><p class="small mb0">Treats 474 words as independent: an interval far too narrow.</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>The bootstrap is a prerequisite from AE-303; what is new is choosing the unit. Errors cluster: a speaker with a strong accent or a bad line produces several errors in one clip. Overall in the lab: 0.089 with a 95% interval from 0.060 to 0.120, from 2,000 clip resamples.</p></aside>
+</section>
+
+<section class="slide" data-label="By slice" id="southern-is-worse" data-lo="LO2" data-n="23" data-session="3">
+  <div class="kicker">Lab 2.3, recogniser B, full rules</div>
+  <h2>Southern speakers are shown worse; the rest cannot be told apart yet</h2>
+  <table class="t small">
+    <tr><th>Slice</th><th class="num">n</th><th class="num">WER</th><th class="num">95% interval</th><th>Verdict</th></tr>
+    <tr class="hl"><td>Southern</td><td class="num">8</td><td class="num">0.219</td><td class="num">0.145 to 0.309</td><td>worse</td></tr>
+    <tr><td>Telephone</td><td class="num">22</td><td class="num">0.133</td><td class="num">0.085 to 0.186</td><td>not shown worse</td></tr>
+    <tr><td>Code-switched</td><td class="num">14</td><td class="num">0.128</td><td class="num">0.058 to 0.211</td><td>not shown worse</td></tr>
+    <tr><td>Hijazi</td><td class="num">10</td><td class="num">0.095</td><td class="num">0.034 to 0.162</td><td>not shown worse</td></tr>
+    <tr><td>Egyptian</td><td class="num">6</td><td class="num">0.054</td><td class="num">0 to 0.135</td><td>not shown worse</td></tr>
+  </table>
+  <p class="small mt-s">Overall 0.089. A slice is "worse" when its whole interval lies above the overall rate.</p>
+  <aside class="notes"><p>Southern is planted twice as hard in the error model and more often on the telephone. Telephone audio is higher but its interval starts at 0.085, just under 0.089: say "not shown worse", never "the same". Egyptian has six clips and an interval from 0 to 0.135: the honest report asks for more clips. These are the words the capstone report uses.</p></aside>
+</section>
+
+<section class="slide" data-label="Small cells" id="minimum-size" data-lo="LO2" data-n="24" data-session="3">
+  <div class="kicker">When to say nothing</div>
+  <h2>Below a minimum size, a slice says only that you need more clips</h2>
+  <div class="cols cols-2">
+    <ul class="bullets">
+      <li>Set the minimum before you look: here six clips.</li>
+      <li>Crossing dialect with channel leaves 3 of 12 cells with six or more clips.</li>
+      <li>Southern on the telephone: six clips, 0.232. The cell is small but points the same way as both of its margins.</li>
+      <li>Ask for clips where the cells are empty; Day 4's test set is built for that.</li>
+    </ul>
+    <div class="stat"><div class="big">3 / 12</div><div class="lbl">dialect by channel cells with at least six clips, Lab 2.3 stretch</div></div>
+  </div>
+  <aside class="notes"><p>A minimum chosen after looking is a way to hide or to promote a slice. The crossed table is the stretch of Lab 2.3. This is the bridge to Day 4 Session 1: a test set designed for coverage has enough clips in the cells that matter, which a sample of convenience never does.</p></aside>
+</section>
+
+<section class="slide" data-label="Code-switching" id="code-switched-words" data-lo="LO2" data-n="25" data-session="3">
+  <div class="kicker">English inside Arabic</div>
+  <h2>Code-switched words fail in a way the rules cannot fix</h2>
+  <div class="cols cols-2">
+    <div class="trace s">
+      <div class="ev user"><b>caller said</b>أبي أسوي booking في قلعة النخيل</div>
+      <div class="ev error"><b>transcript</b>أبي أسوي بوكنق في قلعة النخيل</div>
+    </div>
+    <div class="stack">
+      <div class="card c-coral flat"><h4>Transliterated</h4><p class="small mb0">The English word comes back in Arabic letters. No Arabic rule maps it back.</p></div>
+      <div class="card c-teal flat"><h4>Options</h4><p class="small mb0">A mapping list for the service's own English words, the language hint left unset, or both scored.</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>The example follows the error model's transliteration of English words. Groq's endpoint takes an ISO-639-1 language hint, which its documentation says can improve accuracy and latency; what it does to code-switched speech is worth measuring on your own clips, with and without the hint. A short list mapping بوكنق to booking for the service's own vocabulary is a legitimate rule if it is written down with the others.</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-3" data-lo="LO2" data-n="26" data-session="3">
+  <div class="kicker">Checkpoint</div>
+  <h2>What do you write about this slice?</h2>
+  <div class="quiz" data-type="single" data-lo="LO2" data-id="checkpoint-3-q1">
+    <p class="lead">Telephone callers: WER 0.133, 95% interval 0.085 to 0.186, 22 clips. Overall WER 0.089. What does the report say?</p>
+    <div class="opts">
+      <div class="opt" data-why="Reads the point estimate and ignores the interval" data-k="A">Telephone callers get worse service</div>
+      <div class="opt" data-why="Mistakes a lack of evidence for evidence of no difference" data-k="B">Telephone callers get the same service as others</div>
+      <div class="opt" data-why="Believes 22 clips is too few for any statement, even an interval" data-k="C">Nothing: the slice is too small to report</div>
+      <div class="opt" data-ok data-k="D">Higher, but not shown worse: the interval reaches the overall rate; more telephone clips are needed</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The interval starts just below 0.089, so the data does not rule out equal service; it does not show it either. The next test set adds telephone clips.</div>
+  </div>
+  <aside class="notes"><p>Answer: D. B is the dangerous answer in a fairness report. C applies the minimum size wrongly: 22 is above six.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-2-3" data-auto="lab" data-lab="2.3" data-label="Lab 2.3" data-n="27" data-session="3">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 2.3 · 25 min</div><h2>Slices with intervals</h2><p class="lead small">Slice error rates by dialect, channel and code-switched speech, add bootstrap intervals and flag the slices that are worse than the whole set.</p><a class="nb" href="../labs/D2_3_dialect_slices.ipynb">D2_3_dialect_slices.ipynb</a></div><ul class="checklist"><li>Error rate per dialect, channel and code-switching <span class="min">7 min</span></li><li>A clip-level bootstrap interval per slice <span class="min">10 min</span></li><li>Flag the slices that are worse, with a minimum size <span class="min">5 min</span></li><li>The report table <span class="min">3 min</span></li><li class="stretch">✱ Stretch: Cross dialect with channel and read what the small cells can say</li></ul></div>
+  <aside class="notes"><p>Common problems: averaging clip rates inside a slice instead of summing edits and words; a new random generator per slice without a seed (results change on every run); flagging slices on the point estimate. The CSV's first line must name the recogniser, the rules and the repetitions.</p></aside>
+</section>
+
+<!-- ======================= SESSION 4 ======================= -->
+<section class="slide section" id="s4" data-auto="section" data-session="4" data-n="28">
+  <div class="kicker">Session 4</div>
+  <h1>Streaming and silence</h1>
+  <ul class="bullets outcomes"><li>Detect speech frames with an energy-based voice activity detector</li><li>Stream segments to a recogniser and measure when text arrives</li><li>Catch and suppress text produced on silent segments</li></ul>
+  <div class="sess-no">04</div>
+</section>
+
+<section class="slide" data-label="Streaming" id="streaming-pipeline" data-lo="LO2 LO3" data-n="29" data-session="4">
+  <div class="kicker">A call is not a file</div>
+  <h2>A live line sends audio in frames and must decide where speech starts and ends</h2>
+  <div class="flow">
+    <div class="step c-navy"><b>1 · Frames</b>20 ms of audio at a time</div>
+    <div class="arrow">→</div>
+    <div class="step c-teal"><b>2 · Detect</b>is this frame speech?</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>3 · Segment</b>close a segment after a short hangover</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>4 · Recognise</b>send the segment; text arrives</div>
+  </div>
+  <div class="cols cols-2 gap-s mt">
+    <div class="card c-teal flat"><h4>Voice activity detection</h4><p class="small mb0">Energy above a noise floor in the labs; a small neural detector (Silero VAD) in production.</p></div>
+    <div class="card c-purple flat"><h4>Diarisation</h4><p class="small mb0">Who spoke when (pyannote.audio), for a call with two people on the caller's side.</p></div>
+  </div>
+  <aside class="notes"><p>The labs use an energy detector written in numpy because the house rule forbids downloading model weights, which Silero VAD and pyannote need. Both are named as production examples; both are on PyPI (silero-vad 6.2.3 and pyannote.audio 4.0.7 when checked). Diarisation is named here and not built: Rahhal's calls are one caller and one agent.</p></aside>
+</section>
+
+<section class="slide" data-label="Energy" id="energy-detector" data-lo="LO2" data-n="30" data-session="4">
+  <div class="kicker">The detector of Lab 2.4</div>
+  <h2>Speech is energy well above the line's own noise</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="Lab 2.4"><code class="language-python">db = <span class="hljs-number">20</span> * np.log10(rms(frames) + <span class="hljs-number">1e-9</span>)
+floor = np.percentile(db, <span class="hljs-number">20</span>)
+active = db &gt; floor + <span class="hljs-number">18</span>     <span class="hljs-comment"># decibels</span>
+<span class="hljs-comment"># keep 200 ms after the last active frame</span>
+<span class="hljs-comment"># merge runs; drop runs under 150 ms</span></code></pre>
+    <table class="t small">
+      <tr><th>On the synthetic call</th><th class="num">dB</th></tr>
+      <tr><td>Line noise (the floor)</td><td class="num">−50</td></tr>
+      <tr><td>Hum</td><td class="num">−40</td></tr>
+      <tr><td>Threshold</td><td class="num">−32</td></tr>
+      <tr><td>Speech peaks</td><td class="num">−13</td></tr>
+    </table>
+  </div>
+  <aside class="notes"><p>Levels measured on U.synthetic_call(): the 20th percentile of frame energy is about −50 dB, the hum about −40, speech peaks near −13. A margin of 18 dB puts the threshold above the hum and below speech; the detector finds exactly the six utterances. The call is synthetic: a voiced tone with a syllable envelope, no recorded or imitated voice.</p></aside>
+</section>
+
+<section class="slide" data-label="Text on silence" id="text-on-silence" data-lo="LO4" data-n="31" data-session="4">
+  <div class="kicker">The failure the detector prevents</div>
+  <h2>Fed a silent stretch, a recogniser can write text nobody said</h2>
+  <div class="cols cols-2">
+    <div class="trace s">
+      <div class="ev user"><b>7.5 to 10.0 s</b>silence</div>
+      <div class="ev error"><b>transcript</b><span class="ar">اشتركوا في القناة</span> (no-speech 0.68)</div>
+      <div class="ev user"><b>20.0 to 22.5 s</b>a hum on the line</div>
+      <div class="ev error"><b>transcript</b>Thank you. (no-speech 0.42)</div>
+    </div>
+    <div class="stack">
+      <div class="card c-coral flat"><h4>Reported for Whisper</h4><p class="small mb0">About 1% of transcriptions held whole invented phrases, more often for speakers with long pauses.</p></div>
+      <div class="card c-teal flat"><h4>Why it matters here</h4><p class="small mb0">Invented text reaches the booking agent as if the caller had said it.</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>The transcripts are the stand-in's, from the naive 2.5-second windows of Lab 2.4: phrases of the kind reported for Whisper on non-speech audio. The evidence card is Koenecke and colleagues, Careless Whisper (2024): roughly 1% of transcriptions contained entire hallucinated phrases, disproportionately for speakers with longer non-vocal durations, which is a fairness issue as well as an accuracy one. Sources: arXiv 2402.08021.</p></aside>
+</section>
+
+<section class="slide" data-label="Two signals" id="two-signals-not-one" data-lo="LO4" data-n="32" data-session="4">
+  <div class="kicker">Lab 2.4 result</div>
+  <h2>Gate on the detector and on the recogniser's no-speech probability</h2>
+  <div class="cols cols-3">
+    <div class="stat"><div class="big">6 → 0</div><div class="lbl">texts on silence reaching the agent, fixed windows against the gated stream</div></div>
+    <div class="stat"><div class="big">0.714 → 0</div><div class="lbl">WER of everything the agent received</div></div>
+    <div class="stat"><div class="big">0.42</div><div class="lbl">no-speech probability on the hum: a threshold alone lets it through</div></div>
+  </div>
+  <div class="callout tip mt"><b>Failure log entry.</b> Mode: text on silence. Cause: silence and hum sent to the recogniser. Mitigation: detector plus probability gate. Result: 6 to 0 on the synthetic call.</div>
+  <aside class="notes"><p>Numbers from the solution run of Lab 2.4 on the stand-in. The probability gate alone would have kept the hum's "Thank you." The detector alone would let through a recogniser that invents text inside a real speech segment, which the probability catches. Two independent signals is the pattern for every mitigation in this course.</p></aside>
+</section>
+
+<section class="slide" data-label="Hangover" id="hangover-trade" data-lo="LO2 LO3" data-n="33" data-session="4">
+  <div class="kicker">The detector's one design choice</div>
+  <h2>The hangover trades broken words against a later reply</h2>
+  <table class="t small">
+    <tr><th>Hangover</th><th class="num">Segments</th><th class="num">WER of the stream</th><th class="num">Text arrives after speech ends</th></tr>
+    <tr><td>0 ms</td><td class="num">48</td><td class="num">2.76</td><td class="num">172 ms</td></tr>
+    <tr class="hl"><td>100 ms</td><td class="num">6</td><td class="num">0</td><td class="num">358 ms</td></tr>
+    <tr><td>200 ms</td><td class="num">6</td><td class="num">0</td><td class="num">462 ms</td></tr>
+    <tr><td>400 ms</td><td class="num">6</td><td class="num">0</td><td class="num">672 ms</td></tr>
+  </table>
+  <p class="small mt-s">Without a hangover, every dip between syllables closes a segment, and every fragment invites invented text.</p>
+  <aside class="notes"><p>The stretch of Lab 2.4. A WER of 2.76 means the stream held almost three times as many wrong words as the reference had words: fragments and invented phrases. Every millisecond of hangover is added to the caller's wait, which is why tomorrow's latency budget starts here. The end of a turn is a longer version of the same decision (Lab 3.3).</p></aside>
+</section>
+
+<section class="slide" id="checkpoint-4" data-lo="LO4" data-n="34" data-session="4">
+  <div class="kicker">Checkpoint</div>
+  <h2>Where do you stop text on silence?</h2>
+  <div class="quiz" data-type="single" data-lo="LO4" data-id="checkpoint-4-q1">
+    <p class="lead">Your gate drops text when the recogniser's no-speech probability is above 0.6. A hum on the line still produces "Thank you." with probability 0.42. What do you add?</p>
+    <div class="opts">
+      <div class="opt" data-why="Moves one threshold until the test case passes, which breaks on the next line" data-k="A">Lower the probability threshold to 0.4</div>
+      <div class="opt" data-ok data-k="B">A voice activity detector, so that only detected speech is sent at all</div>
+      <div class="opt" data-why="Believes a better recogniser does not invent text; the reported failure is in Whisper-family models" data-k="C">A larger recogniser</div>
+      <div class="opt" data-why="Removes the symptom from the log, not from the agent's input" data-k="D">A filter that deletes the phrase "Thank you."</div>
+    </div>
+    <div class="callout tip why"><b>Why.</b> The hum is not silence to the recogniser, so its own probability cannot be trusted there. A detector that never sends the hum removes the input that causes the text.</div>
+  </div>
+  <aside class="notes"><p>Answer: B. A would drop real speech on noisy lines. D is common in production code and hides the next invented phrase. The detector and the gate together are the mitigation the failure log records.</p></aside>
+</section>
+
+<section class="slide lab top" id="lab-2-4" data-auto="lab" data-lab="2.4" data-label="Lab 2.4" data-n="35" data-session="4">
+  <div class="cols cols-2 mid"><div><div class="lab-tag">Lab 2.4 · 25 min</div><h2>Text on silence</h2><p class="lead small">Stream a synthetic call through voice activity detection to a recogniser and catch the text it produces on silent segments.</p><a class="nb" href="../labs/D2_4_streaming_silence.ipynb">D2_4_streaming_silence.ipynb</a></div><ul class="checklist"><li>An energy detector over 20 ms frames <span class="min">8 min</span></li><li>Stream speech segments and time the partial results <span class="min">6 min</span></li><li>Catch text produced on silent segments <span class="min">7 min</span></li><li>Count before and after the gate <span class="min">4 min</span></li><li class="stretch">✱ Stretch: Tune the hangover and see what it does to cut-off words</li></ul></div>
+  <aside class="notes"><p>Common problems: computing energy on the whole call instead of per frame; a hangover counted in frames but given in milliseconds; segments in frame numbers, not seconds. Ask early finishers how they would set the margin on a line whose noise floor changes during the call (a floor estimated over a sliding window).</p></aside>
+</section>
+
+<!-- ======================= CLOSE ======================= -->
+<section class="slide" data-label="Wrap-up" id="wrap-up" data-n="36" data-session="4">
+  <div class="kicker">Day 2 · Three things to keep</div>
+  <h2>What to carry into the capstone</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Rules before rates</h4><p class="small mb0">Write the normalisation as code, report the set, and score names and numbers separately.</p></div>
+    <div class="card c-cyan"><h4>Slices with intervals</h4><p class="small mb0">Resample clips, set a minimum size first, and write "not shown worse", never "the same".</p></div>
+    <div class="card c-coral"><h4>Silence is an input</h4><p class="small mb0">Detect speech before recognising it, and gate on a second signal.</p></div>
+  </div>
+  <aside class="notes"><p>Ask each participant for the one sentence they would put under the slice table in the capstone README. The failure log now has six modes; Day 3 adds the voice agent's own: cut-ins and silent gaps.</p></aside>
+</section>
+
+<section class="slide dark" data-label="Next" id="next" data-n="37" data-session="4">
+  <div class="kicker">Tomorrow · Day 3</div>
+  <h2>Speaking: read-back, latency, turn-taking and tool calls</h2>
+  <ul class="bullets">
+    <li>The budget is 1,200 ms from the end of the caller's speech to the first audio of the reply.</li>
+    <li>Think of one number, one date and one name a caller must hear right.</li>
+    <li>With a free Groq key, Lab 3.1 can synthesise the read-backs in a Saudi Arabic voice.</li>
+  </ul>
+  <aside class="notes"><p>The 1,200 ms budget is the case study's, owned by Fayyad Al-Ghamdi: a design target, not a standard. Every Day 3 lab measures against it.</p></aside>
+</section>
+</div>
+<script type="application/json" id="academy-data">{"v":1,"engine":"1.0.0","build":{"at":"2026-11-15T22:27:07Z","version":"2027.1.0","commit":"c687f48"},"course":{"id":"ae-408","code":"AE-408","title":"Multimodal and Speech Systems Engineering","track":"ai-engineering","lang":"en","dir":"ltr","url":"https://sdaiaacademy.github.io/ae-408/","repo":"SDAIAAcademy/ae-408","home":"../index.html"},"deck":{"id":"day2","kind":"day","day":2,"label":"Day 2","title":"Listening","prev":"day1.html","next":"day3.html","md":"day2.md","alt":{}},"sessions":[{"n":1,"label":"Session 1","title":"From waveform to text","slide":"s1","outcomes":["Describe the path from waveform to features to text in two recogniser families","Compute word error rate from an alignment of substitutions, deletions and insertions","Explain why corpus error rate differs from the mean of clip error rates"],"minutes":50,"lab":{"id":"2.1","title":"Two recognisers, 50 clips","minutes":25,"href":"../labs/D2_1_two_recognisers.ipynb"}},{"n":2,"label":"Session 2","title":"Normalisation decides the error rate","slide":"s2","outcomes":["Write explicit Arabic normalisation rules for diacritics, letter variants and numerals","Recompute error rates under each rule set and explain the change","Spot a rule that hides a real recognition error"],"minutes":50,"lab":{"id":"2.2","title":"Rules before rates","minutes":25,"href":"../labs/D2_2_normalisation.ipynb"}},{"n":3,"label":"Session 3","title":"Dialects and code-switching","slide":"s3","outcomes":["Slice error rates by dialect, channel and code-switching","Add clip-level bootstrap intervals to each slice","Decide which slice differences are real given their size"],"minutes":50,"lab":{"id":"2.3","title":"Slices with intervals","minutes":25,"href":"../labs/D2_3_dialect_slices.ipynb"}},{"n":4,"label":"Session 4","title":"Streaming and silence","slide":"s4","outcomes":["Detect speech frames with an energy-based voice activity detector","Stream segments to a recogniser and measure when text arrives","Catch and suppress text produced on silent segments"],"minutes":50,"lab":{"id":"2.4","title":"Text on silence","minutes":25,"href":"../labs/D2_4_streaming_silence.ipynb"}}],"slides":[{"id":"title","n":1,"title":"Listening","kind":"title","session":0,"hash":"e9df2c18","md":"#### [day2#title] Listening\n\n*SDAIA Academy · Multimodal and Speech Systems Engineering*\n\nDay 2: Speech recognition measured by dialect, channel and code-switching, with explicit normalisation\n\nAI Engineering Track · 4 teaching days + capstone day · 4 sessions · 4 labs · AE-408","notes":"Day 2 moves from pixels to sound. Ask who has measured a speech recogniser before and with what normalisation: almost nobody will name the rules, which is today's point. Remind the room of the AI policy: Session 2's lab is AI-off.","minutes":null,"lo":[]},{"id":"agenda","n":2,"title":"Listening","kind":"content","session":0,"hash":"22972016","md":"#### [day2#agenda] Listening\n\n*Today*\n\n- **Session 1 · From waveform to text**: How recognisers turn audio into words, and how word error rate counts their mistakes\n- **Session 2 · Normalisation decides the error rate**: Arabic normalisation rules, written down, change the numbers and the ranking\n- **Session 3 · Dialects and code-switching**: Error rates by slice with intervals, so weaker service for some speakers is visible\n- **Session 4 · Streaming and silence**: Streaming recognition with voice activity detection, and the text a recogniser writes on silence","notes":"","minutes":null,"lo":[]},{"id":"review-day1","n":3,"title":"Which failure is this?","kind":"quiz","session":0,"hash":"7ee8d667","md":"#### [day2#review-day1] Which failure is this?\n\n*Review of Day 1*\n\n**Question:** On a photo of an empty trail, Lamha returns a box labelled litter with high confidence. The reference has no litter. What do you log?\n\n- A. A localisation error: the box missed the litter\n- B. A resolution problem: the photo was sent too small\n- C. A prompt injection through the image\n- D. An invented object, to be measured with probes on clean scenes","notes":"Answer: D. Use the answers to rebuild yesterday's failure log on the board: wrong reading at low resolution, wrong judged field, invented object, followed instruction. Today adds two audio modes: errors hidden or created by spelling, and text on silence.","minutes":null,"lo":["LO4"]},{"id":"s1","n":4,"title":"From waveform to text","kind":"section","session":1,"hash":"b6094948","md":"#### [day2#s1] From waveform to text\n\n*Session 1*\n\n- Describe the path from waveform to features to text in two recogniser families\n- Compute word error rate from an alignment of substitutions, deletions and insertions\n- Explain why corpus error rate differs from the mean of clip error rates","notes":"","minutes":null,"lo":["LO2"]},{"id":"waveform-to-text","n":5,"title":"A recogniser turns a waveform into features, then features into text","kind":"content","session":1,"hash":"ef5a8873","md":"#### [day2#waveform-to-text] A recogniser turns a waveform into features, then features into text\n\n*What a recogniser does*\n\n1. **1 · Sample** 16,000 values a second; a telephone line keeps 8,000\n2. **2 · Features** a log-mel spectrogram: energy by pitch band, every 10 ms\n3. **3 · Encoder** turns the frames into vectors\n4. **4 · Text** a decoder writes tokens, or a classifier labels each frame\n\n> **Telephone audio** loses the upper half of the band. Sounds that differ there are the first to be confused.","notes":"Keep the signal processing brief: participants need to know that the model sees a spectrogram, that sample rate limits the bands it can see, and that 8 kHz telephone audio has nothing above 4 kHz. That is why Rahhal's telephone callers will be a slice of their own in Session 3.","minutes":null,"lo":["LO2"]},{"id":"recogniser-families","n":6,"title":"Encoder-decoder recognisers write text; encoder-only recognisers label frames","kind":"content","session":1,"hash":"ed239064","md":"#### [day2#recogniser-families] Encoder-decoder recognisers write text; encoder-only recognisers label frames\n\n*Two families you will meet*\n\n|  | Encoder-decoder (Whisper family) | Encoder with a frame classifier (wav2vec family) |\n| --- | --- | --- |\n| **Output** | tokens, written like a language model | a letter or a blank for every frame |\n| **Strength** | punctuation, numbers, many languages in one model | fast, streams naturally, cannot invent long phrases |\n| **Typical failure** | fluent text that was never said, especially on silence | misspelled words, no punctuation |\n| **In the labs** | whisper-large-v3 and whisper-large-v3-turbo, hosted | named for the capstone |","notes":"The two recognisers of the labs are open-weight Whisper-family models served on Groq's free tier: whisper-large-v3 and whisper-large-v3-turbo, both listed on Groq's speech-to-text page. Without a key the labs replay transcripts written by the course's error model; say this every time a number appears. The \"typical failure\" row is the bridge to Session 4. Sources: Groq speech-to-text documentation.","minutes":null,"lo":["LO2"]},{"id":"word-error-rate","n":7,"title":"Word error rate counts the cheapest set of edits from reference to transcript","kind":"content","session":1,"hash":"38ebacb1","md":"#### [day2#word-error-rate] Word error rate counts the cheapest set of edits from reference to transcript\n\n*Counting mistakes*\n\n- reference: أبي ألغي الحجز رقم 1288 على قلعة النخيل\n- recogniser A: اب الغي الحجز رقم 1284 على قلعه النخيل\n\nPrompt for Definition:\n\n```text\nWER = (S + D + I) / N, from the alignment with the fewest edits\n```\n\nHere four substitutions over eight words: 0.5. Only one of them, the booking number, changes the booking.","notes":"Clip C001, recogniser A, as recorded in data/clips.jsonl. Walk the alignment: أبي/اب is a real error, ألغي/الغي a hamza, 1288/1284 a real and costly error, قلعة/قلعه a ta marbuta. Participants write the dynamic-programming alignment in step 3 and check it against jiwer on every clip. Ask the room which of the four errors a caller would notice: that question is Session 2.","minutes":null,"lo":["LO2"]},{"id":"corpus-or-mean","n":8,"title":"Report the corpus rate: every word counts once","kind":"content","session":1,"hash":"bb46ce7c","md":"#### [day2#corpus-or-mean] Report the corpus rate: every word counts once\n\n*Two ways to add up*\n\n- **Corpus WER.** All edits over all reference words. A long clip weighs more, because it has more words to get wrong.\n- **Mean of clip WERs.** Each clip weighs the same. Two errors in a four-word clip add 0.5; in a twenty-word clip, 0.1.\n\nIn Lab 2.1 the two agree to the third decimal (0.213 and 0.214 for A), because the clips have similar lengths. On real calls they do not: say which one you report.","notes":"Be honest about the lab: the synthetic clips are 6 to 12 words, so the two figures barely differ. The point is the convention, which matters on real recordings where a clip can be two words or two hundred. The capstone report states the corpus figure and the rules.","minutes":null,"lo":["LO2"]},{"id":"raw-ranking","n":9,"title":"On raw text, recogniser A looks more than twice as good as B","kind":"content","session":1,"hash":"6fec63b6","md":"#### [day2#raw-ranking] On raw text, recogniser A looks more than twice as good as B\n\n*Lab 2.1, 50 clips, raw text*\n\n| Recogniser | WER | S | D | I | CER |\n| --- | --- | --- | --- | --- | --- |\n| whisper-large-v3 (A) | 0.213 | 82 | 10 | 9 | 0.076 |\n| whisper-large-v3-turbo (B) | 0.517 | 235 | 8 | 2 | 0.159 |\n\n> **Almost all of B's errors are substitutions.** Before trusting this ranking, read what the substitutions are.","notes":"Recorded transcripts, written by the course's error model: B was given more spelling variation and fewer real errors, A the reverse. That is planted, and the room should not know yet. Ask them to open three of B's transcripts beside the references (the Look-at cell of Lab 2.1): diacritics, Arabic-Indic digits, hamza dropped. The next session turns this into rules.","minutes":null,"lo":["LO2"]},{"id":"checkpoint-1","n":10,"title":"How does this count?","kind":"quiz","session":1,"hash":"2f6d052f","md":"#### [day2#checkpoint-1] How does this count?\n\n*Checkpoint*\n\n**Question:** Reference: \"five people on Thursday\" (4 words). Transcript: \"five people Thursday please\". What is the WER?\n\n- A. 0.25: one word is missing\n- B. 0.5: one deletion and one insertion over four words\n- C. 0.4: two edits over five words\n- D. 0.75: three words are out of place","notes":"Answer: B. C is the common slip: the denominator is always the reference. Point out that WER can exceed 1 when a recogniser inserts many words, which Session 4 shows on silence.","minutes":null,"lo":["LO2"]},{"id":"lab-2-1","n":11,"title":"Two recognisers, 50 clips","kind":"lab","session":1,"hash":"222dfeb8","md":"#### [day2#lab-2-1] Two recognisers, 50 clips\n\nLab 2.1 · 25 min\n\nRun two open-weight recognisers on 50 clips (or replay their recorded transcripts) and compute word error rates with your own alignment and with jiwer.\n\n[D2_1_two_recognisers.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D2_1_two_recognisers.ipynb)\n\n- [ ] Load the clips and their references (4 min)\n- [ ] Transcribe with two recognisers, or replay (6 min)\n- [ ] Word error rate from your own alignment, checked with jiwer (8 min)\n- [ ] Corpus against mean error rate, and the worst clips (7 min)\n- [ ] ✱ Stretch: Character error rate beside word error rate for the same clips","notes":"Common problems: the backtrace counting a match as a substitution (compare the words, not only the costs); splitting Arabic on non-breaking spaces; mixing corpus and mean. With a Groq key and audio written by make_audio.py the lab sends real audio: that audio is one synthetic voice, so it does not carry dialect differences; tell participants to keep the recorded transcripts for Lab 2.3.","minutes":null,"lo":[]},{"id":"s2","n":12,"title":"Normalisation decides the error rate","kind":"section","session":2,"hash":"0def73a5","md":"#### [day2#s2] Normalisation decides the error rate\n\n*Session 2*\n\n- Write explicit Arabic normalisation rules for diacritics, letter variants and numerals\n- Recompute error rates under each rule set and explain the change\n- Spot a rule that hides a real recognition error","notes":"","minutes":null,"lo":["LO2"]},{"id":"one-word-many-spellings","n":13,"title":"The same spoken word has several correct spellings","kind":"content","session":2,"hash":"f5640f38","md":"#### [day2#one-word-many-spellings] The same spoken word has several correct spellings\n\n*Why Arabic needs rules first*\n\n| Variation | Written | Also written | Heard the same? |\n| --- | --- | --- | --- |\n| Diacritics | ابي | ابَي | yes |\n| Hamza on alef | أبي | ابي | yes |\n| Ta marbuta | جولة | جوله | yes |\n| Alef maqsura | على | علي | usually, not always |\n| Digits | 1288 | ١٢٨٨ | yes |\n| Tatweel | للاطفال | للـاطفال | yes |","notes":"Every pair is taken from the clips. The fourth row is the exception that matters: على (on) and علي (the name Ali) sound alike in fast speech but are different words, and a rule that merges them can hide a real error. This is what the lab's stretch finds. Ask for the word each participant brought from yesterday's \"next\" slide.","minutes":null,"lo":["LO2"]},{"id":"rules-as-code","n":14,"title":"Write each rule as a function, test it, and name the set you report","kind":"content","session":2,"hash":"4310c850","md":"#### [day2#rules-as-code] Write each rule as a function, test it, and name the set you report\n\n*Rules you can cite*\n\n```python\n# file: Lab 2.2\ndef diacritics(t):\n    return re.sub(\"[ً-ْٰ]\", \"\", t)\n\ndef alef(t):\n    return re.sub(\"[أإآٱ]\", \"ا\", t)\n\nSETS = {\n  \"none\":  [],\n  \"light\": [\"diacritics\", \"tatweel\", \"digits\", \"punct\"],\n  \"full\":  [*light, \"alef\", \"maqsura\", \"ta\"]}\n```\n\n- **Light.** Removes what is never a different word: marks, stretching, digit forms, punctuation.\n- **Full.** Also merges letter variants. Fairer to spelling, but it can merge two real words.","notes":"The lab is AI-off: participants write these seven functions themselves, each with an example test. The supervised check of the course asks exactly this without help: compute error rates under two normalisation rules. The course's reference version is trails.normalise, used by every later lab, so a participant who did not finish still gets the same numbers tomorrow.","minutes":null,"lo":["LO2"]},{"id":"ranking-flips","n":15,"title":"Under the full rules the ranking flips","kind":"content","session":2,"hash":"8f6da6d8","md":"#### [day2#ranking-flips] Under the full rules the ranking flips\n\n*Lab 2.2, 50 clips*\n\n| Rule set | whisper-large-v3 (A) | whisper-large-v3-turbo (B) | Better |\n| --- | --- | --- | --- |\n| none | 0.213 | 0.517 | A |\n| light | 0.213 | 0.264 | A |\n| full | 0.160 | 0.089 | B |\n\n> **A WER without its rules is not a result.** The same transcripts support either choice.","notes":"The flip is planted by the error model: B writes more spelling variants but makes fewer real errors. The lesson holds for any comparison of real recognisers: without stated rules, two error rates cannot be compared. Wedad's decision rests on the full rules, plus a separate check of the words where merging can hide an error (names, على against علي).","minutes":null,"lo":["LO2"]},{"id":"which-rule-moved","n":16,"title":"Diacritics alone took a third off B's error rate","kind":"content","session":2,"hash":"e36e8bc5","md":"#### [day2#which-rule-moved] Diacritics alone took a third off B's error rate\n\n*Recogniser B, one rule at a time*\n\n| Item | Value |\n| --- | --- |\n| + diacritics | −0.186 |\n| + alef | −0.083 |\n| + maqsura | −0.059 |\n| + tatweel | −0.042 |\n| + ta | −0.033 |\n| + digits | −0.025 |\n\nFrom 0.517 with no rules to 0.089 with all seven. Punctuation changed nothing: the transcripts had none.","notes":"Step 3 of Lab 2.2, rules added in the order of the full set (diacritics, tatweel, digits, punct, alef, maqsura, ta); the bars are sorted by size for reading. The order of addition matters a little, because rules overlap; that is why the report states the set, not only the total.","minutes":null,"lo":["LO2"]},{"id":"rules-can-hide-errors","n":17,"title":"A rule that forgives spelling can also forgive a wrong word","kind":"content","session":2,"hash":"d452ef25","md":"#### [day2#rules-can-hide-errors] A rule that forgives spelling can also forgive a wrong word\n\n*The cost of the full rules*\n\n- **Merged by the full rules.** على and علي; أبغى and أبغي; جولة and جوله.\n- **What to do.** Report the full-rule WER, and a second score on the slots that drive a booking (names, numbers, dates) without the letter rules.","notes":"The pairs are found by the stretch of Lab 2.2 over the vocabulary of the references. أبغى and أبغي are the Hijazi and Southern spellings of the same verb in the data, harmless; على against علي can change who a booking is for. This is the \"rule that hides a real error\" the checkpoint asks about.","minutes":null,"lo":["LO2"]},{"id":"checkpoint-2","n":18,"title":"Which number goes in the report?","kind":"quiz","session":2,"hash":"0e90ee66","md":"#### [day2#checkpoint-2] Which number goes in the report?\n\n*Checkpoint*\n\n**Question:** A vendor quotes a word error rate of 0.09 for Arabic. Your raw measurement of the same model on your clips is 0.52. What do you ask first?\n\n- A. Which model version they used\n- B. Whether they used more clips than you\n- C. Which normalisation rules they applied before counting\n- D. Whether they measured characters instead of words","notes":"Answer: C. A and B are reasonable second questions. The habit to build: every WER on a slide, in a vendor sheet or in a paper comes with its rules, or it is not compared.","minutes":null,"lo":["LO2"]},{"id":"lab-2-2","n":19,"title":"Rules before rates","kind":"lab","session":2,"hash":"788c37a3","md":"#### [day2#lab-2-2] Rules before rates\n\nLab 2.2 · 25 min\n\nApply three sets of Arabic normalisation rules to supplied transcripts, recompute the error rates and see the ranking of the two recognisers change. AI off.\n\n[D2_2_normalisation.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D2_2_normalisation.ipynb)\n\n- [ ] Write the rules: diacritics, alef, ta marbuta, alef maqsura, tatweel, digits (10 min)\n- [ ] Recompute error rates under three rule sets (7 min)\n- [ ] Which rule moved the rate, and the ranking (5 min)\n- [ ] Save the rules file the report will cite (3 min)\n- [ ] ✱ Stretch: Find a pair of words the rules merge that mean different things","notes":"AI-off lab: assistants closed. Common problems: a diacritics range that also deletes letters (stay within U+064B to U+0652 and U+0670); replacing ى everywhere instead of at the end (the data has no medial ى, so both pass here, but say which is meant); forgetting to lower-case English words in code-switched clips. The rules file saved in step 4 is cited by the capstone report.","minutes":null,"lo":[]},{"id":"s3","n":20,"title":"Dialects and code-switching","kind":"section","session":3,"hash":"7c1a2ea8","md":"#### [day2#s3] Dialects and code-switching\n\n*Session 3*\n\n- Slice error rates by dialect, channel and code-switching\n- Add clip-level bootstrap intervals to each slice\n- Decide which slice differences are real given their size","notes":"","minutes":null,"lo":["LO2"]},{"id":"one-rate-hides-callers","n":21,"title":"One error rate for the whole line hides the callers it fails","kind":"content","session":3,"hash":"ee30ec80","md":"#### [day2#one-rate-hides-callers] One error rate for the whole line hides the callers it fails\n\n*Who gets worse service*\n\n- **Dialect.** Najdi, Hijazi, Gulf, Southern, Modern Standard Arabic, and Egyptian visitors.\n- **Channel.** Wideband app audio against an 8 kHz telephone line.\n- **Code-switching.** Arabic with English words: booking, guide, family ticket, confirm.\n\n> **The responsible-use rule of this course:** error rates are reported by dialect, so weaker service for some speakers is visible before launch.","notes":"The catalog entry asks for error rates by dialect so that weaker service is visible before launch; this is a fairness requirement stated as an engineering deliverable. Link it to the SDAIA AI Ethics Principles on fairness without quoting them. The clips per slice: Najdi 10, Hijazi 10, Gulf 8, Southern 8, MSA 8, Egyptian 6; 22 telephone, 28 wideband; 14 code-switched.","minutes":null,"lo":["LO2"]},{"id":"resample-clips","n":22,"title":"Resample clips, not words: words of one clip share a speaker and a line","kind":"content","session":3,"hash":"81f59b79","md":"#### [day2#resample-clips] Resample clips, not words: words of one clip share a speaker and a line\n\n*Intervals that are honest about dependence*\n\n```python\n# file: Lab 2.3\nrng = np.random.default_rng(408)\nidx = rng.integers(0, n, size=(reps, n))\nrates = edits[idx].sum(1) / words[idx].sum(1)\nlo, hi = np.percentile(rates, [2.5, 97.5])\n```\n\n- **Each draw.** n clips with replacement; the slice's corpus rate on that draw.\n- **Word resampling.** Treats 474 words as independent: an interval far too narrow.","notes":"The bootstrap is a prerequisite from AE-303; what is new is choosing the unit. Errors cluster: a speaker with a strong accent or a bad line produces several errors in one clip. Overall in the lab: 0.089 with a 95% interval from 0.060 to 0.120, from 2,000 clip resamples.","minutes":null,"lo":["LO2"]},{"id":"southern-is-worse","n":23,"title":"Southern speakers are shown worse; the rest cannot be told apart yet","kind":"content","session":3,"hash":"ad41f7cf","md":"#### [day2#southern-is-worse] Southern speakers are shown worse; the rest cannot be told apart yet\n\n*Lab 2.3, recogniser B, full rules*\n\n| Slice | n | WER | 95% interval | Verdict |\n| --- | --- | --- | --- | --- |\n| Southern | 8 | 0.219 | 0.145 to 0.309 | worse |\n| Telephone | 22 | 0.133 | 0.085 to 0.186 | not shown worse |\n| Code-switched | 14 | 0.128 | 0.058 to 0.211 | not shown worse |\n| Hijazi | 10 | 0.095 | 0.034 to 0.162 | not shown worse |\n| Egyptian | 6 | 0.054 | 0 to 0.135 | not shown worse |\n\nOverall 0.089. A slice is \"worse\" when its whole interval lies above the overall rate.","notes":"Southern is planted twice as hard in the error model and more often on the telephone. Telephone audio is higher but its interval starts at 0.085, just under 0.089: say \"not shown worse\", never \"the same\". Egyptian has six clips and an interval from 0 to 0.135: the honest report asks for more clips. These are the words the capstone report uses.","minutes":null,"lo":["LO2"]},{"id":"minimum-size","n":24,"title":"Below a minimum size, a slice says only that you need more clips","kind":"content","session":3,"hash":"466b21f6","md":"#### [day2#minimum-size] Below a minimum size, a slice says only that you need more clips\n\n*When to say nothing*\n\n- Set the minimum before you look: here six clips.\n- Crossing dialect with channel leaves 3 of 12 cells with six or more clips.\n- Southern on the telephone: six clips, 0.232. The cell is small but points the same way as both of its margins.\n- Ask for clips where the cells are empty; Day 4's test set is built for that.\n\n**3 / 12** dialect by channel cells with at least six clips, Lab 2.3 stretch","notes":"A minimum chosen after looking is a way to hide or to promote a slice. The crossed table is the stretch of Lab 2.3. This is the bridge to Day 4 Session 1: a test set designed for coverage has enough clips in the cells that matter, which a sample of convenience never does.","minutes":null,"lo":["LO2"]},{"id":"code-switched-words","n":25,"title":"Code-switched words fail in a way the rules cannot fix","kind":"content","session":3,"hash":"9337734c","md":"#### [day2#code-switched-words] Code-switched words fail in a way the rules cannot fix\n\n*English inside Arabic*\n\n- caller said: أبي أسوي booking في قلعة النخيل\n- transcript: أبي أسوي بوكنق في قلعة النخيل\n\n- **Transliterated.** The English word comes back in Arabic letters. No Arabic rule maps it back.\n- **Options.** A mapping list for the service's own English words, the language hint left unset, or both scored.","notes":"The example follows the error model's transliteration of English words. Groq's endpoint takes an ISO-639-1 language hint, which its documentation says can improve accuracy and latency; what it does to code-switched speech is worth measuring on your own clips, with and without the hint. A short list mapping بوكنق to booking for the service's own vocabulary is a legitimate rule if it is written down with the others.","minutes":null,"lo":["LO2"]},{"id":"checkpoint-3","n":26,"title":"What do you write about this slice?","kind":"quiz","session":3,"hash":"efd4d4b5","md":"#### [day2#checkpoint-3] What do you write about this slice?\n\n*Checkpoint*\n\n**Question:** Telephone callers: WER 0.133, 95% interval 0.085 to 0.186, 22 clips. Overall WER 0.089. What does the report say?\n\n- A. Telephone callers get worse service\n- B. Telephone callers get the same service as others\n- C. Nothing: the slice is too small to report\n- D. Higher, but not shown worse: the interval reaches the overall rate; more telephone clips are needed","notes":"Answer: D. B is the dangerous answer in a fairness report. C applies the minimum size wrongly: 22 is above six.","minutes":null,"lo":["LO2"]},{"id":"lab-2-3","n":27,"title":"Slices with intervals","kind":"lab","session":3,"hash":"f36411af","md":"#### [day2#lab-2-3] Slices with intervals\n\nLab 2.3 · 25 min\n\nSlice error rates by dialect, channel and code-switched speech, add bootstrap intervals and flag the slices that are worse than the whole set.\n\n[D2_3_dialect_slices.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D2_3_dialect_slices.ipynb)\n\n- [ ] Error rate per dialect, channel and code-switching (7 min)\n- [ ] A clip-level bootstrap interval per slice (10 min)\n- [ ] Flag the slices that are worse, with a minimum size (5 min)\n- [ ] The report table (3 min)\n- [ ] ✱ Stretch: Cross dialect with channel and read what the small cells can say","notes":"Common problems: averaging clip rates inside a slice instead of summing edits and words; a new random generator per slice without a seed (results change on every run); flagging slices on the point estimate. The CSV's first line must name the recogniser, the rules and the repetitions.","minutes":null,"lo":[]},{"id":"s4","n":28,"title":"Streaming and silence","kind":"section","session":4,"hash":"80964875","md":"#### [day2#s4] Streaming and silence\n\n*Session 4*\n\n- Detect speech frames with an energy-based voice activity detector\n- Stream segments to a recogniser and measure when text arrives\n- Catch and suppress text produced on silent segments","notes":"","minutes":null,"lo":["LO2","LO4"]},{"id":"streaming-pipeline","n":29,"title":"A live line sends audio in frames and must decide where speech starts and ends","kind":"content","session":4,"hash":"d4258dc3","md":"#### [day2#streaming-pipeline] A live line sends audio in frames and must decide where speech starts and ends\n\n*A call is not a file*\n\n1. **1 · Frames** 20 ms of audio at a time\n2. **2 · Detect** is this frame speech?\n3. **3 · Segment** close a segment after a short hangover\n4. **4 · Recognise** send the segment; text arrives\n\n- **Voice activity detection.** Energy above a noise floor in the labs; a small neural detector (Silero VAD) in production.\n- **Diarisation.** Who spoke when (pyannote.audio), for a call with two people on the caller's side.","notes":"The labs use an energy detector written in numpy because the house rule forbids downloading model weights, which Silero VAD and pyannote need. Both are named as production examples; both are on PyPI (silero-vad 6.2.3 and pyannote.audio 4.0.7 when checked). Diarisation is named here and not built: Rahhal's calls are one caller and one agent.","minutes":null,"lo":["LO2","LO3"]},{"id":"energy-detector","n":30,"title":"Speech is energy well above the line's own noise","kind":"content","session":4,"hash":"f525b73c","md":"#### [day2#energy-detector] Speech is energy well above the line's own noise\n\n*The detector of Lab 2.4*\n\n```python\n# file: Lab 2.4\ndb = 20 * np.log10(rms(frames) + 1e-9)\nfloor = np.percentile(db, 20)\nactive = db > floor + 18     # decibels\n# keep 200 ms after the last active frame\n# merge runs; drop runs under 150 ms\n```\n\n| On the synthetic call | dB |\n| --- | --- |\n| Line noise (the floor) | −50 |\n| Hum | −40 |\n| Threshold | −32 |\n| Speech peaks | −13 |","notes":"Levels measured on U.synthetic_call(): the 20th percentile of frame energy is about −50 dB, the hum about −40, speech peaks near −13. A margin of 18 dB puts the threshold above the hum and below speech; the detector finds exactly the six utterances. The call is synthetic: a voiced tone with a syllable envelope, no recorded or imitated voice.","minutes":null,"lo":["LO2"]},{"id":"text-on-silence","n":31,"title":"Fed a silent stretch, a recogniser can write text nobody said","kind":"content","session":4,"hash":"e794a639","md":"#### [day2#text-on-silence] Fed a silent stretch, a recogniser can write text nobody said\n\n*The failure the detector prevents*\n\n- 7.5 to 10.0 s: silence\n- transcript: اشتركوا في القناة (no-speech 0.68)\n- 20.0 to 22.5 s: a hum on the line\n- transcript: Thank you. (no-speech 0.42)\n\n- **Reported for Whisper.** About 1% of transcriptions held whole invented phrases, more often for speakers with long pauses.\n- **Why it matters here.** Invented text reaches the booking agent as if the caller had said it.","notes":"The transcripts are the stand-in's, from the naive 2.5-second windows of Lab 2.4: phrases of the kind reported for Whisper on non-speech audio. The evidence card is Koenecke and colleagues, Careless Whisper (2024): roughly 1% of transcriptions contained entire hallucinated phrases, disproportionately for speakers with longer non-vocal durations, which is a fairness issue as well as an accuracy one. Sources: arXiv 2402.08021.","minutes":null,"lo":["LO4"]},{"id":"two-signals-not-one","n":32,"title":"Gate on the detector and on the recogniser's no-speech probability","kind":"content","session":4,"hash":"26fe9b11","md":"#### [day2#two-signals-not-one] Gate on the detector and on the recogniser's no-speech probability\n\n*Lab 2.4 result*\n\n- **6 → 0** texts on silence reaching the agent, fixed windows against the gated stream\n- **0.714 → 0** WER of everything the agent received\n- **0.42** no-speech probability on the hum: a threshold alone lets it through\n\n> **Failure log entry.** Mode: text on silence. Cause: silence and hum sent to the recogniser. Mitigation: detector plus probability gate. Result: 6 to 0 on the synthetic call.","notes":"Numbers from the solution run of Lab 2.4 on the stand-in. The probability gate alone would have kept the hum's \"Thank you.\" The detector alone would let through a recogniser that invents text inside a real speech segment, which the probability catches. Two independent signals is the pattern for every mitigation in this course.","minutes":null,"lo":["LO4"]},{"id":"hangover-trade","n":33,"title":"The hangover trades broken words against a later reply","kind":"content","session":4,"hash":"01b93636","md":"#### [day2#hangover-trade] The hangover trades broken words against a later reply\n\n*The detector's one design choice*\n\n| Hangover | Segments | WER of the stream | Text arrives after speech ends |\n| --- | --- | --- | --- |\n| 0 ms | 48 | 2.76 | 172 ms |\n| 100 ms | 6 | 0 | 358 ms |\n| 200 ms | 6 | 0 | 462 ms |\n| 400 ms | 6 | 0 | 672 ms |\n\nWithout a hangover, every dip between syllables closes a segment, and every fragment invites invented text.","notes":"The stretch of Lab 2.4. A WER of 2.76 means the stream held almost three times as many wrong words as the reference had words: fragments and invented phrases. Every millisecond of hangover is added to the caller's wait, which is why tomorrow's latency budget starts here. The end of a turn is a longer version of the same decision (Lab 3.3).","minutes":null,"lo":["LO2","LO3"]},{"id":"checkpoint-4","n":34,"title":"Where do you stop text on silence?","kind":"quiz","session":4,"hash":"243898a2","md":"#### [day2#checkpoint-4] Where do you stop text on silence?\n\n*Checkpoint*\n\n**Question:** Your gate drops text when the recogniser's no-speech probability is above 0.6. A hum on the line still produces \"Thank you.\" with probability 0.42. What do you add?\n\n- A. Lower the probability threshold to 0.4\n- B. A voice activity detector, so that only detected speech is sent at all\n- C. A larger recogniser\n- D. A filter that deletes the phrase \"Thank you.\"","notes":"Answer: B. A would drop real speech on noisy lines. D is common in production code and hides the next invented phrase. The detector and the gate together are the mitigation the failure log records.","minutes":null,"lo":["LO4"]},{"id":"lab-2-4","n":35,"title":"Text on silence","kind":"lab","session":4,"hash":"005b847f","md":"#### [day2#lab-2-4] Text on silence\n\nLab 2.4 · 25 min\n\nStream a synthetic call through voice activity detection to a recogniser and catch the text it produces on silent segments.\n\n[D2_4_streaming_silence.ipynb](https://sdaiaacademy.github.io/ae-408/labs/D2_4_streaming_silence.ipynb)\n\n- [ ] An energy detector over 20 ms frames (8 min)\n- [ ] Stream speech segments and time the partial results (6 min)\n- [ ] Catch text produced on silent segments (7 min)\n- [ ] Count before and after the gate (4 min)\n- [ ] ✱ Stretch: Tune the hangover and see what it does to cut-off words","notes":"Common problems: computing energy on the whole call instead of per frame; a hangover counted in frames but given in milliseconds; segments in frame numbers, not seconds. Ask early finishers how they would set the margin on a line whose noise floor changes during the call (a floor estimated over a sliding window).","minutes":null,"lo":[]},{"id":"wrap-up","n":36,"title":"What to carry into the capstone","kind":"content","session":4,"hash":"81073e9f","md":"#### [day2#wrap-up] What to carry into the capstone\n\n*Day 2 · Three things to keep*\n\n- **Rules before rates.** Write the normalisation as code, report the set, and score names and numbers separately.\n- **Slices with intervals.** Resample clips, set a minimum size first, and write \"not shown worse\", never \"the same\".\n- **Silence is an input.** Detect speech before recognising it, and gate on a second signal.","notes":"Ask each participant for the one sentence they would put under the slice table in the capstone README. The failure log now has six modes; Day 3 adds the voice agent's own: cut-ins and silent gaps.","minutes":null,"lo":[]},{"id":"next","n":37,"title":"Speaking: read-back, latency, turn-taking and tool calls","kind":"content","session":4,"hash":"fb77a246","md":"#### [day2#next] Speaking: read-back, latency, turn-taking and tool calls\n\n*Tomorrow · Day 3*\n\n- The budget is 1,200 ms from the end of the caller's speech to the first audio of the reply.\n- Think of one number, one date and one name a caller must hear right.\n- With a free Groq key, Lab 3.1 can synthesise the read-backs in a Saudi Arabic voice.","notes":"The 1,200 ms budget is the case study's, owned by Fayyad Al-Ghamdi: a design target, not a standard. Every Day 3 lab measures against it.","minutes":null,"lo":[]}],"activities":[{"id":"review-day1-q1","slide":"review-day1","type":"single","prompt":"On a photo of an empty trail, Lamha returns a box labelled litter with high confidence. The reference has no litter. What do you log?","options":[{"key":"A","text":"A localisation error: the box missed the litter"},{"key":"B","text":"A resolution problem: the photo was sent too small"},{"key":"C","text":"A prompt injection through the image"},{"key":"D","text":"An invented object, to be measured with probes on clean scenes"}],"correct":[3],"explanation":"Nothing in the reference matches, so the model invented the object. The probe rate on clean scenes is the measure, and neutral wording with a none option the mitigation to test.","misconceptions":["Confuses a misplaced box with an object that is absent","Blames resolution for a failure that does not depend on reading small details","Treats every wrong output as an attack",""],"lo":["LO4"]},{"id":"checkpoint-1-q1","slide":"checkpoint-1","type":"single","prompt":"Reference: \"five people on Thursday\" (4 words). Transcript: \"five people Thursday please\". What is the WER?","options":[{"key":"A","text":"0.25: one word is missing"},{"key":"B","text":"0.5: one deletion and one insertion over four words"},{"key":"C","text":"0.4: two edits over five words"},{"key":"D","text":"0.75: three words are out of place"}],"correct":[1],"explanation":"The cheapest alignment deletes \"on\" and inserts \"please\": two edits, divided by the four words of the reference.","misconceptions":["Counts only the missing word and forgets the inserted one","","Divides by the transcript length instead of the reference","Believes a word in the wrong position is a substitution of every word after it"],"lo":["LO2"]},{"id":"checkpoint-2-q1","slide":"checkpoint-2","type":"single","prompt":"A vendor quotes a word error rate of 0.09 for Arabic. Your raw measurement of the same model on your clips is 0.52. What do you ask first?","options":[{"key":"A","text":"Which model version they used"},{"key":"B","text":"Whether they used more clips than you"},{"key":"C","text":"Which normalisation rules they applied before counting"},{"key":"D","text":"Whether they measured characters instead of words"}],"correct":[2],"explanation":"On the lab's clips the same transcripts give 0.517 raw and 0.089 under the full rules. Rules first, then everything else.","misconceptions":["Assumes a large gap means a different model, before checking how it was counted","Believes more data closes a gap that comes from counting rules","","Thinks the measure itself differs; both are word error rates"],"lo":["LO2"]},{"id":"checkpoint-3-q1","slide":"checkpoint-3","type":"single","prompt":"Telephone callers: WER 0.133, 95% interval 0.085 to 0.186, 22 clips. Overall WER 0.089. What does the report say?","options":[{"key":"A","text":"Telephone callers get worse service"},{"key":"B","text":"Telephone callers get the same service as others"},{"key":"C","text":"Nothing: the slice is too small to report"},{"key":"D","text":"Higher, but not shown worse: the interval reaches the overall rate; more telephone clips are needed"}],"correct":[3],"explanation":"The interval starts just below 0.089, so the data does not rule out equal service; it does not show it either. The next test set adds telephone clips.","misconceptions":["Reads the point estimate and ignores the interval","Mistakes a lack of evidence for evidence of no difference","Believes 22 clips is too few for any statement, even an interval",""],"lo":["LO2"]},{"id":"checkpoint-4-q1","slide":"checkpoint-4","type":"single","prompt":"Your gate drops text when the recogniser's no-speech probability is above 0.6. A hum on the line still produces \"Thank you.\" with probability 0.42. What do you add?","options":[{"key":"A","text":"Lower the probability threshold to 0.4"},{"key":"B","text":"A voice activity detector, so that only detected speech is sent at all"},{"key":"C","text":"A larger recogniser"},{"key":"D","text":"A filter that deletes the phrase \"Thank you.\""}],"correct":[1],"explanation":"The hum is not silence to the recogniser, so its own probability cannot be trusted there. A detector that never sends the hum removes the input that causes the text.","misconceptions":["Moves one threshold until the test case passes, which breaks on the next line","","Believes a better recogniser does not invent text; the reported failure is in Whisper-family models","Removes the symptom from the log, not from the agent's input"],"lo":["LO4"]}],"ai":{"context":{"course":"../context/course.md","courseJs":"../context/course.js","day":"day2.md","llms":"../llms.txt"},"tasks":[],"tools":[]},"bridge":{"allowedOrigins":[]},"features":{},"strings":{}}</script>
+<script src="../_engine/academy.js"></script>
+</body>
+</html>

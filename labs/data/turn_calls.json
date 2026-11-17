@@ -1,0 +1,945 @@
+[
+ {
+  "call_id": "T01",
+  "turns": [
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 687,
+      "pause_after_ms": 179
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 736,
+      "pause_after_ms": 208
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 489,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "عندي حجز رقم",
+      "speech_ms": 678,
+      "pause_after_ms": 150
+     },
+     {
+      "text": "أربعة ثمانية",
+      "speech_ms": 530,
+      "pause_after_ms": 240
+     },
+     {
+      "text": "اثنين واحد",
+      "speech_ms": 570,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 793,
+      "pause_after_ms": 1047
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 777,
+      "pause_after_ms": 321
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 602,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "عندي حجز رقم",
+      "speech_ms": 840,
+      "pause_after_ms": 212
+     },
+     {
+      "text": "أربعة ثمانية",
+      "speech_ms": 450,
+      "pause_after_ms": 351
+     },
+     {
+      "text": "اثنين واحد",
+      "speech_ms": 590,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   }
+  ]
+ },
+ {
+  "call_id": "T02",
+  "turns": [
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "the booking is",
+      "speech_ms": 664,
+      "pause_after_ms": 344
+     },
+     {
+      "text": "H T B",
+      "speech_ms": 827,
+      "pause_after_ms": 173
+     },
+     {
+      "text": "four eight two one",
+      "speech_ms": 939,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "Red Rock Path",
+      "speech_ms": 690,
+      "pause_after_ms": 1079
+     },
+     {
+      "text": "on Thursday",
+      "speech_ms": 565,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "I would like to book",
+      "speech_ms": 1161,
+      "pause_after_ms": 403
+     },
+     {
+      "text": "for",
+      "speech_ms": 414,
+      "pause_after_ms": 657
+     },
+     {
+      "text": "five people",
+      "speech_ms": 577,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 833,
+      "pause_after_ms": 912
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 401,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   }
+  ]
+ },
+ {
+  "call_id": "T03",
+  "turns": [
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 767,
+      "pause_after_ms": 256
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 226,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "أبي أحجز جولة",
+      "speech_ms": 796,
+      "pause_after_ms": 156
+     },
+     {
+      "text": "يوم",
+      "speech_ms": 235,
+      "pause_after_ms": 1031
+     },
+     {
+      "text": "الخميس",
+      "speech_ms": 258,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "Red Rock Path",
+      "speech_ms": 786,
+      "pause_after_ms": 341
+     },
+     {
+      "text": "on Thursday",
+      "speech_ms": 537,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "أبي أحجز جولة",
+      "speech_ms": 809,
+      "pause_after_ms": 992
+     },
+     {
+      "text": "يوم",
+      "speech_ms": 292,
+      "pause_after_ms": 837
+     },
+     {
+      "text": "الخميس",
+      "speech_ms": 252,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   }
+  ]
+ },
+ {
+  "call_id": "T04",
+  "turns": [
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 687,
+      "pause_after_ms": 1017
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 284,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 822,
+      "pause_after_ms": 892
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 689,
+      "pause_after_ms": 828
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 593,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 750,
+      "pause_after_ms": 365
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 413,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "I would like to book",
+      "speech_ms": 1125,
+      "pause_after_ms": 201
+     },
+     {
+      "text": "for",
+      "speech_ms": 277,
+      "pause_after_ms": 766
+     },
+     {
+      "text": "five people",
+      "speech_ms": 501,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   }
+  ]
+ },
+ {
+  "call_id": "T05",
+  "turns": [
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 693,
+      "pause_after_ms": 245
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 326,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 837,
+      "pause_after_ms": 780
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 286,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "عندي حجز رقم",
+      "speech_ms": 781,
+      "pause_after_ms": 1050
+     },
+     {
+      "text": "أربعة ثمانية",
+      "speech_ms": 523,
+      "pause_after_ms": 297
+     },
+     {
+      "text": "اثنين واحد",
+      "speech_ms": 463,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "أبغى family ticket",
+      "speech_ms": 674,
+      "pause_after_ms": 167
+     },
+     {
+      "text": "على",
+      "speech_ms": 335,
+      "pause_after_ms": 1083
+     },
+     {
+      "text": "قلعة النخيل",
+      "speech_ms": 518,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   }
+  ]
+ },
+ {
+  "call_id": "T06",
+  "turns": [
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "نبي جولة عائلية",
+      "speech_ms": 829,
+      "pause_after_ms": 722
+     },
+     {
+      "text": "لعدد",
+      "speech_ms": 226,
+      "pause_after_ms": 1096
+     },
+     {
+      "text": "سبعة أشخاص",
+      "speech_ms": 627,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "yes that is right",
+      "speech_ms": 900,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 674,
+      "pause_after_ms": 217
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 673,
+      "pause_after_ms": 188
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 507,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "yes that is right",
+      "speech_ms": 958,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   }
+  ]
+ },
+ {
+  "call_id": "T07",
+  "turns": [
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "the booking is",
+      "speech_ms": 853,
+      "pause_after_ms": 199
+     },
+     {
+      "text": "H T B",
+      "speech_ms": 729,
+      "pause_after_ms": 316
+     },
+     {
+      "text": "four eight two one",
+      "speech_ms": 930,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "عندي حجز رقم",
+      "speech_ms": 710,
+      "pause_after_ms": 265
+     },
+     {
+      "text": "أربعة ثمانية",
+      "speech_ms": 495,
+      "pause_after_ms": 838
+     },
+     {
+      "text": "اثنين واحد",
+      "speech_ms": 587,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "أبي أحجز جولة",
+      "speech_ms": 858,
+      "pause_after_ms": 938
+     },
+     {
+      "text": "يوم",
+      "speech_ms": 367,
+      "pause_after_ms": 963
+     },
+     {
+      "text": "الخميس",
+      "speech_ms": 277,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 699,
+      "pause_after_ms": 377
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 413,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   }
+  ]
+ },
+ {
+  "call_id": "T08",
+  "turns": [
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "yes that is right",
+      "speech_ms": 921,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 663,
+      "pause_after_ms": 308
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 400,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "نبي جولة عائلية",
+      "speech_ms": 744,
+      "pause_after_ms": 1096
+     },
+     {
+      "text": "لعدد",
+      "speech_ms": 334,
+      "pause_after_ms": 848
+     },
+     {
+      "text": "سبعة أشخاص",
+      "speech_ms": 517,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 677,
+      "pause_after_ms": 400
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 824,
+      "pause_after_ms": 384
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 536,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   }
+  ]
+ },
+ {
+  "call_id": "T09",
+  "turns": [
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "I would like to book",
+      "speech_ms": 1128,
+      "pause_after_ms": 358
+     },
+     {
+      "text": "for",
+      "speech_ms": 412,
+      "pause_after_ms": 767
+     },
+     {
+      "text": "five people",
+      "speech_ms": 589,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "yes that is right",
+      "speech_ms": 1050,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 779,
+      "pause_after_ms": 313
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 753,
+      "pause_after_ms": 274
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 631,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "the booking is",
+      "speech_ms": 791,
+      "pause_after_ms": 976
+     },
+     {
+      "text": "H T B",
+      "speech_ms": 835,
+      "pause_after_ms": 324
+     },
+     {
+      "text": "four eight two one",
+      "speech_ms": 1045,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   }
+  ]
+ },
+ {
+  "call_id": "T10",
+  "turns": [
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "لا مو الخميس",
+      "speech_ms": 685,
+      "pause_after_ms": 828
+     },
+     {
+      "text": "الجمعة",
+      "speech_ms": 410,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "yes that is right",
+      "speech_ms": 991,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "Red Rock Path",
+      "speech_ms": 827,
+      "pause_after_ms": 431
+     },
+     {
+      "text": "on Thursday",
+      "speech_ms": 554,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "أبغى family ticket",
+      "speech_ms": 679,
+      "pause_after_ms": 387
+     },
+     {
+      "text": "على",
+      "speech_ms": 271,
+      "pause_after_ms": 651
+     },
+     {
+      "text": "قلعة النخيل",
+      "speech_ms": 470,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   }
+  ]
+ },
+ {
+  "call_id": "T11",
+  "turns": [
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 848,
+      "pause_after_ms": 699
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 682,
+      "pause_after_ms": 312
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 484,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "yes that is right",
+      "speech_ms": 959,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "عندي حجز رقم",
+      "speech_ms": 714,
+      "pause_after_ms": 240
+     },
+     {
+      "text": "أربعة ثمانية",
+      "speech_ms": 625,
+      "pause_after_ms": 306
+     },
+     {
+      "text": "اثنين واحد",
+      "speech_ms": 621,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "can I change",
+      "speech_ms": 773,
+      "pause_after_ms": 413
+     },
+     {
+      "text": "the date to",
+      "speech_ms": 671,
+      "pause_after_ms": 254
+     },
+     {
+      "text": "the eleventh",
+      "speech_ms": 576,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   }
+  ]
+ },
+ {
+  "call_id": "T12",
+  "turns": [
+   {
+    "lang": "ar",
+    "chunks": [
+     {
+      "text": "عندي حجز رقم",
+      "speech_ms": 684,
+      "pause_after_ms": 654
+     },
+     {
+      "text": "أربعة ثمانية",
+      "speech_ms": 536,
+      "pause_after_ms": 723
+     },
+     {
+      "text": "اثنين واحد",
+      "speech_ms": 598,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "I would like to book",
+      "speech_ms": 1153,
+      "pause_after_ms": 400
+     },
+     {
+      "text": "for",
+      "speech_ms": 342,
+      "pause_after_ms": 723
+     },
+     {
+      "text": "five people",
+      "speech_ms": 554,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1400
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "Red Rock Path",
+      "speech_ms": 845,
+      "pause_after_ms": 921
+     },
+     {
+      "text": "on Thursday",
+      "speech_ms": 481,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1600
+   },
+   {
+    "lang": "en",
+    "chunks": [
+     {
+      "text": "the booking is",
+      "speech_ms": 788,
+      "pause_after_ms": 378
+     },
+     {
+      "text": "H T B",
+      "speech_ms": 704,
+      "pause_after_ms": 197
+     },
+     {
+      "text": "four eight two one",
+      "speech_ms": 911,
+      "pause_after_ms": 0
+     }
+    ],
+    "patience_ms": 1800
+   }
+  ]
+ }
+]
